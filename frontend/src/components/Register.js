@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 
 function Register() {
     var registerName;
-    var registerEmail;
+    var firstName;
+    var lastName;
+      
     var registerPassword;
     const [message, setMessage] = useState('');
     const app_name = 'smart-tooth-577ede9ea626';
@@ -18,8 +20,11 @@ function Register() {
     const doRegister = async event => {
         event.preventDefault();
         var obj = {
-            username: registerName.value,
-            email: registerEmail.value,
+            
+             username: firstName.value,
+             username: lastName.value,
+              username: registerName.value,
+   
             password: registerPassword.value
         };
         var js = JSON.stringify(obj);
@@ -38,7 +43,8 @@ function Register() {
                 setMessage('Registration successful! You can now log in.');
                 // Clear the form fields
                 registerName.value = '';
-                registerEmail.value = '';
+                 firstName.value = '';
+                 lastName.value = '';
                 registerPassword.value = '';
             }
         } catch (e) {
@@ -51,8 +57,9 @@ function Register() {
         <div id="registerDiv">
             <form onSubmit={doRegister}>
                 <span id="inner-title">REGISTER</span><br />
+                 <input type="text" id="firstName" placeholder="FirstName" ref={(c) => registerName = c} />
+                 <input type="text" id="lastName" placeholder="LastName" ref={(c) => registerName = c} />
                 <input type="text" id="registerName" placeholder="Username" ref={(c) => registerName = c} />
-                <input type="email" id="registerEmail" placeholder="Email" ref={(c) => registerEmail = c} />
                 <input type="password" id="registerPassword" placeholder="Password" ref={(c) => registerPassword = c} />
                 <input type="submit" id="registerButton" className="buttons" value="Register" onClick={doRegister} />
             </form>
