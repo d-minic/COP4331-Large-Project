@@ -21,9 +21,9 @@ function Register() {
         event.preventDefault();
         var obj = {
             
-             username: firstName.value,
-             username: lastName.value,
-              username: registerName.value,
+             firstName: firstName.value,
+             lastName: lastName.value,
+              login: registerName.value,
    
             password: registerPassword.value
         };
