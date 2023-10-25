@@ -56,6 +56,7 @@ function Login()
         onClick={doLogin} />
         </form>
         <span id="loginResult">{message}</span>
+        <Link to="/register">Don't have an account? Register here</Link>
         </div>
     );
 };
