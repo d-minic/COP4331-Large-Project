@@ -102,6 +102,37 @@ app.post('/api/addquestion', async (req, res, next) =>
     res.status(200).json(ret);
 });
 
+app.post('/api/addtest', async (req, res, next) =>
+{
+    // incoming: name, length, array of questions
+    // outgoing: error
+    const { name, length, questions} = req.body;
+    var error = '';
+    try{
+        for (const questionData of questions)
+        {
+            const { Question, Answer, Subject } = questionData;
+            const newQuestion = {
+                Question,
+                Answer,
+                Subject
+            };
+
+            const result = await db.collection('Questions').insertOne(newQuestion);
+            //if (result.insertedCount !== 1) 
+            //{
+            //    errorMessages.push(`Failed to insert question: ${Question}`);
+            //}
+        }
+
+    }catch(e)
+    {
+        error = e.toString();
+    }
+    var ret = { error: error };
+    res.status(200).json(ret);
+});
+
 
 //kept as example, do not use
 app.post('/api/searchcards', async (req, res, next) =>
