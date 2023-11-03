@@ -92,7 +92,7 @@ app.post('/api/addquestion', async (req, res, next) =>
     try
     {
     const db = client.db('SmartTooth');
-    const result = db.collection('Questions').insertOne(newQuestion);
+    const result = db.collection('Question').insertOne(newQuestion);
     }
     catch(e)
     {
@@ -118,7 +118,7 @@ app.post('/api/addtest', async (req, res, next) =>
                 Subject
             };
 
-            const result = await db.collection('Questions').insertOne(newQuestion);
+            const result = await db.collection('Question').insertOne(newQuestion);
             //if (result.insertedCount !== 1) 
             //{
             //    errorMessages.push(`Failed to insert question: ${Question}`);
