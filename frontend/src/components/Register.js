@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Register() {
     var registerName;
@@ -6,7 +7,7 @@ function Register() {
     var lastName;
     var registerEmail;
     var registerPassword;
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState(<Link to="/">Go back to login page.</Link>);
     const app_name = 'smart-tooth-577ede9ea626';
 
     function buildPath(route) {
@@ -39,12 +40,14 @@ function Register() {
             if (res.error) {
                 setMessage(res.error);
             } else {
-                setMessage('Registration successful! You can now log in.');
+                setMessage('Registration successful! Redirecting to login page.');
                 // Clear the form fields
                 registerName.value = '';
-                 firstName.value = '';
-                 lastName.value = '';
+                firstName.value = '';
+                lastName.value = '';
                 registerPassword.value = '';
+                // Redirects to login page- probably need to change when email verification is added
+                setTimeout(() => {window.location.href = '/';}, 750);
             }
         } catch (e) {
             alert(e.toString());
