@@ -45,8 +45,8 @@ app.post('/api/register', async (req, res, next) =>
 {
     // incoming: login, password, firstName, lastName
     // outgoing: error
-    const { login, password, firstName, lastName } = req.body;
-    const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName};
+    const { login, password, firstName, lastName, email } = req.body;
+    const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName, Email:email, Points:0};
     var error = '';
     try
     {
@@ -60,6 +60,7 @@ app.post('/api/register', async (req, res, next) =>
     var ret = { error: error };
     res.status(200).json(ret);
 });
+
 app.post('/api/login', async (req, res, next) =>
 {
     // incoming: login, password
