@@ -145,6 +145,7 @@ app.post('/api/addtest', async (req, res, next) =>
     res.status(200).json(ret);
 });
 
+/*
 app.post('/api/addfriend', async (req, res, next) =>
 {
     // incoming: id1, id2
@@ -194,7 +195,7 @@ app.post('/api/addfriend', async (req, res, next) =>
 
 });
 
-
+*/
 
 
 
