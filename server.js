@@ -152,7 +152,7 @@ app.post('/api/addfriend', async (req, res, next) =>
 
     var error = '';
 
-    const {ObjectId} = requre('mongodb');
+    const {ObjectId} = require('mongodb');
 
     const {id1, id2} = req.body;
     const objectId1 = ObjectId(id1);
