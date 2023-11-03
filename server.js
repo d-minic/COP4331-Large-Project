@@ -45,8 +45,9 @@ app.post('/api/register', async (req, res, next) =>
 {
     // incoming: login, password, firstName, lastName
     // outgoing: error
-    const { login, password, firstName, lastName } = req.body;
-    const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName};
+    const { login, password, firstName, lastName, email } = req.body;
+    const friends = [];
+    const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName, Email:email, Points:0,Friends:friends};
     var error = '';
     try
     {
@@ -60,6 +61,7 @@ app.post('/api/register', async (req, res, next) =>
     var ret = { error: error };
     res.status(200).json(ret);
 });
+
 app.post('/api/login', async (req, res, next) =>
 {
     // incoming: login, password
@@ -74,11 +76,12 @@ app.post('/api/login', async (req, res, next) =>
     var ln = '';
     if( results.length > 0 )
     {
-        id = results[0].UserId;
+        id = results[0]._id;
         fn = results[0].FirstName;
         ln = results[0].LastName;
+        email = results[0].Email;
     }
-    var ret = { id:id, firstName:fn, lastName:ln, error:''};
+    var ret = { id:id, firstName:fn, lastName:ln, email:email, error:''};
     res.status(200).json(ret);
 });
 
@@ -92,7 +95,7 @@ app.post('/api/addquestion', async (req, res, next) =>
     try
     {
     const db = client.db('SmartTooth');
-    const result = db.collection('Questions').insertOne(newQuestion);
+    const result = db.collection('Question').insertOne(newQuestion);
     }
     catch(e)
     {
@@ -106,9 +109,12 @@ app.post('/api/addtest', async (req, res, next) =>
 {
     // incoming: name, length, array of questions
     // outgoing: error
-    const { name, length, questions} = req.body;
     var error = '';
     try{
+
+        const { name, length, questions} = req.body;
+        const questionIds = [];
+
         for (const questionData of questions)
         {
             const { Question, Answer, Subject } = questionData;
@@ -118,12 +124,18 @@ app.post('/api/addtest', async (req, res, next) =>
                 Subject
             };
 
-            const result = await db.collection('Questions').insertOne(newQuestion);
-            //if (result.insertedCount !== 1) 
-            //{
-            //    errorMessages.push(`Failed to insert question: ${Question}`);
-            //}
+            const db = client.db('SmartTooth');
+            const result = await db.collection('Question').insertOne(newQuestion);
+            var questionID = newQuestion._id;
+            questionIds.push(questionID);
+
         }
+
+        const newTest = {Name:name,Length:length,Questions:questionIds};
+        
+        const db = client.db('SmartTooth');
+        const result = db.collection('Tests').insertOne(newTest);
+
 
     }catch(e)
     {
@@ -132,6 +144,60 @@ app.post('/api/addtest', async (req, res, next) =>
     var ret = { error: error };
     res.status(200).json(ret);
 });
+
+/*
+app.post('/api/addfriend', async (req, res, next) =>
+{
+    // incoming: id1, id2
+    // outgoing: error
+
+    var error = '';
+
+    const {ObjectId} = require('mongodb');
+
+    const {id1, id2} = req.body;
+    const objectId1 = ObjectId(id1);
+    const objectId2 = ObjectId(id2);
+    const db = client.db('SmartTooth');
+
+    const results1 = await db.collection('Users').find({_id:objectId1}).toArray();
+    
+    if( results1.length > 0 )
+    {
+        const user1 = results1[0];
+        const friends1 = user1.Friends;
+        friends1.push(id2);
+        await db.collection('Users').updateOne({ _id: objectId1 }, { $set: { Friends: friends1 } });
+    }
+    else 
+    {
+        error = "User " + id1 + " not found";
+    }
+
+    const results2 = await db.collection('Users').find({_id:objectId2}).toArray();
+    
+    if( results2.length > 0 )
+    {
+        const user2 = results2[0];
+        const friends2 = user2.Friends;
+        friends2.push(id1);
+        await db.collection('Users').updateOne({ _id: objectId2 }, { $set: { Friends: friends2 } });
+    }
+    else 
+    {
+        error = "User " + id2 + " not found";
+    }
+
+
+
+    var ret = { error: error }; 
+    res.status(200).json(ret);
+
+});
+
+*/
+
+
 
 
 //kept as example, do not use

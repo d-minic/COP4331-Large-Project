@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Register() {
     var registerName;
     var firstName;
     var lastName;
-      
+    var registerEmail;
     var registerPassword;
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState(<Link to="/">Go back to login page.</Link>);
     const app_name = 'smart-tooth-577ede9ea626';
 
     function buildPath(route) {
@@ -20,11 +21,10 @@ function Register() {
     const doRegister = async event => {
         event.preventDefault();
         var obj = {
-            
-             firstName: firstName.value,
-             lastName: lastName.value,
-              login: registerName.value,
-   
+            firstName: firstName.value,
+            lastName: lastName.value,
+            login: registerName.value,
+            email: registerEmail.value,
             password: registerPassword.value
         };
         var js = JSON.stringify(obj);
@@ -40,12 +40,14 @@ function Register() {
             if (res.error) {
                 setMessage(res.error);
             } else {
-                setMessage('Registration successful! You can now log in.');
+                setMessage('Registration successful! Redirecting to login page.');
                 // Clear the form fields
                 registerName.value = '';
-                 firstName.value = '';
-                 lastName.value = '';
+                firstName.value = '';
+                lastName.value = '';
                 registerPassword.value = '';
+                // Redirects to login page- probably need to change when email verification is added
+                setTimeout(() => {window.location.href = '/';}, 750);
             }
         } catch (e) {
             alert(e.toString());
@@ -57,8 +59,9 @@ function Register() {
         <div id="registerDiv">
             <form onSubmit={doRegister}>
                 <span id="inner-title">REGISTER</span><br />
-                 <input type="text" id="firstName" placeholder="FirstName" ref={(c) => firstName = c} />
-                 <input type="text" id="lastName" placeholder="LastName" ref={(c) => lastName = c} />
+                <input type="text" id="firstName" placeholder="FirstName" ref={(c) => firstName = c} />
+                <input type="text" id="lastName" placeholder="LastName" ref={(c) => lastName = c} />
+                <input type="text" id="registerEmail" placeholder="Email" ref={(c) => registerEmail = c} />
                 <input type="text" id="registerName" placeholder="Username" ref={(c) => registerName = c} />
                 <input type="password" id="registerPassword" placeholder="Password" ref={(c) => registerPassword = c} />
                 <input type="submit" id="registerButton" className="buttons" value="Register" onClick={doRegister} />
