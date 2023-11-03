@@ -151,10 +151,15 @@ app.post('/api/addfriend', async (req, res, next) =>
     // outgoing: error
 
     var error = '';
+
+    const {ObjectId} = requre('mongodb');
+
     const {id1, id2} = req.body;
+    const objectId1 = ObjectId(id1);
+    const objectId2 = ObjectId(id2);
     const db = client.db('SmartTooth');
 
-    const results1 = await db.collection('Users').find({_id:id1}).toArray();
+    const results1 = await db.collection('Users').find({_id:objectId1}).toArray();
     
     if( results1.length > 0 )
     {
@@ -165,10 +170,10 @@ app.post('/api/addfriend', async (req, res, next) =>
     }
     else 
     {
-        error = "User not found";
+        error = "User ", id1, " not found";
     }
 
-    const results2 = await db.collection('Users').find({_id:id2}).toArray();
+    const results2 = await db.collection('Users').find({_id:objectId2}).toArray();
     
     if( results2.length > 0 )
     {
@@ -179,7 +184,7 @@ app.post('/api/addfriend', async (req, res, next) =>
     }
     else 
     {
-        error = "User not found";
+        error = "User ", id2, " not found";
     }
 
 
