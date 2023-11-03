@@ -145,6 +145,54 @@ app.post('/api/addtest', async (req, res, next) =>
     res.status(200).json(ret);
 });
 
+app.post('/api/addfriend', async (req, res, next) =>
+{
+    // incoming: id1, id2
+    // outgoing: error
+
+    var error = '';
+    const {id1, id2} = req.body;
+    const db = client.db('SmartTooth');
+
+    const results1 = await db.collection('Users').find({_id:id1}).toArray();
+    
+    if( results1.length > 0 )
+    {
+        const user1 = results1[0];
+        const friends1 = user1.Friends;
+        friends1.push(id2);
+        await db.collection('Users').updateOne({ _id: id1 }, { $set: { Friends: friends1 } });
+    }
+    else 
+    {
+        error = "User not found";
+    }
+
+    const results2 = await db.collection('Users').find({_id:id2}).toArray();
+    
+    if( results2.length > 0 )
+    {
+        const user2 = results2[0];
+        const friends2 = user2.Friends;
+        friends2.push(id1);
+        await db.collection('Users').updateOne({ _id: id2 }, { $set: { Friends: friends2 } });
+    }
+    else 
+    {
+        error = "User not found";
+    }
+
+
+
+    var ret = { error: error }; 
+    res.status(200).json(ret);
+
+});
+
+
+
+
+
 
 //kept as example, do not use
 app.post('/api/searchcards', async (req, res, next) =>
