@@ -107,16 +107,29 @@ app.post('/api/addtest', async (req, res, next) =>
 {
     // incoming: name, length, array of questions
     // outgoing: error
-    const { name, length, questions} = req.body;
-    var error = '';
     try{
+
+        const { name, length} = req.body;
+        const newTest = {Name:name,Length:length};
+        var error = '';
+        try
+        {
+        const db = client.db('SmartTooth');
+        const result = db.collection('Tests').insertOne(newTest);
+        }
+        catch(e)
+        {
+        error = e.toString();
+        }
+
         for (const questionData of questions)
         {
             const { Question, Answer, Subject } = questionData;
             const newQuestion = {
                 Question,
                 Answer,
-                Subject
+                Subject,
+                Test_ID
             };
 
             const result = await db.collection('Question').insertOne(newQuestion);
