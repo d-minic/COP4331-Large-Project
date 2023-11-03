@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 function CardUI()
 {
     var card = '';
+    var question = '';
+    var answer = '';
+    var subject = '';
     var search = '';
     const [message,setMessage] = useState('');
     const [searchResults,setResults] = useState('');
@@ -23,14 +26,19 @@ function CardUI()
             return 'http://localhost:5000/' + route;
         }
     }
-    const addCard = async event =>
+    const addQuestion = async event =>
     {
         event.preventDefault();
-        var obj = {userId:userId,card:card.value};
+        var obj = {
+            userId:userId,
+            question:question.value,
+            answer:answer.value,
+            subject:subject.value
+        };
         var js = JSON.stringify(obj);
         try
         {
-        const response = await fetch(buildPath('api/addcard'),
+        const response = await fetch(buildPath('api/addquestion'),
         {method:'POST',body:js,headers:{'Content-Type':
         'application/json'}});
         var txt = await response.text();
@@ -41,7 +49,7 @@ function CardUI()
         }
         else
         {
-        setMessage('Card has been added');
+        setMessage('Question has been added');
         }
         }
         catch(e)
@@ -89,10 +97,14 @@ function CardUI()
         onClick={searchCard}> Search Card</button><br />
         <span id="cardSearchResult">{searchResults}</span>
         <p id="cardList">{cardList}</p><br /><br />
-        <input type="text" id="cardText" placeholder="Card To Add"
-        ref={(c) => card = c} />
-        <button type="button" id="addCardButton" class="buttons"
-        onClick={addCard}> Add Card </button><br />
+        <input type="text" id="question" placeholder="Question To Add"
+        ref={(c) => question = c} />
+        <input type="text" id="answer" placeholder="Answer"
+        ref={(c) => answer = c} />
+        <input type="text" id="subject" placeholder="Subject"
+        ref={(c) => subject = c} />
+        <button type="button" id="addQuestionButton" class="buttons"
+        onClick={addQuestion}> Add Question </button><br />
         <span id="cardAddResult">{message}</span>
         </div>
     );
