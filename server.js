@@ -109,7 +109,7 @@ app.post('/api/addtest', async (req, res, next) =>
     // outgoing: error
     try{
 
-        const { name, length} = req.body;
+        const { name, length, questions} = req.body;
         const newTest = {Name:name,Length:length};
         var error = '';
         try
