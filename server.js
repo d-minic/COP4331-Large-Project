@@ -128,8 +128,7 @@ app.post('/api/addtest', async (req, res, next) =>
             const newQuestion = {
                 Question,
                 Answer,
-                Subject,
-                Test_ID
+                Subject
             };
 
             const result = await db.collection('Question').insertOne(newQuestion);
