@@ -46,7 +46,8 @@ app.post('/api/register', async (req, res, next) =>
     // incoming: login, password, firstName, lastName
     // outgoing: error
     const { login, password, firstName, lastName, email } = req.body;
-    const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName, Email:email, Points:0};
+    const friends = [];
+    const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName, Email:email, Points:0,Friends:friends};
     var error = '';
     try
     {
@@ -75,11 +76,12 @@ app.post('/api/login', async (req, res, next) =>
     var ln = '';
     if( results.length > 0 )
     {
-        id = results[0].UserId;
+        id = results[0]._id;
         fn = results[0].FirstName;
         ln = results[0].LastName;
+        email = results[0].Email;
     }
-    var ret = { id:id, firstName:fn, lastName:ln, error:''};
+    var ret = { id:id, firstName:fn, lastName:ln, email:email, error:''};
     res.status(200).json(ret);
 });
 
