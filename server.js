@@ -131,6 +131,7 @@ app.post('/api/addtest', async (req, res, next) =>
                 Subject
             };
 
+            const db = client.db('SmartTooth');
             const result = await db.collection('Question').insertOne(newQuestion);
             //if (result.insertedCount !== 1) 
             //{
