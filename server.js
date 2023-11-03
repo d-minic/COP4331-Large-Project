@@ -145,7 +145,7 @@ app.post('/api/addtest', async (req, res, next) =>
     res.status(200).json(ret);
 });
 
-/*
+
 app.post('/api/addfriend', async (req, res, next) =>
 {
     // incoming: id1, id2
@@ -167,11 +167,11 @@ app.post('/api/addfriend', async (req, res, next) =>
         const user1 = results1[0];
         const friends1 = user1.Friends;
         friends1.push(id2);
-        await db.collection('Users').updateOne({ _id: id1 }, { $set: { Friends: friends1 } });
+        await db.collection('Users').updateOne({ _id: objectId1 }, { $set: { Friends: friends1 } });
     }
     else 
     {
-        error = "User ", id1, " not found";
+        error = "User " + id1 + " not found";
     }
 
     const results2 = await db.collection('Users').find({_id:objectId2}).toArray();
@@ -181,11 +181,11 @@ app.post('/api/addfriend', async (req, res, next) =>
         const user2 = results2[0];
         const friends2 = user2.Friends;
         friends2.push(id1);
-        await db.collection('Users').updateOne({ _id: id2 }, { $set: { Friends: friends2 } });
+        await db.collection('Users').updateOne({ _id: objectId2 }, { $set: { Friends: friends2 } });
     }
     else 
     {
-        error = "User ", id2, " not found";
+        error = "User " + id2 + " not found";
     }
 
 
@@ -195,7 +195,7 @@ app.post('/api/addfriend', async (req, res, next) =>
 
 });
 
-*/
+
 
 
 
