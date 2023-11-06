@@ -204,6 +204,41 @@ app.post('/api/addfriend', async (req, res, next) => {
 
 
 
+app.post('/api/getfriends', async (req, res, next) =>
+{
+   // incoming: login, search
+   // outgoing: results[], error
+   var error = '';
+   const {login} = req.body;
+   var results = [];
+   try
+   {
+       const db = client.db('SmartTooth');
+       const user = await db.collection('Users').findOne({Login:login});
+       if(user && user.Friends)
+       {
+           for(const friendLogin of user.Friends)
+           {
+               const friend = await db.collection('Users').findOne({ "Login": friendLogin});
+               if(friend)
+               {
+                   results.push(friend);
+               }
+           }
+       }
+      
+       results.sort((a,b) => b.Points - a.Points);
+       results = results.slice(0, 10);
+   }
+   catch(e)
+   {
+       error = e.toString();
+   }
+   var ret = {results:results, error:error};
+   res.status(200).json(ret);
+});
+
+
 
 app.post('/api/getleaders', async (req, res, next) =>
 {
