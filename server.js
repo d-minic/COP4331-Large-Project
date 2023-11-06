@@ -269,7 +269,7 @@ app.post('/api/searchtests', async (req, res, next) =>
     // incoming: login, search
     // outgoing: results[], error
     var error = '';
-    const {login} = req.body;
+    const {search} = req.body;
     var results = [];
     try
     {
