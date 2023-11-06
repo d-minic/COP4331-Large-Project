@@ -306,6 +306,34 @@ app.post('/api/searchcards', async (req, res, next) =>
     res.status(200).json(ret);
 });
 
+app.post('/api/verify-email', async (req, res) => {
+    const { email, verificationCode } = req.body;
+  
+    try {
+      const db = client.db('SmartTooth');
+      const user = await db.collection('Users').findOne({ Email: email });
+  
+      if (user) {
+        if (user.VerificationCode === verificationCode) {
+          // Mark the user's email as verified in the database.
+          await db.collection('Users').updateOne({ Email: email }, { $set: { IsVerified: true } });
+  
+          // potentially remove code to avoid duplicate
+          await db.collection('Users').updateOne({ Email: email }, { $set: { VerificationCode: null } });
+  
+          res.status(200).json({ message: 'Email verified successfully.' });
+        } else {
+          res.status(400).json({ error: 'Invalid email verification code.' });
+        }
+      } else {
+        res.status(404).json({ error: 'User not found.' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
 
 ///////////////////////////////////////////////////
 // For Heroku deployment
