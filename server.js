@@ -167,7 +167,6 @@ app.post('/api/addpoints', async (req, res, next) =>
 
 
 
-
 app.post('/api/addfriend', async (req, res, next) => {
   // incoming: login1, login2
   // outgoing: error
@@ -261,6 +260,31 @@ app.post('/api/getleaders', async (req, res, next) =>
     var ret = {results:results, error:error};
     res.status(200).json(ret);
 });
+
+
+
+
+app.post('/api/searchtests', async (req, res, next) =>
+{
+    // incoming: login, search
+    // outgoing: results[], error
+    var error = '';
+    const {login} = req.body;
+    var results = [];
+    try
+    {
+        const db = client.db('SmartTooth');
+        results = await db.collection('Tests').find({"Subject":{$regex: search, $options:'i'}}).toArray();
+    }
+    catch(e)
+    {
+        error = e.toString();
+    }
+    var ret = {results:results, error:error};
+    res.status(200).json(ret);
+});
+
+
 
 
 //kept as example, do not use
