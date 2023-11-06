@@ -145,47 +145,64 @@ app.post('/api/addtest', async (req, res, next) =>
     res.status(200).json(ret);
 });
 
+
+app.post('/api/addpoints', async (req, res, next) =>
+{
+    // incoming: login, points
+    // outgoing: error
+    const { login, points} = req.body;
+    var error = '';
+    try
+    {
+        const db = client.db('SmartTooth');
+        await db.collection('Users').updateOne({ Login: login }, { $inc: { Points: points } });
+    }
+    catch(e)
+    {
+        error = e.toString();
+    }
+    var ret = { error: error };
+    res.status(200).json(ret);
+});
+
+
+
 /*
 app.post('/api/addfriend', async (req, res, next) =>
 {
-    // incoming: id1, id2
+    // incoming: login1, login2
     // outgoing: error
 
     var error = '';
 
-    const {ObjectId} = require('mongodb');
-
-    const {id1, id2} = req.body;
-    const objectId1 = ObjectId(id1);
-    const objectId2 = ObjectId(id2);
     const db = client.db('SmartTooth');
 
-    const results1 = await db.collection('Users').find({_id:objectId1}).toArray();
+    const results1 = await db.collection('Users').findOne({Login:login1}).toArray();
     
     if( results1.length > 0 )
     {
         const user1 = results1[0];
         const friends1 = user1.Friends;
-        friends1.push(id2);
-        await db.collection('Users').updateOne({ _id: objectId1 }, { $set: { Friends: friends1 } });
+        friends1.push(login2);
+        await db.collection('Users').updateOne({ Login: login1 }, { $set: { Friends: friends1 } });
     }
     else 
     {
-        error = "User " + id1 + " not found";
+        error = "User " + login1 + " not found";
     }
 
-    const results2 = await db.collection('Users').find({_id:objectId2}).toArray();
+    const results2 = await db.collection('Users').find({Login:login2}).toArray();
     
     if( results2.length > 0 )
     {
         const user2 = results2[0];
         const friends2 = user2.Friends;
         friends2.push(id1);
-        await db.collection('Users').updateOne({ _id: objectId2 }, { $set: { Friends: friends2 } });
+        await db.collection('Users').updateOne({ Login: login2 }, { $set: { Friends: friends2 } });
     }
     else 
     {
-        error = "User " + id2 + " not found";
+        error = "User " + login2 + " not found";
     }
 
 
@@ -198,6 +215,26 @@ app.post('/api/addfriend', async (req, res, next) =>
 */
 
 
+app.post('/api/getleaders', async (req, res, next) =>
+{
+    // incoming: login, search
+    // outgoing: results[], error
+    var error = '';
+    const {login} = req.body;
+    var results = [];
+    try
+    {
+        const db = client.db('SmartTooth');
+        results = await db.collection('Users').find({"Points":{$gt: -1}}).toArray();
+        results.sort((a,b) => a.Points - b.Points);
+    }
+    catch(e)
+    {
+        error = e.toString();
+    }
+    var ret = {results:results, error:error};
+    res.status(200).json(ret);
+});
 
 
 //kept as example, do not use
@@ -218,6 +255,7 @@ app.post('/api/searchcards', async (req, res, next) =>
     var ret = {results:_ret, error:error};
     res.status(200).json(ret);
 });
+
 
 ///////////////////////////////////////////////////
 // For Heroku deployment
