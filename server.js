@@ -226,7 +226,8 @@ app.post('/api/getleaders', async (req, res, next) =>
     {
         const db = client.db('SmartTooth');
         results = await db.collection('Users').find({"Points":{$gt: -1}}).toArray();
-        results.sort((a,b) => a.Points - b.Points);
+        results.sort((a,b) => b.Points - a.Points);
+        results = results.slice(0, 10);
     }
     catch(e)
     {
