@@ -47,7 +47,8 @@ app.post('/api/register', async (req, res, next) =>
     // outgoing: error
     const { login, password, firstName, lastName, email } = req.body;
     const friends = [];
-    const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName, Email:email, Points:0,Friends:friends};
+    const verificationCode = 0;
+    const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName, Email:email, Points:0,Friends:friends,VerificationCode:verificationCode};
     var error = '';
     try
     {
@@ -137,7 +138,7 @@ app.post('/api/addtest', async (req, res, next) =>
 
         }
 
-        const newTest = {Name:name,Length:length,Questions:questionIds};
+        const newTest = {Name:name,Length:length,Questions:questionIds,CurrentQuestion:-1};
         
         const db = client.db('SmartTooth');
         const result = db.collection('Tests').insertOne(newTest);
@@ -286,7 +287,7 @@ app.post('/api/searchtests', async (req, res, next) =>
     try
     {
         const db = client.db('SmartTooth');
-        results = await db.collection('Tests').find({"Subject":{$regex:search+'.*', $options:'i'}}).toArray();
+        results = await db.collection('Tests').find({"Name":{$regex:search+'.*', $options:'i'}}).toArray();
     }
     catch(e)
     {
