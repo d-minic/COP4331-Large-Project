@@ -68,18 +68,24 @@ app.post('/api/login', async (req, res, next) =>
     // outgoing: id, firstName, lastName, error
     var error = '';
     const { login, password } = req.body;
-    const db = client.db('SmartTooth');
-    const results = await
-    db.collection('Users').find({Login:login,Password:password}).toArray();
-    var id = -1;
-    var fn = '';
-    var ln = '';
-    if( results.length > 0 )
+    try
     {
-        id = results[0]._id;
-        fn = results[0].FirstName;
-        ln = results[0].LastName;
-        email = results[0].Email;
+        const db = client.db('SmartTooth');
+        const results = await
+        db.collection('Users').find({Login:login,Password:password}).toArray();
+        var id = -1;
+        var fn = '';
+        var ln = '';
+        if( results.length > 0 )
+        {
+            id = results[0]._id;
+            fn = results[0].FirstName;
+            ln = results[0].LastName;
+            email = results[0].Email;
+        }
+    }catch(e)
+    {
+        error = e.toString();
     }
     var ret = { id:id, firstName:fn, lastName:ln, email:email, error:''};
     res.status(200).json(ret);
@@ -94,12 +100,12 @@ app.post('/api/addquestion', async (req, res, next) =>
     var error = '';
     try
     {
-    const db = client.db('SmartTooth');
-    const result = db.collection('Question').insertOne(newQuestion);
+        const db = client.db('SmartTooth');
+        const result = db.collection('Question').insertOne(newQuestion);
     }
     catch(e)
     {
-    error = e.toString();
+        error = e.toString();
     }
     var ret = { error: error };
     res.status(200).json(ret);
@@ -176,26 +182,32 @@ app.post('/api/addfriend', async (req, res, next) => {
   const db = client.db('SmartTooth');
   const { login1, login2 } = req.body;
 
-  const user1 = await db.collection('Users').findOne({ Login: login1 });
+    try
+    {
+    const user1 = await db.collection('Users').findOne({ Login: login1 });
 
-  if (user1) {
-    const friends1 = user1.Friends || [];
-    friends1.push(login2);
-    await db.collection('Users').updateOne({ Login: login1 }, { $set: { Friends: friends1 } });
-  } else {
-    error = "User " + login1 + " not found";
-  }
+    if (user1) {
+        const friends1 = user1.Friends || [];
+        friends1.push(login2);
+        await db.collection('Users').updateOne({ Login: login1 }, { $set: { Friends: friends1 } });
+    } else {
+        error = "User " + login1 + " not found";
+    }
 
-  const user2 = await db.collection('Users').findOne({ Login: login2 });
+    const user2 = await db.collection('Users').findOne({ Login: login2 });
 
-  if (user2) {
-    const friends2 = user2.Friends || [];
-    friends2.push(login1);
-    await db.collection('Users').updateOne({ Login: login2 }, { $set: { Friends: friends2 } });
-  } else {
-    error = "User " + login2 + " not found";
-  }
-
+    if (user2) {
+        const friends2 = user2.Friends || [];
+        friends2.push(login1);
+        await db.collection('Users').updateOne({ Login: login2 }, { $set: { Friends: friends2 } });
+    } else {
+        error = "User " + login2 + " not found";
+    }
+    }catch(e)
+    {
+        error = e.toString();
+    }
+    
   var ret = { error: error };
   res.status(200).json(ret);
 });
@@ -274,7 +286,7 @@ app.post('/api/searchtests', async (req, res, next) =>
     try
     {
         const db = client.db('SmartTooth');
-        results = await db.collection('Tests').find({"Subject":{$regex: search, $options:'i'}}).toArray();
+        results = await db.collection('Tests').find({"Subject":{$regex:search+'.*', $options:'i'}}).toArray();
     }
     catch(e)
     {
