@@ -14,18 +14,6 @@ const url = process.env.MONGODB_URI;
 const client = new MongoClient(url);
 client.connect();
 
-var cardList =
-[
-'Roy Campanella',
-'Paul Molitor',
-'Tony Gwynn',
-'Dennis Eckersley',
-'Reggie Jackson',
-'Gaylord Perry',
-'Buck Leonard',
-'Rollie Fingers',
-'Charlie Gehringer'
-];
 
 app.use((req, res, next) =>
 {
@@ -43,12 +31,12 @@ app.use((req, res, next) =>
 
 app.post('/api/register', async (req, res, next) =>
 {
-    // incoming: login, password, firstName, lastName
+    // incoming: login, password, firstName, lastName, email
     // outgoing: error
     const { login, password, firstName, lastName, email } = req.body;
     const friends = [];
     const verificationCode = 0;
-    const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName, Email:email, Points:0,Friends:friends,VerificationCode:verificationCode};
+    const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName, Email:email, Points:0,Friends:friends,VerificationCode:verificationCode, IsVerified: false};
     var error = '';
     try
     {
@@ -215,7 +203,6 @@ app.post('/api/addfriend', async (req, res, next) => {
 
 
 
-
 app.post('/api/getfriends', async (req, res, next) =>
 {
    // incoming: login, search
@@ -254,7 +241,7 @@ app.post('/api/getfriends', async (req, res, next) =>
 
 app.post('/api/getleaders', async (req, res, next) =>
 {
-    // incoming: login, search
+    // incoming: login
     // outgoing: results[], error
     var error = '';
     const {login} = req.body;
@@ -279,7 +266,7 @@ app.post('/api/getleaders', async (req, res, next) =>
 
 app.post('/api/searchtests', async (req, res, next) =>
 {
-    // incoming: login, search
+    // incoming: search
     // outgoing: results[], error
     var error = '';
     const {search} = req.body;
@@ -299,25 +286,55 @@ app.post('/api/searchtests', async (req, res, next) =>
 
 
 
-
-//kept as example, do not use
-app.post('/api/searchcards', async (req, res, next) =>
+//work in progress:
+app.post('/api/searchquestions', async (req, res, next) =>
 {
-    // incoming: userId, search
+    // incoming: search
     // outgoing: results[], error
     var error = '';
-    const { userId, search } = req.body;
-    var _search = search.trim();
-    const db = client.db('COP4331Cards');
-    const results = await db.collection('Cards').find({"Card":{$regex:_search+'.*', $options:'i'}}).toArray();
-    var _ret = [];
-    for( var i=0; i<results.length; i++ )
+    const {search} = req.body;
+    var results = [];
+    try
     {
-    _ret.push( results[i].Card );
+        const db = client.db('SmartTooth');
+        results = await db.collection('Question').find({"Subject":{$regex:search+'.*', $options:'i'}}).toArray();
     }
-    var ret = {results:_ret, error:error};
+    catch(e)
+    {
+        error = e.toString();
+    }
+    var ret = {results:results, error:error};
     res.status(200).json(ret);
 });
+
+app.post('/api/getquestions', async (req, res, next) =>
+{
+    // incoming: questions
+    // outgoing: results
+    var error = '';
+    const { questions } = req.body;
+    var results = [];
+    try
+    {
+        const db = client.db('SmartTooth');
+        for(const questionid in questions)
+        {
+            const question = await db.collection('Questions').find({questionid});
+            if(question)
+            {
+                results.push(question);
+            }   
+        }
+
+    }catch(e)
+    {
+        error = e.toString();
+    }
+    var ret = { results:results, error:''};
+    res.status(200).json(ret);
+});
+
+
 
 app.post('/api/verify-email', async (req, res) => {
     const { email, verificationCode } = req.body;
@@ -345,7 +362,7 @@ app.post('/api/verify-email', async (req, res) => {
       console.error(error);
       res.status(500).json({ error: 'Internal server error' });
     }
-  });
+});
   
 
 ///////////////////////////////////////////////////
