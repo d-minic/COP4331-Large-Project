@@ -15,6 +15,40 @@ const client = new MongoClient(url);
 client.connect();
 
 
+const nodemailer = require('nodemailer');
+
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'smarttoothlearning@gmail.com',
+        pass: 'WeLoveCOP4331',
+    }
+});
+
+const sendVerificationEmail = (email, verificationCode) => 
+{
+    const mailOptions = 
+    {
+        from: 'smarttoothlearning@gmail.com',
+        to: email,
+        subject: 'Smart Tooth Verification Code',
+        text: 'Your verification code is' + verificationCode + '.',
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => 
+    {
+        if(error) 
+        {
+            console.error(error);
+        }
+        else
+        {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+};
+
 app.use((req, res, next) =>
 {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -35,13 +69,14 @@ app.post('/api/register', async (req, res, next) =>
     // outgoing: error
     const { login, password, firstName, lastName, email } = req.body;
     const friends = [];
-    const verificationCode = 0;
+    const verificationCode = 123456;
     const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName, Email:email, Points:0,Friends:friends,VerificationCode:verificationCode, IsVerified: false};
     var error = '';
     try
     {
     const db = client.db('SmartTooth');
-    const result = db.collection('Users').insertOne(newUser);
+    const result = await db.collection('Users').insertOne(newUser);
+    sendVerificationEmail(email, verificationCode);
     }
     catch(e)
     {
@@ -84,8 +119,8 @@ app.post('/api/addquestion', async (req, res, next) =>
 {
     // incoming: question, answer, subject
     // outgoing: error
-    const { question, answer, subject} = req.body;
-    const newQuestion = {Question:question,Answer:answer,Subject:subject};
+    const { question, answers, numberAnswers, subject} = req.body;
+    const newQuestion = {Question:question,Answers:answers,NumberAnswers:numberAnswers,Subject:subject,Solved:false};
     var error = '';
     try
     {
@@ -317,12 +352,12 @@ app.post('/api/getquestions', async (req, res, next) =>
     try
     {
         const db = client.db('SmartTooth');
-        for(const questionid in questions)
+        for(const questionId of questions)
         {
-            const question = await db.collection('Questions').find({questionid});
-            if(question)
+            const question = await db.collection('Questions').find({"_id":questionId}).toArray();
+            if(question.length > 0)
             {
-                results.push(question);
+                results.push(question[0]);
             }   
         }
 
@@ -331,6 +366,48 @@ app.post('/api/getquestions', async (req, res, next) =>
         error = e.toString();
     }
     var ret = { results:results, error:''};
+    res.status(200).json(ret);
+});
+
+
+app.post('/api/testgetquestionsapi', async (req, res, next) =>
+{
+    // incoming: search
+    // outgoing: results[], error
+    var error = '';
+    let results = [];
+    const {search} = req.body;
+    try
+    {
+        const db = client.db('SmartTooth');
+        const test = await db.collection('Tests').findOne({"Name":{$regex:search+'.*', $options:'i'}});
+        if(test)
+        {
+            const questionIds = test.Questions || [];
+        
+
+        const getQuestionsResponse = await fetch('/api/getquestions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ questions: questionIds }),
+        });
+
+        const questionsData = await getQuestionsResponse.json();
+        results = questionsData.results;
+        error = questionsData.error;
+
+        } else {
+            error = 'Test not found';
+        }
+
+    }
+    catch(e)
+    {
+        error = e.toString();
+    }
+    var ret = {results:results, error:error};
     res.status(200).json(ret);
 });
 
