@@ -16,6 +16,7 @@ client.connect();
 
 
 const nodemailer = require('nodemailer');
+const util = require('util');
 
 
 const transporter = nodemailer.createTransport({
@@ -26,28 +27,9 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendVerificationEmail = (email, verificationCode) => 
-{
-    const mailOptions = 
-    {
-        from: 'smarttoothlearning@gmail.com',
-        to: email,
-        subject: 'Smart Tooth Verification Code',
-        text: 'Your verification code is' + verificationCode + '.',
-    };
 
-    transporter.sendMail(mailOptions, (error, info) => 
-    {
-        if(error) 
-        {
-            console.error(error);
-        }
-        else
-        {
-            console.log('Email sent: ' + info.response);
-        }
-    });
-};
+const sendMailAsync = util.promisify(transporter.sendMail).bind(transporter);
+
 
 app.use((req, res, next) =>
 {
@@ -63,6 +45,39 @@ app.use((req, res, next) =>
     next();
 });
 
+app.post('/api/sendemail', async (req, res, next) =>
+{
+    // incoming: email, verificationCode
+    // outgoing: error
+    const { email, verificationCode } = req.body;
+    var results = '';
+    var error = '';
+    try
+    {
+        const db = client.db('SmartTooth');
+        const mailOptions = 
+        {
+            from: 'smarttoothlearning@gmail.com',
+            to: email,
+            subject: 'Smart Tooth Verification Code',
+            text: 'Your verification code is ' + verificationCode + '.'
+        };
+
+        const info = await sendMailAsync(mailOptions);
+        
+        results = 'Email sent: ' + info.response;
+        
+        
+    }
+    catch(e)
+    {
+        error = e.toString();
+    }
+    var ret = { error: error, results: results };
+    res.status(200).json(ret);
+});
+
+
 app.post('/api/register', async (req, res, next) =>
 {
     // incoming: login, password, firstName, lastName, email
@@ -76,7 +91,6 @@ app.post('/api/register', async (req, res, next) =>
     {
     const db = client.db('SmartTooth');
     const result = await db.collection('Users').insertOne(newUser);
-    sendVerificationEmail(email, verificationCode);
     }
     catch(e)
     {
@@ -297,6 +311,24 @@ app.post('/api/getleaders', async (req, res, next) =>
 });
 
 
+app.post('/api/updatepage', async (req, res, next) =>
+{
+    // incoming: login, points
+    // outgoing: error
+    const { name, page} = req.body;
+    var error = '';
+    try
+    {
+        const db = client.db('SmartTooth');
+        await db.collection('Tests').updateOne({ Name: name }, { $set: { CurrentQuestion: page } });
+    }
+    catch(e)
+    {
+        error = e.toString();
+    }
+    var ret = { error: error };
+    res.status(200).json(ret);
+});
 
 
 app.post('/api/searchtests', async (req, res, next) =>
@@ -383,7 +415,15 @@ app.post('/api/testgetquestionsapi', async (req, res, next) =>
         const test = await db.collection('Tests').findOne({"Name":{$regex:search+'.*', $options:'i'}});
         if(test)
         {
-            const questionIds = test.Questions || [];
+            if(test.Questions)
+            {
+                const questionIds = test.Questions;
+            }
+            else
+            {
+                error = 'Questions for test not found';
+            }
+            
         
 
         const getQuestionsResponse = await fetch('https://smart-tooth-577ede9ea626.herokuapp.com/api/getquestions', {
