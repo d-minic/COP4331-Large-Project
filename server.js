@@ -386,7 +386,7 @@ app.post('/api/testgetquestionsapi', async (req, res, next) =>
             const questionIds = test.Questions || [];
         
 
-        const getQuestionsResponse = await fetch('/api/getquestions', {
+        const getQuestionsResponse = await fetch('https://smart-tooth-577ede9ea626.herokuapp.com/api/getquestions', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
