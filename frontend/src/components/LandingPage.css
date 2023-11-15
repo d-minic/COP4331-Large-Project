@@ -1,0 +1,19 @@
+.landing-button {
+    background-color: #C3E6F2;
+    color: #000;
+    border: none;
+    border-radius: 20px; /* Rounded edges */
+    font-family: 'Jockey One', sans-serif;
+  }
+
+  .landing-button:hover,
+  .landing-button:focus,
+  .landing-button:active {
+    background-color: #b0d4e3; 
+    color: #000;
+  }
+  
+  .landing-button {
+    min-width: 120px;
+  }
+  
