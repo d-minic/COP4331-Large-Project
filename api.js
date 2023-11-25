@@ -1,7 +1,9 @@
 var express = require('express');
 require('mongodb');
-const sgMail = require('@sendgrid/mail')
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+const { ObjectId } = require('mongodb');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 
 exports.setApp = function ( app, client )
 {
@@ -139,12 +141,12 @@ exports.setApp = function ( app, client )
 
     app.post('/api/addtest', async (req, res, next) =>
     {
-        // incoming: name, length, array of questions
+        // incoming: name, length, public, array of questions
         // outgoing: error
         var error = '';
         try{
 
-            const { name, length, questions} = req.body;
+            const { name, length, questions, public} = req.body;
             const questionIds = [];
 
             for (const questionData of questions)
@@ -163,7 +165,7 @@ exports.setApp = function ( app, client )
 
             }
 
-            const newTest = {Name:name,Length:length,Questions:questionIds,CurrentQuestion:-1};
+            const newTest = {Name:name,Length:length,Questions:questionIds,CurrentQuestion:-1, Public:public};
             
             const db = client.db('SmartTooth');
             const result = db.collection('Tests').insertOne(newTest);
@@ -180,14 +182,15 @@ exports.setApp = function ( app, client )
 
     app.post('/api/addpoints', async (req, res, next) =>
     {
-        // incoming: login, points
+        // incoming: id, points
         // outgoing: error
-        const { login, points} = req.body;
+        const { id, points} = req.body;
         var error = '';
         try
         {
             const db = client.db('SmartTooth');
-            await db.collection('Users').updateOne({ Login: login }, { $inc: { Points: points } });
+            await db.collection('Users').updateOne({ _id: new ObjectId(id) }, { $inc: { Points: points } });
+        
         }
         catch(e)
         {
@@ -200,34 +203,34 @@ exports.setApp = function ( app, client )
 
 
     app.post('/api/addfriend', async (req, res, next) => {
-    // incoming: login1, login2
+    // incoming: id1, id2
     // outgoing: error
 
     var error = '';
 
     const db = client.db('SmartTooth');
-    const { login1, login2 } = req.body;
+    const { id1, id2 } = req.body;
 
         try
         {
-        const user1 = await db.collection('Users').findOne({ Login: login1 });
+        const user1 = await db.collection('Users').findOne({ _id: new ObjectId(id1) });
 
         if (user1) {
             const friends1 = user1.Friends || [];
-            friends1.push(login2);
-            await db.collection('Users').updateOne({ Login: login1 }, { $set: { Friends: friends1 } });
+            friends1.push(new ObjectId(id2));
+            await db.collection('Users').updateOne({ _id: new ObjectId(id1) }, { $set: { Friends: friends1 } });
         } else {
-            error = "User " + login1 + " not found";
+            error = "User " + id1 + " not found";
         }
 
-        const user2 = await db.collection('Users').findOne({ Login: login2 });
+        const user2 = await db.collection('Users').findOne({_id: new ObjectId(id2) });
 
         if (user2) {
             const friends2 = user2.Friends || [];
-            friends2.push(login1);
-            await db.collection('Users').updateOne({ Login: login2 }, { $set: { Friends: friends2 } });
+            friends2.push(new ObjectId(id1));
+            await db.collection('Users').updateOne({ _id:  new ObjectId(id2) }, { $set: { Friends: friends2 } });
         } else {
-            error = "User " + login2 + " not found";
+            error = "User " + id2 + " not found";
         }
         }catch(e)
         {
@@ -239,23 +242,64 @@ exports.setApp = function ( app, client )
     });
 
 
+    app.post('/api/useraddtest', async (req, res, next) => 
+    {
+        // incoming: userId, testId
+        // outgoing: error
+    
+        var error = '';
+    
+        const db = client.db('SmartTooth');
+        const { userId, testId } = req.body;
+        const id = userId;
+        try
+        {
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
+    
+            if (user) {
+                const activeTests = user.ActiveTests || [];
+                const test = await db.collection('Tests').findOne({ _id: new ObjectId(testId) });
+                if(test)
+                {
+                    activeTests.push(test);
+                    await db.collection('Users').updateOne({ _id: new ObjectId(id) }, { $set: { ActiveTests: activeTests } });
+                }
+                else
+                {
+                    error = "Test not found";
+                }
+                
+            } else {
+                error = "User " + id + " not found";
+            }
+
+            }catch(e)
+            {
+                error = e.toString();
+        }
+            
+        var ret = { error: error };
+        res.status(200).json(ret);
+    });
+    
+
 
     app.post('/api/getfriends', async (req, res, next) =>
     {
-    // incoming: login
+    // incoming: id
     // outgoing: results[], error
     var error = '';
-    const {login} = req.body;
+    const {id} = req.body;
     var results = [];
     try
     {
         const db = client.db('SmartTooth');
-        const user = await db.collection('Users').findOne({Login:login});
+        const user = await db.collection('Users').findOne({ _id: new ObjectId(id)});
         if(user && user.Friends)
         {
-            for(const friendLogin of user.Friends)
+            for(const friendId of user.Friends)
             {
-                const friend = await db.collection('Users').findOne({ "Login": friendLogin});
+                const friend = await db.collection('Users').findOne({ _id: new ObjectId(friendId)});
                 if(friend)
                 {
                     results.push(friend);
@@ -278,7 +322,7 @@ exports.setApp = function ( app, client )
 
     app.post('/api/getleaders', async (req, res, next) =>
     {
-        // incoming: login
+        // incoming: 
         // outgoing: results[], error
         var error = '';
         const {} = req.body;
@@ -301,14 +345,14 @@ exports.setApp = function ( app, client )
 
     app.post('/api/updatepage', async (req, res, next) =>
     {
-        // incoming: name, page
+        // incoming: id, page
         // outgoing: error
-        const { name, page} = req.body;
+        const { id, page} = req.body;
         var error = '';
         try
         {
             const db = client.db('SmartTooth');
-            await db.collection('Tests').updateOne({ Name: name }, { $set: { CurrentQuestion: page } });
+            await db.collection('Tests').updateOne({ _id: new ObjectId(id) }, { $set: { CurrentQuestion: page } });
         }
         catch(e)
         {
@@ -327,10 +371,11 @@ exports.setApp = function ( app, client )
         try {
             const db = client.db('SmartTooth');
             const user = await db.collection('Users').findOne({ Login: login });
+            const id = user._id;
 
             if (user.VerificationCode == verificationCode) 
             {
-                await db.collection('Users').updateOne({ Login: login }, { $set: { Password: newPassword } });
+                await db.collection('Users').updateOne({ _id: id }, { $set: { Password: newPassword } });
 
                 let code;
                 do {
@@ -339,7 +384,7 @@ exports.setApp = function ( app, client )
         
     
                 // update to new code for later use
-                await db.collection('Users').updateOne({ Login: login }, { $set: { VerificationCode: code } });
+                await db.collection('Users').updateOne({ _id: id  }, { $set: { VerificationCode: code } });
         
             }
             else{
@@ -355,13 +400,13 @@ exports.setApp = function ( app, client )
 
 
     app.post('/api/getuserinfo', async (req, res, next) => {
-        // incoming: login
+        // incoming: id
         // outgoing: results, error
         var error = '';
-        const { login } = req.body;
+        const { id } = req.body;
         try {
             const db = client.db('SmartTooth');
-            const results = await db.collection('Users').findOne({ Login: login });
+            const results = await db.collection('Users').findOne({ _id: new ObjectId(id) });
             if (!results) {
                 error = 'User not found';
             }
@@ -376,13 +421,13 @@ exports.setApp = function ( app, client )
 
 
     app.post('/api/edituser', async (req, res, next) => {
-        // incoming: login, firstName, lastName, email
+        // incoming: id, firstName, lastName, email
         // outgoing: error
-        const { login, firstName, lastName, email } = req.body;
+        const { id, firstName, lastName, email } = req.body;
         var error = '';
         try {
             const db = client.db('SmartTooth');
-            await db.collection('Users').updateOne({ Login: login }, { $set: { FirstName: firstName, LastName: lastName, Email: email } });
+            await db.collection('Users').updateOne({  _id: new ObjectId(id)  }, { $set: { FirstName: firstName, LastName: lastName, Email: email } });
         } catch (e) {
             error = e.toString();
         }
@@ -439,20 +484,18 @@ exports.setApp = function ( app, client )
         // incoming: questions
         // outgoing: results
         var error = '';
-        const { name } = req.body;
+        const { id } = req.body;
         var results = [];
         try
         {
             const db = client.db('SmartTooth');
-            const test = await db.collection('Tests').findOne({ Name: name });
+            const test = await db.collection('Tests').findOne({ _id: new ObjectId(id) });
 
             if(test)
             {
-                console.log(test.Questions);
                 const questions = test.Questions;
                 for(const questionId of questions)
                 {
-                    console.log(questionId);
                     const question = await db.collection('Question').findOne({_id:questionId});
                     if(question)
                     {
@@ -474,16 +517,16 @@ exports.setApp = function ( app, client )
 
 
     app.post('/api/verifyemail', async (req, res) => {
-        const { login, verificationCode } = req.body;
+        const { id, verificationCode } = req.body;
     
         try {
         const db = client.db('SmartTooth');
-        const user = await db.collection('Users').findOne({ Login: login });
+        const user = await db.collection('Users').findOne({  _id: new ObjectId(id)  });
     
         if (user) {
             if (user.VerificationCode == verificationCode) {
             // Mark the user's email as verified in the database.
-            await db.collection('Users').updateOne({ Login: login }, { $set: { IsVerified: true } });
+            await db.collection('Users').updateOne({  _id: new ObjectId(id) }, { $set: { IsVerified: true } });
     
             let code;
             do {
@@ -492,7 +535,7 @@ exports.setApp = function ( app, client )
     
 
             // update to new code for later use
-            await db.collection('Users').updateOne({ Login: login }, { $set: { VerificationCode: code } });
+            await db.collection('Users').updateOne({  _id: new ObjectId(id)  }, { $set: { VerificationCode: code } });
     
             res.status(200).json({ message: 'Email verified successfully.' });
             } else {
