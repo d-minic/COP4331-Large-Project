@@ -15,21 +15,21 @@ exports.setApp = function ( app, client )
         try
         {
 
-        const msg = {
-            to: email, 
-            from: 'smarttoothlearning@gmail.com', 
-            subject: 'Verification Email',
-            text: `Here is your verification code: ${verificationCode}`,
-            html: `<p>Here is your verification code: <strong>${verificationCode}</strong></p>`,
-        }
-            sgMail
-            .send(msg)
-            .then(() => {
-                console.log('Email sent')
-            })
-            .catch((error) => {
-                console.error(error)
-            })
+            const msg = {
+                to: email, 
+                from: 'smarttoothlearning@gmail.com', 
+                subject: 'Verification Email',
+                text: `Here is your verification code: ${verificationCode}`,
+                html: `<p>Here is your verification code: <strong>${verificationCode}</strong></p>`,
+            }
+                sgMail
+                .send(msg)
+                .then(() => {
+                    console.log('Email sent')
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
 
 
         }
@@ -48,10 +48,14 @@ exports.setApp = function ( app, client )
         // outgoing: error
         const { login, password, firstName, lastName, email } = req.body;
         const friends = [];
-        const verificationCode = 123456;
+        let code;
+        do {
+            code = Math.floor(100000 + Math.random() * 900000);
+        } while (code < 100000 || code >= 1000000 || code.toString().startsWith('0'));
+
+        var verificationCode = code;
         const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName, Email:email, Points:0,Friends:friends,VerificationCode:verificationCode, IsVerified: false};
         var error = '';
-        const result = '';
         try
         {
             const db = client.db('SmartTooth');
@@ -315,6 +319,78 @@ exports.setApp = function ( app, client )
     });
 
 
+    app.post('/api/resetpassword', async (req, res, next) => {
+        // incoming: login, newPassword, verificationCode 
+        // outgoing: error
+        const { login, newPassword, verificationCode } = req.body;
+        var error = '';
+        try {
+            const db = client.db('SmartTooth');
+            const user = await db.collection('Users').findOne({ Login: login });
+
+            if (user.VerificationCode == verificationCode) 
+            {
+                await db.collection('Users').updateOne({ Login: login }, { $set: { Password: newPassword } });
+
+                let code;
+                do {
+                    code = Math.floor(100000 + Math.random() * 900000);
+                } while (code < 100000 || code >= 1000000 || code.toString().startsWith('0'));
+        
+    
+                // update to new code for later use
+                await db.collection('Users').updateOne({ Login: login }, { $set: { VerificationCode: code } });
+        
+            }
+            else{
+                error = "Invalid verification code."
+            }
+
+        } catch (e) {
+            error = e.toString();
+        }
+        var ret = { error: error };
+        res.status(200).json(ret);
+    });
+
+
+    app.post('/api/getuserinfo', async (req, res, next) => {
+        // incoming: login
+        // outgoing: results, error
+        var error = '';
+        const { login } = req.body;
+        try {
+            const db = client.db('SmartTooth');
+            const results = await db.collection('Users').findOne({ Login: login });
+            if (!results) {
+                error = 'User not found';
+            }
+            var ret = { results: results, error: error };
+            res.status(200).json(ret);
+        } catch (e) {
+            error = e.toString();
+            var ret = { results: null, error: error };
+            res.status(200).json(ret);
+        }
+    });
+
+
+    app.post('/api/edituser', async (req, res, next) => {
+        // incoming: login, firstName, lastName, email
+        // outgoing: error
+        const { login, firstName, lastName, email } = req.body;
+        var error = '';
+        try {
+            const db = client.db('SmartTooth');
+            await db.collection('Users').updateOne({ Login: login }, { $set: { FirstName: firstName, LastName: lastName, Email: email } });
+        } catch (e) {
+            error = e.toString();
+        }
+        var ret = { error: error };
+        res.status(200).json(ret);
+    });
+
+
     app.post('/api/searchtests', async (req, res, next) =>
     {
         // incoming: search
@@ -396,57 +472,6 @@ exports.setApp = function ( app, client )
     });
 
 
-    app.post('/api/testgetquestionsapi', async (req, res, next) =>
-    {
-        // incoming: search
-        // outgoing: results[], error
-        var error = '';
-        let results = [];
-        const {search} = req.body;
-        let questionIds;
-        try
-        {
-            const db = client.db('SmartTooth');
-            const test = await db.collection('Tests').findOne({"Name":{$regex:search+'.*', $options:'i'}});
-            if(test)
-            {
-                if(test.Questions)
-                {
-                    questionIds = test.Questions;
-                }
-                else
-                {
-                    error = 'Questions for test not found';
-                }
-                
-            
-
-            const getQuestionsResponse = await fetch('https://smart-tooth-577ede9ea626.herokuapp.com/api/getquestions', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ questions: questionIds }),
-            });
-
-            const questionsData = await getQuestionsResponse.json();
-            results = questionsData.results;
-            error = questionsData.error;
-
-            } else {
-                error = 'Test not found';
-            }
-
-        }
-        catch(e)
-        {
-            error = e.toString();
-        }
-        var ret = {results:results, error:error};
-        res.status(200).json(ret);
-    });
-
-
 
     app.post('/api/verifyemail', async (req, res) => {
         const { login, verificationCode } = req.body;
@@ -456,12 +481,18 @@ exports.setApp = function ( app, client )
         const user = await db.collection('Users').findOne({ Login: login });
     
         if (user) {
-            if (user.VerificationCode === verificationCode) {
+            if (user.VerificationCode == verificationCode) {
             // Mark the user's email as verified in the database.
             await db.collection('Users').updateOne({ Login: login }, { $set: { IsVerified: true } });
     
-            // potentially remove code to avoid duplicate
-            await db.collection('Users').updateOne({ Login: login }, { $set: { VerificationCode: null } });
+            let code;
+            do {
+                code = Math.floor(100000 + Math.random() * 900000);
+            } while (code < 100000 || code >= 1000000 || code.toString().startsWith('0'));
+    
+
+            // update to new code for later use
+            await db.collection('Users').updateOne({ Login: login }, { $set: { VerificationCode: code } });
     
             res.status(200).json({ message: 'Email verified successfully.' });
             } else {
