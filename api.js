@@ -151,10 +151,12 @@ exports.setApp = function ( app, client )
 
             for (const questionData of questions)
             {
-                const { Question, Answer, Subject } = questionData;
+                const { Question, Answers, NumberAnswers, CorrectAnswer, Subject } = questionData;
                 const newQuestion = {
                     Question,
-                    Answer,
+                    Answers,
+                    NumberAnswers,
+                    CorrectAnswer,
                     Subject
                 };
 
@@ -165,7 +167,7 @@ exports.setApp = function ( app, client )
 
             }
 
-            const newTest = {Name:name,Length:length,Questions:questionIds,CurrentQuestion:-1, Public:public};
+            const newTest = {Name:name,Length:length,Questions:questionIds,Public:public};
             
             const db = client.db('SmartTooth');
             const result = db.collection('Tests').insertOne(newTest);
@@ -244,13 +246,13 @@ exports.setApp = function ( app, client )
 
     app.post('/api/useraddtest', async (req, res, next) => 
     {
-        // incoming: userId, testId
+        // incoming: userId, testId, owner
         // outgoing: error
     
         var error = '';
     
         const db = client.db('SmartTooth');
-        const { userId, testId } = req.body;
+        const { userId, testId, owner } = req.body;
         const id = userId;
         try
         {
@@ -261,7 +263,22 @@ exports.setApp = function ( app, client )
                 const test = await db.collection('Tests').findOne({ _id: new ObjectId(testId) });
                 if(test)
                 {
-                    activeTests.push(test);
+                    const questionIds = test.Questions;
+
+                    const questionsArray = questionIds.map(questionId => ({
+                        questionId,
+                        correct: null  // boolean, null if unattempted
+                    })); 
+
+                    const testEntry = {
+                        TestId: test._id,
+                        CurrentQuestion: 0,  
+                        LastScore: null,
+                        Owner: owner, //boolean allowing editing
+                        Questions: questionsArray
+                        
+                    };
+                    activeTests.push(testEntry);
                     await db.collection('Users').updateOne({ _id: new ObjectId(id) }, { $set: { ActiveTests: activeTests } });
                 }
                 else
