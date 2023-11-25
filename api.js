@@ -475,6 +475,50 @@ exports.setApp = function ( app, client )
 
 
 
+    app.post('/api/searchfriends', async (req, res, next) =>
+    {
+        // incoming: search
+        // outgoing: results[], error
+        var error = '';
+        const {id, search} = req.body;
+        var results = [];
+        try
+        {
+            const db = client.db('SmartTooth');
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id)});
+            if(user && user.Friends)
+            {
+                for(const friendId of user.Friends)
+                {
+                    const friend = await db.collection('Users').findOne({ _id: friendId});
+                    if(friend)
+                    {
+                        // Check if the search term matches 
+                        const matchesSearch =
+                        friend.FirstName.toLowerCase().startsWith(search.toLowerCase()) ||
+                        friend.LastName.toLowerCase().startsWith(search.toLowerCase()) ||
+                        friend.Login.toLowerCase().startsWith(search.toLowerCase());
+
+                        // If search is empty or there's a match, add the friend to the results
+                        if (search == '' || matchesSearch) 
+                        {
+                            results.push(friend);
+                        }
+                    }
+                }
+            }
+
+        }
+        catch(e)
+        {
+            error = e.toString();
+        }
+        var ret = {results:results, error:error};
+        res.status(200).json(ret);
+    });
+
+
+
     app.post('/api/searchquestions', async (req, res, next) =>
     {
         // incoming: search
