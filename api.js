@@ -1,5 +1,7 @@
 var express = require('express');
 require('mongodb');
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 exports.setApp = function ( app, client )
 {
@@ -7,25 +9,29 @@ exports.setApp = function ( app, client )
     {
         // incoming: email, verificationCode
         // outgoing: error
-        const { email, verificationCode } = req.body;
+        const { email, verificationCode} = req.body;
         var results = '';
         var error = '';
         try
         {
-            const db = client.db('SmartTooth');
-            const mailOptions = 
-            {
-                from: 'smarttoothlearning@gmail.com',
-                to: email,
-                subject: 'Smart Tooth Verification Code',
-                text: 'Your verification code is ' + verificationCode + '.'
-            };
 
-            const info = await sendMailAsync(mailOptions);
-            
-            results = 'Email sent: ' + info.response;
-            
-            
+        const msg = {
+            to: email, 
+            from: 'smarttoothlearning@gmail.com', 
+            subject: 'Verification Email',
+            text: `Here is your verification code: ${verificationCode}`,
+            html: `<p>Here is your verification code: <strong>${verificationCode}</strong></p>`,
+        }
+            sgMail
+            .send(msg)
+            .then(() => {
+                console.log('Email sent')
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+
+
         }
         catch(e)
         {
@@ -58,6 +64,7 @@ exports.setApp = function ( app, client )
             else
             {
                 result = await db.collection('Users').insertOne(newUser);
+
             }
         }
         catch(e)
@@ -90,19 +97,19 @@ exports.setApp = function ( app, client )
                 fn = results[0].FirstName;
                 ln = results[0].LastName;
                 email = results[0].Email;
-                //const token = require("./createJWT.js");
-                //var ret = token.createToken( id, fn, ln, email );
+                const token = require("./createJWT.js");
+                ret = token.createToken( id, fn, ln, email );
         
             }
-            /* else{
+             else{
                 ret = {error:"Login/Password incorrect"};
-            }*/
+            }
         }catch(e)
         {
-            //ret = {error:e.message};
-            error = e.toString();
+            ret = {error:e.message};
+            //error = e.toString();
         }
-        var ret = { id:id, firstName:fn, lastName:ln, email:email, error:''};
+        //var ret = { id:id, firstName:fn, lastName:ln, email:email, error:''};
         res.status(200).json(ret);
     });
 
@@ -110,8 +117,8 @@ exports.setApp = function ( app, client )
     {
         // incoming: question, answer, subject
         // outgoing: error
-        const { question, answers, numberAnswers, subject} = req.body;
-        const newQuestion = {Question:question,Answers:answers,NumberAnswers:numberAnswers,Subject:subject,Solved:false};
+        const { question, answers, numberAnswers, correctAnswer, subject} = req.body;
+        const newQuestion = {Question:question,Answers:answers,NumberAnswers:numberAnswers,CorrectAnswer:correctAnswer,Subject:subject,Solved:false};
         var error = '';
         try
         {
