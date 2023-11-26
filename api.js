@@ -463,8 +463,15 @@ exports.setApp = function ( app, client )
         try
         {
             const db = client.db('SmartTooth');
-            results = await db.collection('Tests').find({"Name":{$regex:search+'.*', $options:'i'}}).toArray();
-        }
+
+
+
+            results = await db.collection('Tests').find({
+                "Name": { $regex: search + '.*', $options: 'i' },
+                "Public": true }).toArray();        }
+
+
+            
         catch(e)
         {
             error = e.toString();
@@ -610,4 +617,29 @@ exports.setApp = function ( app, client )
         res.status(500).json({ error: 'Internal server error' });
         }
     });
+
+
+    app.post('/api/getsharkfact', async (req, res, next) =>
+    {
+        // incoming: 
+        // outgoing: results
+        var error = '';
+        const {} = req.body;
+        var fact = '';
+        try
+        {
+            const db = client.db('SmartTooth');
+            const index = Math.floor(Math.random() * 20) + 1;
+            const results = await db.collection('SharkFacts').findOne({ _id: index });
+            fact = results.Fact;
+
+            
+        }catch(e)
+        {
+            error = e.toString();
+        }
+        var ret = { results:fact, error:error};
+        res.status(200).json(ret);
+    });
+
 }
