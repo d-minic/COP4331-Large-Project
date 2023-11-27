@@ -141,13 +141,15 @@ exports.setApp = function ( app, client )
 
     app.post('/api/addtest', async (req, res, next) =>
     {
-        // incoming: name, length, public, array of questions
+        // incoming: name, creator, length, array of questions, public
         // outgoing: error
         var error = '';
         try{
 
-            const { name, length, questions, public} = req.body;
+            const { name, creator, length, questions, public} = req.body;
             const questionIds = [];
+
+            const creatorLogin = creator || 'Anonymous';
 
             for (const questionData of questions)
             {
@@ -167,7 +169,7 @@ exports.setApp = function ( app, client )
 
             }
 
-            const newTest = {Name:name,Length:length,Questions:questionIds,Public:public};
+            const newTest = {Name:name,Creator:creatorLogin,Length:length,Questions:questionIds,Public:public,NumberAccesses:0};
             
             const db = client.db('SmartTooth');
             const result = db.collection('Tests').insertOne(newTest);
@@ -275,11 +277,16 @@ exports.setApp = function ( app, client )
                         CurrentQuestion: 0,  
                         LastScore: null,
                         Owner: owner, //boolean allowing editing
-                        Questions: questionsArray
+                        Questions: questionsArray,
+                        LastAccessed: new Date()
                         
                     };
                     activeTests.push(testEntry);
+
+                    activeTests.sort((a, b) => b.LastAccessed - a.LastAccessed); //USE THIS
+
                     await db.collection('Users').updateOne({ _id: new ObjectId(id) }, { $set: { ActiveTests: activeTests } });
+                    await db.collection('Tests').updateOne({ _id: new ObjectId(testId) }, { $inc: { NumberAccesses: 1 } });
                 }
                 else
                 {
@@ -360,16 +367,38 @@ exports.setApp = function ( app, client )
     });
 
 
+
     app.post('/api/updatepage', async (req, res, next) =>
     {
-        // incoming: id, page
+        // incoming: id, testId, page
         // outgoing: error
-        const { id, page} = req.body;
+        const { id, testId, page} = req.body;
         var error = '';
         try
         {
             const db = client.db('SmartTooth');
-            await db.collection('Tests').updateOne({ _id: new ObjectId(id) }, { $set: { CurrentQuestion: page } });
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
+    
+            if (user) 
+            {
+                const activeTests = user.ActiveTests || [];
+                const testIndex = activeTests.findIndex(test => test.TestId.toString() == testId);
+                if(testIndex != -1)
+                {
+                    activeTests[testIndex].CurrentQuestion = page;
+                    activeTests[testIndex].LastAccessed = new Date();
+                    activeTests.sort((a, b) => b.LastAccessed - a.LastAccessed);
+                    await db.collection('Users').updateOne({ _id: new ObjectId(id) }, { $set: { ActiveTests: activeTests } });
+                }
+                else
+                {
+                    error = "Test not found in User's ActiveTests.";
+                }
+            }
+            else
+            {
+                error = "User not found";
+            }
         }
         catch(e)
         {
@@ -455,24 +484,44 @@ exports.setApp = function ( app, client )
 
     app.post('/api/searchtests', async (req, res, next) =>
     {
-        // incoming: search
+        // incoming: search, id
         // outgoing: results[], error
         var error = '';
-        const {search} = req.body;
+        const {search, id} = req.body;
         var results = [];
+        let userActiveTestIds = '';
+        let userActiveTests = '';
         try
         {
             const db = client.db('SmartTooth');
 
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
 
+            if(user)
+            {
+                userActiveTests = user.ActiveTests || [];
+                userActiveTestIds = userActiveTests.map(testEntry => testEntry.TestId);
+            }
 
-            results = await db.collection('Tests').find({
+            const publicTests = await db.collection('Tests').find({
                 "Name": { $regex: search + '.*', $options: 'i' },
-                "Public": true }).toArray();        }
+                "Public": true,
+                "_id": { $nin: userActiveTestIds } 
+            }).toArray();
 
+            const userActiveTestDetails = await Promise.all(
+                userActiveTestIds.map(async (testId) => {
+                    const test = await db.collection('Tests').findOne({ _id: new ObjectId(testId) });
+                    return test;
+                })
+            );
 
-            
-        catch(e)
+            console.log(userActiveTestIds);
+            console.log(publicTests);
+                
+            results = userActiveTestDetails.concat(publicTests);
+
+        }catch(e)
         {
             error = e.toString();
         }
@@ -641,5 +690,295 @@ exports.setApp = function ( app, client )
         var ret = { results:fact, error:error};
         res.status(200).json(ret);
     });
+
+
+    app.post('/api/deletetest', async (req, res, next) => {
+        // incoming: id, owner, deleteAll
+        // outgoing: error
+    
+        const { id, testId, owner} = req.body;
+        var error = '';
+    
+        try {
+
+            const db = client.db('SmartTooth');
+            const test = await db.collection('Tests').findOne({ _id: new ObjectId(testId) });
+
+            if (test) 
+            {
+                
+                await db.collection('Users').updateOne({_id: new ObjectId(id)}, { $pull: { ActiveTests: { TestId: new ObjectId(testId) } } });
+                if(owner==true)
+                {
+                    await db.collection('Tests').updateOne({ _id: new ObjectId(testId) }, {$set: {Creator: 'Anonymous', Public: false}});
+                }
+                
+            } 
+            else 
+            {
+                error = "Test not found";
+            }
+
+        } catch (e) {
+            error = e.toString();
+        }
+    
+        var ret = { error: error };
+        res.status(200).json(ret);
+    });
+
+
+    app.post('/api/edittest', async (req, res, next) => {
+        // incoming: id
+        // outgoing: error
+        const { id, name, creator, length, public, questions } = req.body;
+        var error = '';
+        try {
+            const db = client.db('SmartTooth');
+            await db.collection('Tests').updateOne({  _id: new ObjectId(id)  }, { $set: { Name: name, Creator: creator, Length: length, Public:public, Questions: questions} });
+        } catch (e) {
+            error = e.toString();
+        }
+        var ret = { error: error };
+        res.status(200).json(ret);
+    });
+
+
+    app.post('/api/editquestion', async (req, res, next) => {
+        // incoming: id
+        // outgoing: error
+        const { id, question, answers, numberAnswers, correctAnswer, subject } = req.body;
+        var error = '';
+        try {
+            const db = client.db('SmartTooth');
+            await db.collection('Question').updateOne({  _id: new ObjectId(id)  }, { $set: { Question: question, Answers: answers, NumberAnswers: numberAnswers, CorrectAnswer: correctAnswer,  Subject: subject} });
+        } catch (e) {
+            error = e.toString();
+        }
+        var ret = { error: error };
+        res.status(200).json(ret);
+    });
+
+
+
+    app.post('/api/getquestion', async (req, res, next) => {
+        // incoming: id
+        // outgoing: results, error
+        const {id} = req.body;
+        var error = '';
+        let results = '';
+        try {
+            const db = client.db('SmartTooth');
+            results = await db.collection('Question').findOne({  _id: new ObjectId(id)  });
+        } catch (e) {
+            error = e.toString();
+        }
+        var ret = { results: results, error: error };
+        res.status(200).json(ret);
+    });
+
+
+
+
+    app.post('/api/answerquestion', async (req, res, next) => {
+        // incoming: id, testId, questionId, correct
+        // outgoing: error
+        const { id, testId, questionId, correct} = req.body;
+        var error = '';
+        try {
+            const db = client.db('SmartTooth');
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
+    
+            if (user) 
+            {
+                const activeTests = user.ActiveTests || [];
+                const testIndex = activeTests.findIndex(test => test.TestId.toString() == testId);
+                if(testIndex != -1)
+                {
+                    const questions = activeTests[testIndex].Questions;
+                    const questionIndex = questions.findIndex(question => question.questionId.toString() == questionId);
+
+                    if(questionIndex != -1)
+                    {
+                        questions[questionIndex].correct = correct;
+
+                        activeTests[testIndex].LastAccessed = new Date();
+                        activeTests.sort((a, b) => b.LastAccessed - a.LastAccessed);
+
+                        await db.collection('Users').updateOne({ _id: new ObjectId(id) }, { $set: { ActiveTests: activeTests } });
+
+                        await db.collection('Users').updateOne(
+                            { _id: new ObjectId(id), "ActiveTests.TestId": new ObjectId(testId) },
+                            { $set: { "ActiveTests.$.Questions": questions } });
+                    }
+                    else
+                    {
+                        error = "Question not found in test.";
+                    }
+
+                }
+                else
+                {
+                    error = "Test not found in User's ActiveTests.";
+                }
+            }
+            else
+            {
+                error = "User not found";
+            }
+
+        } catch (e) {
+            error = e.toString();
+        }
+        var ret = { error: error };
+        res.status(200).json(ret);
+    });
+
+
+    app.post('/api/completetest', async (req, res, next) => {
+        // incoming: id, testId
+        // outgoing: error
+        const { id, testId} = req.body;
+        var error = '';
+        try {
+            const db = client.db('SmartTooth');
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
+    
+            if (user) 
+            {
+                const activeTests = user.ActiveTests || [];
+                const testIndex = activeTests.findIndex(test => test.TestId.toString() == testId);
+                if(testIndex != -1)
+                {
+                    const questions = activeTests[testIndex].Questions;
+                    const allQuestionsAnswered = questions.every(question => question.correct !== null);
+                    if(allQuestionsAnswered)
+                    {
+                        
+
+                        const correctCount = questions.filter(question => question.correct === true).length;
+                        const totalQuestions = questions.length;
+                        const percentageCorrect = (correctCount / totalQuestions) * 100;
+
+                        activeTests[testIndex].LastScore = percentageCorrect;
+
+                        activeTests[testIndex].LastAccessed = new Date();
+                        activeTests.sort((a, b) => b.LastAccessed - a.LastAccessed);
+
+                        await db.collection('Users').updateOne(
+                            { _id: new ObjectId(id), "ActiveTests.TestId": new ObjectId(testId) },
+                            { $set: { "ActiveTests": activeTests  } });
+                    }
+                    else
+                    {
+                        error = "Not all questions answered. Please finish the test before submitting.";
+                    }
+
+                }
+                else
+                {
+                    error = "Test not found in User's ActiveTests.";
+                }
+            }
+            else
+            {
+                error = "User not found";
+            }
+
+        } catch (e) {
+            error = e.toString();
+        }
+        var ret = { error: error };
+        res.status(200).json(ret);
+    });
+
+
+
+    app.post('/api/cleartest', async (req, res, next) => {
+        // incoming: id, testId
+        // outgoing: error
+        const { id, testId} = req.body;
+        var error = '';
+        try {
+            const db = client.db('SmartTooth');
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
+    
+            if (user) 
+            {
+                const activeTests = user.ActiveTests || [];
+                const testIndex = activeTests.findIndex(test => test.TestId.toString() == testId);
+                if(testIndex != -1)
+                {
+                    const questions = activeTests[testIndex].Questions;
+
+                    const updatedQuestions = questions.map(question => ({
+                        ...question, correct:null
+                    }));
+
+                    activeTests[testIndex].Questions = updatedQuestions;
+                    activeTests[testIndex].LastScore = null;
+
+                    await db.collection('Users').updateOne(
+                        { _id: new ObjectId(id), "ActiveTests.TestId": new ObjectId(testId) },
+                        { $set: { "ActiveTests": activeTests  } });
+                    
+                }
+                else
+                {
+                    error = "Test not found in User's ActiveTests.";
+                }
+            }
+            else
+            {
+                error = "User not found";
+            }
+
+        } catch (e) {
+            error = e.toString();
+        }
+        var ret = { error: error };
+        res.status(200).json(ret);
+    });
+
+    app.post('/api/removefriend', async (req, res, next) => {
+        // incoming: id1, id2
+        // outgoing: error
+    
+        var error = '';
+    
+        const db = client.db('SmartTooth');
+        const { id1, id2 } = req.body;
+    
+            try
+            {
+            const user1 = await db.collection('Users').findOne({ _id: new ObjectId(id1) });
+    
+            if (user1) {
+                var friends1 = user1.Friends || [];
+                friends1 = friends1.filter(friendId => friendId.toString() !== id2);
+                await db.collection('Users').updateOne({ _id: new ObjectId(id1) }, { $set: { Friends: friends1 } });
+            } else {
+                error = "User " + id1 + " not found";
+            }
+    
+            const user2 = await db.collection('Users').findOne({_id: new ObjectId(id2) });
+    
+            if (user2) {
+                var friends2 = user2.Friends || [];
+                friends2 = friends2.filter(friendId => friendId.toString() !== id1);
+                await db.collection('Users').updateOne({ _id:  new ObjectId(id2) }, { $set: { Friends: friends2 } });
+            } else {
+                error = "User " + id2 + " not found";
+            }
+            }catch(e)
+            {
+                error = e.toString();
+            }
+            
+        var ret = { error: error };
+        res.status(200).json(ret);
+        });
+
+
 
 }
