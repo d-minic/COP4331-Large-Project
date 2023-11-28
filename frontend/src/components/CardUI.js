@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+var bp = require('./Path.js');
 function CardUI()
 {
     var card = '';
@@ -38,19 +39,18 @@ function CardUI()
         var js = JSON.stringify(obj);
         try
         {
-        const response = await fetch(buildPath('api/addquestion'),
-        {method:'POST',body:js,headers:{'Content-Type':
-        'application/json'}});
-        var txt = await response.text();
-        var res = JSON.parse(txt);
-        if( res.error.length > 0 )
-        {
-        setMessage( "API Error:" + res.error );
-        }
-        else
-        {
-        setMessage('Question has been added');
-        }
+            const response = await fetch(bp.buildPath('api/login'),
+            {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
+            var txt = await response.text();
+            var res = JSON.parse(txt);
+            if( res.error.length > 0 )
+            {
+                setMessage( "API Error:" + res.error );
+            }
+            else
+            {
+                setMessage('Question has been added');
+            }
         }
         catch(e)
         {
@@ -64,9 +64,8 @@ function CardUI()
     var js = JSON.stringify(obj);
     try
     {
-    const response = await fetch(buildPath('api/searchcards'),
-    {method:'POST',body:js,headers:{'Content-Type':
-    'application/json'}});
+    const response = await fetch(bp.buildPath('api/login'),
+    {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
     var txt = await response.text();
     var res = JSON.parse(txt);
     var _results = res.results;
