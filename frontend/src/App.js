@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import CardPage from './pages/CardPage';
 import RegisterPage from './pages/RegisterPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ThemeProvider } from './node_modules/react-bootstrap/esm/ThemeProvider';
 function App() {
 return (
 <BrowserRouter>
