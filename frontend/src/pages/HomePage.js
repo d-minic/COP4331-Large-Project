@@ -5,7 +5,7 @@ const HomePage = () => {
   return (
     <div>
       <nav className="navbar fixed-top navbar-expand-lg navbar-light fs-5">
-        <a href="#" className="navbar-brand mb-0 h1">
+        <a className="navbar-brand mb-0 h1">
           <img className="d-inline-block align-top" src="smarttoothlogo.PNG" width="200" alt="Logo" />
         </a>
         <button
@@ -22,25 +22,25 @@ const HomePage = () => {
         <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a href="#" className="nav-link active"><h4>Home</h4></a>
+              <a className="nav-link active"><h4>Home</h4></a>
             </li>
             <li className="nav-item">
-              <a href="#" className="nav-link"><h4>Create</h4></a>
+              <a className="nav-link"><h4>Create</h4></a>
             </li>
             <li className="nav-item">
-              <a href="#" className="nav-link"><h4>Browse</h4></a>
+              <a className="nav-link"><h4>Browse</h4></a>
             </li>
             <li className="nav-item">
-              <a href="#" className="nav-link"><h4>Leaderboard</h4></a>
+              <a className="nav-link"><h4>Leaderboard</h4></a>
             </li>
             <li className="nav-item">
-              <a href="#" className="nav-link"><h4>Friends</h4></a>
+              <a className="nav-link"><h4>Friends</h4></a>
             </li>
             <li className="nav-item">
-              <a href="#" className="nav-link"><h4>Profile</h4></a>
+              <a className="nav-link"><h4>Profile</h4></a>
             </li>
             <li className="nav-item">
-              <a href="#" className="nav-link"><h4>Logout</h4></a>
+              <a className="nav-link"><h4>Logout</h4></a>
             </li>
           </ul>
         </div>
