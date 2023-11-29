@@ -1,6 +1,7 @@
 var express = require('express');
 require('mongodb');
 const { ObjectId } = require('mongodb');
+var token = require('./createJWT.js');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 

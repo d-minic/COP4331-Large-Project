@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+//import decode from "jwt-decode";
+import { jwtDecode as decode } from "jwt-decode";
+
+//var bp = require('../../path.js');
+
 function Login()
 {
     var loginName;
@@ -27,16 +32,28 @@ function Login()
             const response = await fetch(buildPath('api/login'),
             {method:'POST',body:js,headers:{'Content-Type':
             'application/json'}});
+
             var res = JSON.parse(await response.text());
-            if( res.id <= 0 )
+            var storage = require('../tokenStorage.js');
+            storage.storeToken(res);
+            const { accessToken } = res;
+            const decoded = decode(accessToken,{complete:true});
+
+            var ud = decoded;
+            var userId = ud.id; //need to check for incorrect
+            var firstName = ud.firstName;
+            var lastName = ud.lastName;
+            var email = ud.email;
+            if( userId  === -1)
             {
                 setMessage('User/Password combination incorrect');
             }
             else
             {
                 var user =
-                {firstName:res.firstName,lastName:res.lastName,id:res.id}
-                localStorage.setItem('user_data', JSON.stringify(user));
+                    {firstName:firstName,lastName:lastName,id:userId,email:email}
+                    localStorage.setItem('user_data',
+                    JSON.stringify(user));
                 setMessage('');
                 window.location.href = '/cards';
             }
