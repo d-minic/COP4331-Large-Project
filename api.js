@@ -121,7 +121,7 @@ exports.setApp = function ( app, client )
 
     app.post('/api/addquestion', async (req, res, next) =>
     {
-        // incoming: question, answer, subject
+        // incoming:  question, answers, numberAnswers, correctAnswer, subject
         // outgoing: error
         const { question, answers, numberAnswers, correctAnswer, subject} = req.body;
         const newQuestion = {Question:question,Answers:answers,NumberAnswers:numberAnswers,CorrectAnswer:correctAnswer,Subject:subject,Solved:false};
@@ -598,7 +598,7 @@ exports.setApp = function ( app, client )
 
     app.post('/api/getquestions', async (req, res, next) =>
     {
-        // incoming: questions
+        // incoming: id
         // outgoing: results
         var error = '';
         const { id } = req.body;
@@ -729,13 +729,29 @@ exports.setApp = function ( app, client )
 
 
     app.post('/api/edittest', async (req, res, next) => {
-        // incoming: id
+        // incoming: id, testId, name, creator, length, public, questions
         // outgoing: error
-        const { id, name, creator, length, public, questions } = req.body;
+        const { id, testId, name, creator, length, public, questions } = req.body;
         var error = '';
         try {
             const db = client.db('SmartTooth');
-            await db.collection('Tests').updateOne({  _id: new ObjectId(id)  }, { $set: { Name: name, Creator: creator, Length: length, Public:public, Questions: questions} });
+            let questionIds = questions;
+            const questionObjectIds = questionIds.map(questionId => new ObjectId(questionId));
+            await db.collection('Tests').updateOne({  _id: new ObjectId(testId)  }, { $set: { Name: name, Creator: creator, Length: length, Public:public, Questions: questionObjectIds} });
+            
+            const questionsArray = questionObjectIds.map(questionId => ({
+                questionId,
+                correct: null  // boolean, null if unattempted
+            })); 
+
+            await db.collection('Users').updateOne(
+                { _id: new ObjectId(id), 'ActiveTests.TestId': new ObjectId(testId) },
+                { $set: { 'ActiveTests.$.Questions': questionsArray,
+                'ActiveTests.$.LastAccessed': new Date() } }
+            );
+        
+
+
         } catch (e) {
             error = e.toString();
         }
@@ -745,7 +761,7 @@ exports.setApp = function ( app, client )
 
 
     app.post('/api/editquestion', async (req, res, next) => {
-        // incoming: id
+        // incoming: id, question, answers, numberAnswers, correctAnswer, subject
         // outgoing: error
         const { id, question, answers, numberAnswers, correctAnswer, subject } = req.body;
         var error = '';
@@ -917,6 +933,7 @@ exports.setApp = function ( app, client )
 
                     activeTests[testIndex].Questions = updatedQuestions;
                     activeTests[testIndex].LastScore = null;
+                    activeTests[testIndex].CurrentQuestion = 0;
 
                     await db.collection('Users').updateOne(
                         { _id: new ObjectId(id), "ActiveTests.TestId": new ObjectId(testId) },
