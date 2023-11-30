@@ -91,7 +91,7 @@ exports.setApp = function ( app, client )
         res.status(200).json(ret);
     });
 
-    const bcrypt = require('bcrypt');
+    
 
 app.post('/api/login', async (req, res, next) => {
         // incoming: login, password
