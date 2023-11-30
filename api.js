@@ -3,6 +3,7 @@ require('mongodb');
 const { ObjectId } = require('mongodb');
 var token = require('./createJWT.js');
 const sgMail = require('@sendgrid/mail');
+const bcrypt = require('bcrypt');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 
@@ -45,80 +46,86 @@ exports.setApp = function ( app, client )
     });
 
 
-    app.post('/api/register', async (req, res, next) =>
-    {
+    app.post('/api/register', async (req, res, next) => {
         // incoming: login, password, firstName, lastName, email
         // outgoing: error
         const { login, password, firstName, lastName, email } = req.body;
         const friends = [];
         let code;
+        
         do {
             code = Math.floor(100000 + Math.random() * 900000);
         } while (code < 100000 || code >= 1000000 || code.toString().startsWith('0'));
-
-        var verificationCode = code;
-        const newUser = {Login:login,Password:password,FirstName:firstName,LastName:lastName, Email:email, Points:0,Friends:friends,VerificationCode:verificationCode, IsVerified: false};
-        var error = '';
-        try
-        {
-            const db = client.db('SmartTooth');
-            const results = await db.collection('Users').find({Login:login}).toArray();
-            if( results.length > 0 )
-            {
-                error = "Login already used. Try another!";
+    
+        const verificationCode = code;
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
         
+        const newUser = {
+            Login: login,
+            Password: hashedPassword, // Store the hashed password
+            FirstName: firstName,
+            LastName: lastName,
+            Email: email,
+            Points: 0,
+            Friends: friends,
+            VerificationCode: verificationCode,
+            IsVerified: false
+        };
+    
+        let error = '';
+    
+        try {
+            const db = client.db('SmartTooth');
+            const results = await db.collection('Users').find({ Login: login }).toArray();
+    
+            if (results.length > 0) {
+                error = 'Login already used. Try another!';
+            } else {
+                await db.collection('Users').insertOne(newUser);
             }
-            else
-            {
-                result = await db.collection('Users').insertOne(newUser);
-
-            }
-        }
-        catch(e)
-        {
+        } catch (e) {
             error = e.toString();
         }
-        var ret = { error: error };
+    
+        const ret = { error: error };
         res.status(200).json(ret);
     });
 
-    app.post('/api/login', async (req, res, next) =>
-    {
+    const bcrypt = require('bcrypt');
+
+app.post('/api/login', async (req, res, next) => {
         // incoming: login, password
         // outgoing: id, firstName, lastName, error
-        var error = '';
-        const { login, password } = req.body;
-        try
-        {
-            const db = client.db('SmartTooth');
-            const results = await
-            db.collection('Users').find({Login:login,Password:password}).toArray();
-            var id = -1;
-            var fn = '';
-            var ln = '';
-            var email = '';
-            var ret;
-            if( results.length > 0 )
-            {
-                id = results[0]._id;
-                fn = results[0].FirstName;
-                ln = results[0].LastName;
-                email = results[0].Email;
+    const { login, password } = req.body;
+    let error = '';
+
+    try {
+        const db = client.db('SmartTooth');
+        const user = await db.collection('Users').findOne({ Login: login });
+
+        if (user) {
+            const passwordMatch = await bcrypt.compare(password, user.Password);
+
+            if (passwordMatch) {
+                const { _id, FirstName, LastName, Email } = user;
                 const token = require("./createJWT.js");
-                ret = token.createToken( id, fn, ln, email );
-        
+                const ret = token.createToken(_id, FirstName, LastName, Email);
+                res.status(200).json(ret);
+            } else {
+                error = "Login/Password incorrect";
             }
-             else{
-                ret = {error:"Login/Password incorrect"};
-            }
-        }catch(e)
-        {
-            ret = {error:e.message};
-            //error = e.toString();
+        } else {
+            error = "Login/Password incorrect";
         }
-        //var ret = { id:id, firstName:fn, lastName:ln, email:email, error:''};
-        res.status(200).json(ret);
-    });
+    } catch (e) {
+        error = e.message;
+    }
+
+    if (error) {
+        res.status(200).json({ error });
+    }
+});
+
 
     app.post('/api/addquestion', async (req, res, next) =>
     {
@@ -410,40 +417,44 @@ exports.setApp = function ( app, client )
     });
 
 
-    app.post('/api/resetpassword', async (req, res, next) => {
+
+
+app.post('/api/resetpassword', async (req, res, next) => {
         // incoming: login, newPassword, verificationCode 
         // outgoing: error
-        const { login, newPassword, verificationCode } = req.body;
-        var error = '';
-        try {
-            const db = client.db('SmartTooth');
-            const user = await db.collection('Users').findOne({ Login: login });
-            const id = user._id;
+    const { login, newPassword, verificationCode } = req.body;
+    var error = '';
 
-            if (user.VerificationCode == verificationCode) 
-            {
-                await db.collection('Users').updateOne({ _id: id }, { $set: { Password: newPassword } });
+    try {
+        const db = client.db('SmartTooth');
+        const user = await db.collection('Users').findOne({ Login: login });
+        const id = user._id;
 
-                let code;
-                do {
-                    code = Math.floor(100000 + Math.random() * 900000);
-                } while (code < 100000 || code >= 1000000 || code.toString().startsWith('0'));
-        
-    
-                // update to new code for later use
-                await db.collection('Users').updateOne({ _id: id  }, { $set: { VerificationCode: code } });
-        
-            }
-            else{
-                error = "Invalid verification code."
-            }
+        if (user.VerificationCode === verificationCode) {
+            // Hash the new password before storing it
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        } catch (e) {
-            error = e.toString();
+            await db.collection('Users').updateOne({ _id: id }, { $set: { Password: hashedPassword } });
+
+            let code;
+            do {
+                code = Math.floor(100000 + Math.random() * 900000);
+            } while (code < 100000 || code >= 1000000 || code.toString().startsWith('0'));
+
+            // Update to a new code for later use
+            await db.collection('Users').updateOne({ _id: id }, { $set: { VerificationCode: code } });
+        } else {
+            error = "Invalid verification code.";
         }
-        var ret = { error: error };
-        res.status(200).json(ret);
-    });
+
+    } catch (e) {
+        error = e.toString();
+    }
+
+    var ret = { error: error };
+    res.status(200).json(ret);
+});
+
 
 
     app.post('/api/getuserinfo', async (req, res, next) => {
