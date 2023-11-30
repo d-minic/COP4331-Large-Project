@@ -20,7 +20,7 @@ exports.setApp = function ( app, client )
         {
             const db = client.db('SmartTooth');
             const user = await db.collection('Users').findOne({Email:email,Login:login});
-            constverificationCode = user.VerificationCode;
+            const verificationCode = user.VerificationCode;
 
             const msg = {
                 to: email, 
