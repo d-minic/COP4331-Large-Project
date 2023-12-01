@@ -59,7 +59,7 @@ function Register() {
     return (
         <div id="registerDiv">
             <form onSubmit={doRegister}>
-          <img class="d-inline-block align-top" src="smarttoothlogo.PNG" width="200" />
+          <img class="d-inline-block align-top" src="smarttoothlogo.PNG" width="200" alt="Smart Tooth Logo" />
         <br/>
                <span id="inner-title">REGISTER</span>
         <br />
