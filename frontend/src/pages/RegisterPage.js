@@ -2,7 +2,8 @@ import React from 'react';
 
 import PageTitle from '../components/PageTitle';
 import Register from '../components/Register';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from 'react-navigation';
+
 
 const RegisterPage = () => {
 
