@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './LandingPage.css'; 
+import logo from './smarttoothlesspixel.png'; 
 
 function LandingPage() {
   return (
     <div className="landing-container">
-      <h1>SmartTooth</h1>
+      <img src={logo} alt="SmartTooth Logo" className="logo" />
       <p>The free and sharp learning tool for students K-12</p>
       <div className="button-container">
         <Link to="/login">
