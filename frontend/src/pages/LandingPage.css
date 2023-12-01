@@ -19,6 +19,8 @@ html, body, #root {
 
 .landing-container {
     text-align: center;
+    justify-content: center;
+    align-items: center;
     padding: 50px;
     font-family: 'Arial', sans-serif; 
   }
