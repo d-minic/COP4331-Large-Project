@@ -7,6 +7,10 @@ html, body, #root {
   min-height: 100vh; 
 }
 
+.highlight {
+  color: white;
+}
+
 .text-container {
   align-items: center;
   background-color: #c3e6f2;

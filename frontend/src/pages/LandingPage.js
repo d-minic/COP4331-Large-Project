@@ -8,7 +8,7 @@ function LandingPage() {
     <div className="landing-container">
       <img src={logo} alt="SmartTooth Logo" className="logo" />
       <div className="text-container">
-        <p className="p-description">The free and shark learning tool for students K-12</p>
+        <p className="p-description">The free and <span className="highlight">shark</span> learning tool for students K-12</p>
       </div>
       <div className="button-container">
         <Link to="/login">
