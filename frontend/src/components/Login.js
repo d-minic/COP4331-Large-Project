@@ -79,7 +79,7 @@ function Login()
         onClick={doLogin} />
         </form>
         <span id="loginResult">{message}</span>
-                 <Link to="/EmailVerification">Forgot Password? </Link>
+                 <Link to="/EmailVerification">Forgot Password? </Link><br/>
         <Link to="/register">Don't have an account? Register here</Link>
         </div>
     );
