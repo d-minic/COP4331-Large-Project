@@ -47,6 +47,7 @@ html, body, #root {
     cursor: pointer;
     outline: none;
     transition: background-color 0.3s ease;
+    font-family: 'Jockey One', sans-serif;
   }
   
   .login-btn {
