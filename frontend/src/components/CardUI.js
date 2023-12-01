@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import './CardUI.css';
 var bp = require('./Path.js');
+
 function CardUI()
 {
     var card = '';
