@@ -1,5 +1,4 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 import PageTitle from '../components/PageTitle';
 import Register from '../components/Register';
 
