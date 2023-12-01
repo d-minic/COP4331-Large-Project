@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Register.css'; // Import the CSS file
+import './RegisterPage.css'; // Import the CSS file
 
 function Register() {
     var registerName;
