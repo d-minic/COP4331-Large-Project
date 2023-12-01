@@ -1,4 +1,5 @@
 import React from 'react';
+import './RegisterPage.css'; // Import the CSS file
 
 function PageTitle()
 {
