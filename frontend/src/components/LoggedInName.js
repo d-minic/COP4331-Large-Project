@@ -1,4 +1,6 @@
 import React from 'react';
+import './LoggedInName.css';
+
 function LoggedInName()
 {
 var _ud = localStorage.getItem('user_data');
