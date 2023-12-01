@@ -8,7 +8,7 @@ function Register() {
     var lastName;
     var registerEmail;
     var registerPassword;
-    const [message, setMessage] = useState(<Link to="/">Go back to login page.</Link>);
+    const [message, setMessage] = useState(<Link to="/">Alreaady have an account? Go back to Login.</Link>);
     const app_name = 'smart-tooth-577ede9ea626';
 
     function buildPath(route) {
