@@ -19,6 +19,7 @@ const RegisterPage = () => {
         <label htmlFor="password">Password:</label>
         <input type="password" id="password" name="password" required />
         <button type="submit">Register</button>
+    <Register/>
       </form>
       <p id="registerMessage"></p>
       <p>Already have an account? <a href="login.html">Log in here</a></p>
