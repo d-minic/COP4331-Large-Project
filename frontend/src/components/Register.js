@@ -59,7 +59,7 @@ function Register() {
     return (
         <div id="registerDiv">
             <form onSubmit={doRegister}>
-                <span id="inner-title">REGISTER</span><br />
+               
                 <label htmlFor="firstName">First Name:</label>
                 <input type="text" id="firstName" placeholder="FirstName" ref={(c) => firstName = c} />
                   <label htmlFor="lastName">Last Name:</label>
