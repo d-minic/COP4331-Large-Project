@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import './EmailVerification.css';
 
 function EmailVerification() {
   const emailRef = useRef(null);
