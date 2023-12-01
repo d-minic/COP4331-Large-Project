@@ -29,7 +29,7 @@ function EmailVerification() {
     const js = JSON.stringify(obj);
 
     try {
-      const response = await fetch(buildPath('api/send-email'), {
+      const response = await fetch(buildPath('api/sendemail'), {
         method: 'POST',
         body: js,
         headers: {
