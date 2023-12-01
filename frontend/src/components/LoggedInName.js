@@ -16,6 +16,7 @@ window.location.href = '/';
 };
 return(
 <div id="loggedInDiv">
+  <img src={process.env.PUBLIC_URL + '/smarttoothlogo.PNG'} alt="Logo" width="200" />  <br/>
 <span id="userName">Logged In As {firstName} {lastName}</span><br />
 <button type="button" id="logoutButton" class="buttons"
 onClick={doLogout}> Log Out </button>
