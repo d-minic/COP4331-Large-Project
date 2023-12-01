@@ -68,6 +68,7 @@ function Login()
     return(
         <div id="loginDiv">
         <form onSubmit={doLogin}>
+        <img src={process.env.PUBLIC_URL + '/smarttoothlogo.PNG'} alt="Logo" width="200" /> 
         <span id="inner-title">PLEASE LOG IN</span><br />
         <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} />
         <input type="password" id="loginPassword" placeholder="Password" ref={(c) => loginPassword = c} />
