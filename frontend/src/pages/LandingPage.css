@@ -1,9 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Jockey+One&display=swap');
 html, body, #root {
   background-color: white;
   margin: 0;
   padding: 0;
   height: 100%;
   min-height: 100vh; 
+}
+
+.p-description {
+  font-family: 'Jockey One', sans-serif;
 }
 
 .logo {
