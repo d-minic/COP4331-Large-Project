@@ -10,9 +10,9 @@ html, body, #root {
 .text-container {
   background-color: #C3E6F2; 
   border-radius: 20px; 
-  padding: 5px 10px; 
+  padding: 20px 10px; 
   display: inline-block; 
-  margin: 10px 0; 
+  margin: 5px 0; 
 }
 
 .p-description {
