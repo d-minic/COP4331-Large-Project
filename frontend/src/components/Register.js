@@ -59,8 +59,7 @@ function Register() {
     return (
         <div id="registerDiv">
             <form onSubmit={doRegister}>
-          <img class="d-inline-block align-top" src="smarttoothlogo.PNG" width="200" alt="Smart Tooth Logo" />
-        <br/>
+        <img src={process.env.PUBLIC_URL + '/smarttoothlogo.PNG'} alt="Logo" width="200" />        <br/>
                <span id="inner-title">REGISTER</span>
         <br />
                 <label htmlFor="firstName">First Name:</label>
