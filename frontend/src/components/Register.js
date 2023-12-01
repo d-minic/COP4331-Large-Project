@@ -66,7 +66,7 @@ function Register() {
                 <input type="text" id="firstName" placeholder="FirstName" ref={(c) => firstName = c} />
                   <label htmlFor="lastName">Last Name:</label>
                 <input type="text" id="lastName" placeholder="LastName" ref={(c) => lastName = c} />
-                  <label htmlFor="registerEmail">Email Name:</label>
+                  <label htmlFor="registerEmail">Email:</label>
                 <input type="text" id="registerEmail" placeholder="Email" ref={(c) => registerEmail = c} />
                   <label htmlFor="registerName">UserName:</label>
                 <input type="text" id="registerName" placeholder="Username" ref={(c) => registerName = c} />
