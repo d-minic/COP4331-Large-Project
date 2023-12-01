@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './LandingPage.css'; 
-import logo from './smarttoothlesspixel.png'; 
+import logo from './smarttoothlesspixel.PNG'; 
 
 function LandingPage() {
   return (
