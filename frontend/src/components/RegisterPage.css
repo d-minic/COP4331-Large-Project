@@ -1,4 +1,4 @@
-/* RegisterPage.css */
+/* Register.css */
 
 body {
   font-family: Arial, sans-serif;
@@ -12,7 +12,7 @@ body {
   height: 100vh;
 }
 
-.container {
+#registerDiv {
   max-width: 500px;
   margin: 0 auto;
   padding: 20px;
@@ -25,9 +25,11 @@ body {
   transform: translate(-50%, -50%);
 }
 
-h1 {
+#inner-title {
   color: #333;
   margin-bottom: 20px;
+  font-size: 1.5em;
+  font-weight: bold;
 }
 
 label {
@@ -43,7 +45,7 @@ input[type="password"] {
   margin-bottom: 10px;
 }
 
-button {
+#registerButton {
   background-color: #c3e6f2;
   color: #000000;
   padding: 10px 0;
@@ -51,9 +53,21 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-button:hover {
-  background-color: #c3e6f2;
-  color: #fff;
+#registerButton:hover {
+  background-color: #4285f4;
+  color: #ffffff;
 }
+
+.buttons {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+#registerResult {
+  font-size: 14px;
+}
+
+
