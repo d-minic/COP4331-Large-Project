@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Button } from 'react-native';
+import { View, Button } from 'react-native'; // Remove this line
 import PageTitle from '../components/PageTitle';
 import Register from '../components/Register';
 import { useNavigation } from '@react-navigation/native';
@@ -9,12 +9,12 @@ const RegisterPage = () => {
     const navigation = useNavigation();
 
     return (
-        <View>
+        <div>
             <Button
-            title = "Go to Register Page"
-            onPress={()=> navigation.navigate('RegisterPage')}
+            title="Go to Register Page"
+            onClick={() => navigation.navigate('RegisterPage')}
             />
-        </View>
+        </div>
     );
 };
 
