@@ -4,10 +4,10 @@ import Register from '../components/Register';
 
 const RegisterPage = () => {
     return (
-        <View>
+        <div>
             <PageTitle title="Register" />
             <Register />
-        </View>
+        </div>
     );
 };
 
