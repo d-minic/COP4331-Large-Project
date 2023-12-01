@@ -60,6 +60,7 @@ function Register() {
         <div id="registerDiv">
             <form onSubmit={doRegister}>
           <img class="d-inline-block align-top" src="smarttoothlogo.PNG" width="200" />
+        <br/>
                <span id="inner-title">REGISTER</span>
         <br />
                 <label htmlFor="firstName">First Name:</label>
