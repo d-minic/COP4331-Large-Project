@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './RegisterPage.css'; // Import the CSS file
+import './RegisterPage.css'; 
 
 function Register() {
     var registerName;
@@ -48,7 +48,7 @@ function Register() {
                 lastName.value = '';
                 registerPassword.value = '';
                 // Redirects to login page- probably need to change when email verification is added
-                setTimeout(() => {window.location.href = '/';}, 750);
+                setTimeout(() => { window.location.href = '/EmailVerification'; }, 750);
             }
         } catch (e) {
             alert(e.toString());
