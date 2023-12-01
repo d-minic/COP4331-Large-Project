@@ -6,7 +6,7 @@ const CardPage = () =>
 {
 return(
 <div>
-<PageTitle />
+
 <LoggedInName />
 <CardUI />
 </div>
