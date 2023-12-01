@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 //import decode from "jwt-decode";
 import { jwtDecode as decode } from "jwt-decode";
-
+import './Login.css'; // Import the CSS file
 
 //var bp = require('../../path.js');
 
