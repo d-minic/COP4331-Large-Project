@@ -7,6 +7,14 @@ html, body, #root {
   min-height: 100vh; 
 }
 
+.text-container {
+  background-color: #C3E6F2; 
+  border-radius: 20px; 
+  padding: 10px 20px; 
+  display: inline-block; 
+  margin: 10px 0; 
+}
+
 .p-description {
   font-family: 'Jockey One', sans-serif;
 }
