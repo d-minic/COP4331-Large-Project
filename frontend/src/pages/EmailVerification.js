@@ -21,31 +21,37 @@ function EmailVerification() {
     event.preventDefault();
     const email = emailRef.current.value;
     const code = codeRef.current.value;
-
+  
     const obj = {
       email,
       code,
     };
     const js = JSON.stringify(obj);
-
+  
     try {
-      const response = await fetch(buildPath('api/sendemail'), {
+      const response = await fetch(buildPath('api/verifyemail'), {
         method: 'POST',
         body: js,
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
+  
       const res = await response.json();
-
-      if (res.message) {
-        setMessage(res.message);
+  
+      if (res.error) {
+        setMessage(res.error);
+      } else {
+        setMessage('Email has been verified. Redirecting to login...');
+        setTimeout(() => {
+          window.location.href = '/login'; 
+        }, 2000); 
       }
     } catch (e) {
       alert(e.toString());
     }
   };
+  
 
   return (
     <div id="emailVerificationDiv">
