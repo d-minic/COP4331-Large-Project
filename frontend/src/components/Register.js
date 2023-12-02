@@ -41,14 +41,26 @@ function Register() {
             if (res.error) {
                 setMessage(res.error);
             } else {
-                setMessage('Registration successful! Redirecting to login page.');
-                // Clear the form fields
-                registerName.value = '';
-                firstName.value = '';
-                lastName.value = '';
-                registerPassword.value = '';
-                // Redirects to login page- probably need to change when email verification is added
-                setTimeout(() => { window.location.href = '/EmailVerification'; }, 750);
+                const emailObj = {
+                    email: registerEmail.value,
+                    login: registerName.value,
+                };
+                const emailJs = JSON.stringify(emailObj);
+                const emailResponse = await fetch(buildPath('api/sendemail'), {
+                    method: 'POST',
+                    body: emailJs,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                var emailRes = JSON.parse(await emailResponse.text());
+                if (emailRes.error) {
+                    setMessage('Registration successful but unable to send verification email.');
+                } else {
+                    setMessage('Registration successful! Please check your email to verify.');
+                    
+                    setTimeout(() => { window.location.href = '/EmailVerification'; }, 750);
+                }
             }
         } catch (e) {
             alert(e.toString());
