@@ -649,16 +649,16 @@ app.post('/api/resetpassword', async (req, res, next) => {
 
 
     app.post('/api/verifyemail', async (req, res) => {
-        const { id, verificationCode } = req.body;
+        const { login, verificationCode } = req.body;
     
         try {
         const db = client.db('SmartTooth');
-        const user = await db.collection('Users').findOne({  _id: new ObjectId(id)  });
+        const user = await db.collection('Users').findOne({  Login: login  });
     
         if (user) {
             if (user.VerificationCode == verificationCode) {
             // Mark the user's email as verified in the database.
-            await db.collection('Users').updateOne({  _id: new ObjectId(id) }, { $set: { IsVerified: true } });
+            await db.collection('Users').updateOne({  Login: login }, { $set: { IsVerified: true } });
     
             let code;
             do {
@@ -667,7 +667,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
     
 
             // update to new code for later use
-            await db.collection('Users').updateOne({  _id: new ObjectId(id)  }, { $set: { VerificationCode: code } });
+            await db.collection('Users').updateOne({ Login: login  }, { $set: { VerificationCode: code } });
     
             res.status(200).json({ message: 'Email verified successfully.' });
             } else {
