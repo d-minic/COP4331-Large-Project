@@ -7,7 +7,6 @@ body, #inner-title, input, button {
 img[alt="Logo"] {
   width: 300px; 
   display: block;
-  margin: 0 auto 10px; 
 }
 
 #loginDiv {
@@ -35,6 +34,8 @@ input {
   padding: 10px 0px 20px;
   margin-bottom: 10px;
   font-size: 18px;
+  border: 1px solid #000; 
+  box-sizing: border-box;
 }
 
 #loginButton {
