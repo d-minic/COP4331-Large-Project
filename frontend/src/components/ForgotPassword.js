@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './ForgotPassword.css'; // Import the CSS file
 
 function ForgotPassword() {
-  const emailRef = useRef(null);
+  const loginRef = useRef(null);
   const [message, setMessage] = useState('');
   const app_name = 'smart-tooth-577ede9ea626';
 
@@ -17,15 +17,15 @@ function ForgotPassword() {
 
   const requestPasswordReset = async (event) => {
     event.preventDefault();
-    const email = emailRef.current.value;
+    const login = loginRef.current.value;
 
     const obj = {
-      email,
+      login,
     };
     const js = JSON.stringify(obj);
 
     try {
-      const response = await fetch(buildPath('api/request-password-reset'), {
+      const response = await fetch(buildPath('api/sendemail'), {
         method: 'POST',
         body: js,
         headers: {
