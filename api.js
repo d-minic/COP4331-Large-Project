@@ -11,19 +11,20 @@ exports.setApp = function ( app, client )
 {
     app.post('/api/sendemail', async (req, res, next) =>
     {
-        // incoming: email, login
+        // incoming: login
         // outgoing: error
-        const { email, login} = req.body;
+        const {login} = req.body;
         var results = '';
         var error = '';
         try
         {
             const db = client.db('SmartTooth');
-            const user = await db.collection('Users').findOne({Email:email,Login:login});
+            const user = await db.collection('Users').findOne({Login:login});
+            const userEmail = user.Email;
             const verificationCode = user.VerificationCode;
 
             const msg = {
-                to: email, 
+                to: userEmail, 
                 from: 'smarttoothlearning@gmail.com', 
                 subject: 'Verification Email',
                 text: `Here is your verification code: ${verificationCode}`,
