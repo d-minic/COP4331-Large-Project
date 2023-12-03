@@ -1,6 +1,6 @@
 import React from 'react';
 import PageTitle from '../components/PageTitle';
-import Register from '../components/Home';
+import Home from '../components/Home';
 
 
 const HomePage = () => {
