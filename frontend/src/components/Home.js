@@ -4,14 +4,10 @@ import './HomePage.css';
 
 function Home() {
     return (
-    <div>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"></link>
-        <link rel="stylesheet" href="homestyle.css"></link>
-        
+    <div id="homeDiv">
         <nav class="navbar fixed-top navbar-expand-lg navbar-light fs-5">
             <a href="#" class="navbar-brand mb-0 h1">
                 <img class="d-inline-block align-top" src="smarttoothlogo.PNG" width="200" ></img>
-                
             </a>
             <button
             type="button"
