@@ -69,6 +69,11 @@ html, body, #root {
     transition: background-color 0.3s ease;
     font-family: 'Jockey One', sans-serif;
   }
+
+  .btn:hover {
+    background-color: #4285f4;
+    color: #ffffff;
+  }
   
   .login-btn {
     background-color: #C3E6F2; 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './EmailVerification.css';
 
 function EmailVerification() {
-  const emailRef = useRef(null);
+  const loginRef = useRef(null);
   const codeRef = useRef(null);
 
   const [message, setMessage] = useState('');
@@ -19,15 +19,12 @@ function EmailVerification() {
 
   const doVerifyEmail = async (event) => {
     event.preventDefault();
-    const email = emailRef.current.value;
-    const code = codeRef.current.value;
-  
-    const obj = {
-      email,
-      code,
-    };
+    const login = loginRef.current.value;
+    const verificationCode = codeRef.current.value;
+
+    const obj = { login, verificationCode };
     const js = JSON.stringify(obj);
-  
+
     try {
       const response = await fetch(buildPath('api/verifyemail'), {
         method: 'POST',
@@ -36,35 +33,34 @@ function EmailVerification() {
           'Content-Type': 'application/json',
         },
       });
-  
+
       const res = await response.json();
-  
+
       if (res.error) {
         setMessage(res.error);
       } else {
         setMessage('Email has been verified. Redirecting to login...');
         setTimeout(() => {
-          window.location.href = '/login'; 
-        }, 2000); 
+          window.location.href = '/login';
+        }, 2000);
       }
     } catch (e) {
       alert(e.toString());
     }
   };
-  
 
   return (
     <div id="emailVerificationDiv">
       <form onSubmit={doVerifyEmail}>
-        <span id="inner-title">VERIFY EMAIL</span>
+        <span id="inner-title">VERIFY ACCOUNT</span>
         <br />
-        <input type="text" id="email" placeholder="Email" ref={emailRef} />
+        <input type="text" id="login" placeholder="Username" ref={loginRef} />
         <input type="text" id="verificationCode" placeholder="Verification Code" ref={codeRef} />
         <input
           type="submit"
           id="verifyEmailButton"
           className="buttons"
-          value="Verify Email"
+          value="Verify Account"
           onClick={doVerifyEmail}
         />
       </form>
