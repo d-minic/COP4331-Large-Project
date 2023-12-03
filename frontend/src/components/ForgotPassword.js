@@ -48,7 +48,7 @@ function ForgotPassword() {
       <form onSubmit={requestPasswordReset}>
         <span id="inner-title">FORGOT PASSWORD</span>
         <br />
-        <input type="text" id="email" placeholder="Email" ref={emailRef} />
+        <input type="text" id="login" placeholder="Login" ref={loginRef} />
         <input
           type="submit"
           id="resetPasswordButton"
