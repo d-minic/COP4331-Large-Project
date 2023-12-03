@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import CardPage from './pages/CardPage';
 import RegisterPage from './pages/RegisterPage';
 import EmailVerification from './pages/EmailVerification';
+import HomePage from './pages/HomePage';
 function App() {
 return (
 <BrowserRouter>
