@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import './ForgotPassword.css'; // Import the CSS file
+import './ForgotPassword.css'; // Import the CSS file for Forgot Password
 
 function ForgotPassword() {
   const loginRef = useRef(null);
+  const codeRef = useRef(null);
+
   const [message, setMessage] = useState('');
   const app_name = 'smart-tooth-577ede9ea626';
 
@@ -15,17 +17,16 @@ function ForgotPassword() {
     }
   }
 
-  const requestPasswordReset = async (event) => {
+  const doForgotPassword = async (event) => {
     event.preventDefault();
     const login = loginRef.current.value;
+    const verificationCode = codeRef.current.value;
 
-    const obj = {
-      login,
-    };
+    const obj = { login, verificationCode };
     const js = JSON.stringify(obj);
 
     try {
-      const response = await fetch(buildPath('api/sendemail'), {
+      const response = await fetch(buildPath('api/forgotpassword'), {
         method: 'POST',
         body: js,
         headers: {
@@ -35,8 +36,13 @@ function ForgotPassword() {
 
       const res = await response.json();
 
-      if (res.message) {
-        setMessage(res.message);
+      if (res.error) {
+        setMessage(res.error);
+      } else {
+        setMessage('Password reset successful. Redirecting to login...');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 2000);
       }
     } catch (e) {
       alert(e.toString());
@@ -45,20 +51,20 @@ function ForgotPassword() {
 
   return (
     <div id="forgotPasswordDiv">
-      <form onSubmit={requestPasswordReset}>
+      <form onSubmit={doForgotPassword}>
         <span id="inner-title">FORGOT PASSWORD</span>
         <br />
-        <input type="text" id="login" placeholder="Login" ref={loginRef} />
+        <input type="text" id="login" placeholder="Username" ref={loginRef} />
+        <input type="text" id="verificationCode" placeholder="Verification Code" ref={codeRef} />
         <input
           type="submit"
           id="resetPasswordButton"
           className="buttons"
           value="Reset Password"
-          onClick={requestPasswordReset}
+          onClick={doForgotPassword}
         />
       </form>
       <span id="resetPasswordMessage">{message}</span>
-      <Link to="/login">Remembered your password? Log in here</Link>
     </div>
   );
 }
