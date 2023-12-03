@@ -15,6 +15,7 @@ return (
 <Route path="/register" element={<RegisterPage />} />
 <Route path="/cards" element={<CardPage />} />
 <Route path="/EmailVerification" element={<EmailVerification />} />
+<Route path="/home" element={<HomePage />} />
 </Routes>
 </BrowserRouter>
 );
