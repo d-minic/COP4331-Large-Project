@@ -437,7 +437,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
         const user = await db.collection('Users').findOne({ Login: login });
         const id = user._id;
 
-        if (user.VerificationCode === verificationCode) {
+        if (user.VerificationCode == verificationCode) {
             // Hash the new password before storing it
             const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -712,7 +712,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
 
 
     app.post('/api/deletetest', async (req, res, next) => {
-        // incoming: id, owner, deleteAll
+        // incoming: id, owner, owner
         // outgoing: error
     
         const { id, testId, owner} = req.body;
