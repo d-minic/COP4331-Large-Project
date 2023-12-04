@@ -1,21 +1,45 @@
-.navbar {
-    height: 80px;
+body{
+    margin: 0px;
+}
+.navbar{
     border-bottom: 3px solid;
 }
-.navbar-nav > li{
-    padding-left:0px;
-    padding-right:15px;
-  }
 
+.navbar ul{
+    list-style-type: none;
+    background-color: white;
+    padding: 0px;
+    margin: 0px;;
+    overflow: hidden;
+}
+
+.navbar a{
+    font-family: monospace;
+    color: black;
+    font-size: 32;
+    text-decoration: none;
+    padding: 24px;
+    display: block;
+    text-align: center;
+    
+}
+
+.navbar a:hover{
+    background-color: lightgrey;
+}
+
+.navbar li{
+    float: right;
+}
+
+.navbar img{
+    float: left;
+}
 .wrapper{
     max-height: 250px;
     border: 1px soild #ddd;
     display: flex;
     overflow-x: auto;
-}
-
-.wrapper::-webkit-scrollbar{
-    width:10;
 }
 
 .wrapper .item{
