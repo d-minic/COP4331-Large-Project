@@ -22,6 +22,7 @@ h1{
 
 .navbar a{
     font-family: monospace;
+    background-color: white !important;
     color: black;
     font-size: 28px;
     text-decoration: none;
@@ -37,6 +38,7 @@ h1{
 
 .navbar li{
     float: right;
+    background-color: white !important;
 }
 
 .navbar img{
