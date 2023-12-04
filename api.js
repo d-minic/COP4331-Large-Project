@@ -111,9 +111,9 @@ app.post('/api/login', async (req, res, next) => {
             const passwordMatch = await bcrypt.compare(password, user.Password);
 
             if (passwordMatch) {
-                const { _id, FirstName, LastName, Email } = user;
+                const { _id, FirstName, LastName, Email, Points, Friends, IsVerified } = user;
                 const token = require("./createJWT.js");
-                const ret = token.createToken(_id, FirstName, LastName, Email);
+                const ret = token.createToken(_id, FirstName, LastName, Email, Points, Friends, IsVerified);
                 res.status(200).json(ret);
             } else {
                 error = "Login/Password incorrect";
@@ -133,9 +133,10 @@ app.post('/api/login', async (req, res, next) => {
 
     app.post('/api/addquestion', async (req, res, next) =>
     {
-        // incoming:  question, answers, numberAnswers, correctAnswer, subject
+        // incoming:  question, answers, correctAnswer, subject
         // outgoing: error
-        const { question, answers, numberAnswers, correctAnswer, subject} = req.body;
+        const { question, answers, correctAnswer, subject} = req.body;
+        const numberAnswers = answers.length;
         const newQuestion = {Question:question,Answers:answers,NumberAnswers:numberAnswers,CorrectAnswer:correctAnswer,Subject:subject,Solved:false};
         var error = '';
         try
@@ -153,23 +154,23 @@ app.post('/api/login', async (req, res, next) => {
 
     app.post('/api/addtest', async (req, res, next) =>
     {
-        // incoming: name, creator, length, array of questions, public
+        // incoming: name, creator, array of questions, public
         // outgoing: error
         var error = '';
         try{
 
-            const { name, creator, length, questions, public} = req.body;
+            const { name, creator, questions, public} = req.body;
             const questionIds = [];
 
             const creatorLogin = creator || 'Anonymous';
 
             for (const questionData of questions)
             {
-                const { Question, Answers, NumberAnswers, CorrectAnswer, Subject } = questionData;
+                const { Question, Answers, CorrectAnswer, Subject } = questionData;
                 const newQuestion = {
                     Question,
                     Answers,
-                    NumberAnswers,
+                    NumberAnswers: Answers.length,
                     CorrectAnswer,
                     Subject
                 };
@@ -180,6 +181,8 @@ app.post('/api/login', async (req, res, next) => {
                 questionIds.push(questionID);
 
             }
+
+            const length = questions.length;
 
             const newTest = {Name:name,Creator:creatorLogin,Length:length,Questions:questionIds,Public:public,NumberAccesses:0};
             
@@ -745,13 +748,14 @@ app.post('/api/resetpassword', async (req, res, next) => {
 
 
     app.post('/api/edittest', async (req, res, next) => {
-        // incoming: id, testId, name, creator, length, public, questions
+        // incoming: id, testId, name, creator, public, questions
         // outgoing: error
-        const { id, testId, name, creator, length, public, questions } = req.body;
+        const { id, testId, name, creator, public, questions } = req.body;
         var error = '';
         try {
             const db = client.db('SmartTooth');
             let questionIds = questions;
+            const length = questions.length;
             const questionObjectIds = questionIds.map(questionId => new ObjectId(questionId));
             await db.collection('Tests').updateOne({  _id: new ObjectId(testId)  }, { $set: { Name: name, Creator: creator, Length: length, Public:public, Questions: questionObjectIds} });
             
@@ -777,11 +781,12 @@ app.post('/api/resetpassword', async (req, res, next) => {
 
 
     app.post('/api/editquestion', async (req, res, next) => {
-        // incoming: id, question, answers, numberAnswers, correctAnswer, subject
+        // incoming: id, question, answers, correctAnswer, subject
         // outgoing: error
-        const { id, question, answers, numberAnswers, correctAnswer, subject } = req.body;
+        const { id, question, answers, correctAnswer, subject } = req.body;
         var error = '';
         try {
+            const numberAnswers = answers.length;
             const db = client.db('SmartTooth');
             await db.collection('Question').updateOne({  _id: new ObjectId(id)  }, { $set: { Question: question, Answers: answers, NumberAnswers: numberAnswers, CorrectAnswer: correctAnswer,  Subject: subject} });
         } catch (e) {
