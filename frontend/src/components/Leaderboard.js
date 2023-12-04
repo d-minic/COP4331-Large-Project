@@ -19,7 +19,7 @@ const Leaderboard = () => {
       try {
         const response = await fetch(buildPath('/api/getleaders'), {
           method: 'POST',
-          body: JSON.stringify({}),  // Fix the typo here
+          body: JSON.stringify({}),
           headers: {'Content-Type': 'application/json'},
         });
         const data = await response.json();
@@ -37,9 +37,9 @@ const Leaderboard = () => {
       <h1>Overall Leaderboard</h1>
       <ul>
         {leaderboardData.map((user) => (
-          <li key={user.userId}>
-            <span className="username">{user.username}</span>
-            <span className="score">{user.score}</span>
+          <li key={user._id}>
+            <span className="username">{user.Login}</span>
+            <span className="score">{user.Points}</span>
           </li>
         ))}
       </ul>
