@@ -528,17 +528,20 @@ app.post('/api/resetpassword', async (req, res, next) => {
                 "_id": { $nin: userActiveTestIds } 
             }).toArray();
 
+            /*
             const userActiveTestDetails = await Promise.all(
                 userActiveTestIds.map(async (testId) => {
-                    const test = await db.collection('Tests').findOne({ _id: new ObjectId(testId) });
+                    const test = await db.collection('Tests').findOne({ _id: testId });
                     return test;
                 })
             );
+            */
 
-            console.log(userActiveTestIds);
-            console.log(publicTests);
-                
-            results = userActiveTestDetails.concat(publicTests);
+            //console.log(userActiveTestIds);
+            //console.log(publicTests);
+               
+            results = publicTests;
+            //results = userActiveTestDetails.concat(publicTests);
 
         }catch(e)
         {
