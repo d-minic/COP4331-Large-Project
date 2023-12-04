@@ -5,6 +5,7 @@ h1{
     font-family: monospace;
     font-size: 32px;
     color: black;
+    text-align: left;
 }
 .navbar{
     border-bottom: 3px solid;
