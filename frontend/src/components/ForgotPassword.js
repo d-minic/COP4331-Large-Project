@@ -41,7 +41,7 @@ function ForgotPassword() {
       } else {
         setMessage('Password reset successful. Redirecting to login...');
         setTimeout(() => {
-          window.location.href = '/login';
+          window.location.href = '/PasswordRecovery';
         }, 2000);
       }
     } catch (e) {
