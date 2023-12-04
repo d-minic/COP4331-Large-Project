@@ -17,11 +17,15 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const response = await fetch(buildPath('/api/leaderboard'));
+        const response = await fetch(buildPath('/api/getleaders'), {
+          method: 'POST',
+          body: JSON.stringify({}),  // Fix the typo here
+          headers: {'Content-Type': 'application/json'},
+        });
         const data = await response.json();
-        setLeaderboardData(data);
+        setLeaderboardData(data.results);
       } catch (error) {
-        console.error('Error fetching leaderboard:', error);
+        console.error('Error fetching getleaders:', error);
       }
     };
 
