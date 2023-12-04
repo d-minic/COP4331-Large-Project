@@ -8,7 +8,7 @@ function Home() {
         
             <nav class="navbar fixed-top navbar-expand-lg navbar-light fs-5">
                 <a href="#" class="navbar-brand mb-0 h1">
-                    <img class="d-inline-block align-top" src="smarttoothlogo.PNG" width="200" >
+                    <img class="d-inline-block align-top" src="smarttoothlogo.PNG" width="200" ></img>
                     
                 </a>
                 <button
