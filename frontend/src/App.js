@@ -10,6 +10,10 @@ import HomePage from './pages/HomePage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage'; 
 import PasswordRecoveryPage from './pages/PasswordRecoveryPage';
 import ExamPage from './pages/ExamPage';
+import LeaderboardPage from './pages/LeaderboardPage';
+
+
+
 
 function App() {
 return (
@@ -24,6 +28,7 @@ return (
 <Route path="/ForgotPassword" element={<ForgotPasswordPage />} />
 <Route path="/PasswordRecovery" element={<PasswordRecoveryPage />} />
 <Route path="/Exam" element={<ExamPage />} />
+<Route path="/Leaderboard" element={<LeaderboardPage />} />
 </Routes>
 </BrowserRouter>
 );
