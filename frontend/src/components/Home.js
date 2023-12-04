@@ -22,8 +22,8 @@ function Home() {
         </nav>
     
         <main>
-            <h1 style="margin-top: 100px; margin-left: 20px">Recent:</h1>
-            <div class="wrapper" style="margin-top: 20px;">
+            <h1>Recent:</h1>
+            <div class="wrapper">
                 <div class="item">Biology 1</div>
                 <div class="item">Biology 2</div>
                 <div class="item">Chemistry 1</div>
@@ -31,8 +31,8 @@ function Home() {
                 <div class="item">Physics 1</div>
                 <div class="item">Physics 2</div>
             </div>
-            <h1 style="margin-top: 100px; margin-left: 20px">Popular:</h1>
-            <div class="wrapper" style="margin-top: 20px;">
+            <h1>Popular:</h1>
+            <div class="wrapper">
                 <div class="item">Biology 1</div>
                 <div class="item">Biology 2</div>
                 <div class="item">Chemistry 1</div>
