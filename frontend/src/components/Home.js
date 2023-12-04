@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './HomePage.css'; 
-//import "bootstrap/dist/css/bootstrap.min.css";
+import logo from './smarttoothlesspixel.PNG'; 
 
 function Home() {
     return (
     <div id="homeDiv">
         <nav class="navbar">
             <ul>
-                <img src="smarttoothlesspixel.PNG" height="80"></img>
+                <img src={logo} height="80"></img>
                 
                 <li><a href="">Logout</a></li>
                 <li><a href="">Profile</a></li>
