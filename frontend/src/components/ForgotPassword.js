@@ -4,7 +4,7 @@ import './ForgotPassword.css'; // Import the CSS file for Forgot Password
 
 function ForgotPassword() {
   const loginRef = useRef(null);
-  const codeRef = useRef(null);
+
 
   const [message, setMessage] = useState('');
   const app_name = 'smart-tooth-577ede9ea626';
@@ -20,13 +20,13 @@ function ForgotPassword() {
   const doForgotPassword = async (event) => {
     event.preventDefault();
     const login = loginRef.current.value;
-    const verificationCode = codeRef.current.value;
+  
 
-    const obj = { login, verificationCode };
+    const obj = { login };
     const js = JSON.stringify(obj);
 
     try {
-      const response = await fetch(buildPath('api/forgotpassword'), {
+      const response = await fetch(buildPath('api/sendemail'), {
         method: 'POST',
         body: js,
         headers: {
@@ -55,7 +55,6 @@ function ForgotPassword() {
         <span id="inner-title">FORGOT PASSWORD</span>
         <br />
         <input type="text" id="login" placeholder="Username" ref={loginRef} />
-        <input type="text" id="verificationCode" placeholder="Verification Code" ref={codeRef} />
         <input
           type="submit"
           id="resetPasswordButton"
