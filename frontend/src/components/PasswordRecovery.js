@@ -57,9 +57,9 @@ function PasswordRecovery() {
         <br />
      <label htmlFor="loginName">UserName:</label>
         <input type="text" id="login" placeholder="Username" ref={loginRef} />
-     <label htmlFor="loginName">New Password:</label>
+     <label htmlFor="newPassword">New Password:</label>
         <input type="password" id="newPassword" placeholder="New Password" ref={newPasswordRef} />
-     <label htmlFor="loginName">Verification Code:</label>
+     <label htmlFor="verificationCode">Verification Code:</label>
         <input type="text" id="verificationCode" placeholder="Verification Code" ref={codeRef} />
         <input
           type="submit"
