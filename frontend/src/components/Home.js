@@ -9,7 +9,7 @@ function Home() {
         <nav class="navbar">
             <ul>
                 <img src={logo} height="80"></img>
-                <li><a href="LandingPage">Logout<a/></li>
+                <li><a href="LandingPage">Logout</a></li>
                 <li><a href="">Profile</a></li>
                 <li><a href="">Friends</a></li>
                 <li><a href="">Leaderboard</a></li>
