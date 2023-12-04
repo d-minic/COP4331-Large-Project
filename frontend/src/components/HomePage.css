@@ -6,6 +6,7 @@ h1{
     font-size: 32px;
     color: black;
     text-align: left;
+    margin-left: 10px;
 }
 .navbar{
     border-bottom: 3px solid;
