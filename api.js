@@ -154,12 +154,12 @@ app.post('/api/login', async (req, res, next) => {
 
     app.post('/api/addtest', async (req, res, next) =>
     {
-        // incoming: name, creator, array of questions, public
+        // incoming: name, creator, array of questions, isPublic
         // outgoing: error
         var error = '';
         try{
 
-            const { name, creator, questions, public} = req.body;
+            const { name, creator, questions, isPublic} = req.body;
             const questionIds = [];
 
             const creatorLogin = creator || 'Anonymous';
@@ -184,7 +184,7 @@ app.post('/api/login', async (req, res, next) => {
 
             const length = questions.length;
 
-            const newTest = {Name:name,Creator:creatorLogin,Length:length,Questions:questionIds,Public:public,NumberAccesses:0};
+            const newTest = {Name:name,Creator:creatorLogin,Length:length,Questions:questionIds,Public:isPublic,NumberAccesses:0};
             
             const db = client.db('SmartTooth');
             const result = db.collection('Tests').insertOne(newTest);
@@ -751,16 +751,16 @@ app.post('/api/resetpassword', async (req, res, next) => {
 
 
     app.post('/api/edittest', async (req, res, next) => {
-        // incoming: id, testId, name, creator, public, questions
+        // incoming: id, testId, name, creator, isPublic, questions
         // outgoing: error
-        const { id, testId, name, creator, public, questions } = req.body;
+        const { id, testId, name, creator, isPublic, questions } = req.body;
         var error = '';
         try {
             const db = client.db('SmartTooth');
             let questionIds = questions;
             const length = questions.length;
             const questionObjectIds = questionIds.map(questionId => new ObjectId(questionId));
-            await db.collection('Tests').updateOne({  _id: new ObjectId(testId)  }, { $set: { Name: name, Creator: creator, Length: length, Public:public, Questions: questionObjectIds} });
+            await db.collection('Tests').updateOne({  _id: new ObjectId(testId)  }, { $set: { Name: name, Creator: creator, Length: length, Public:isPublic, Questions: questionObjectIds} });
             
             const questionsArray = questionObjectIds.map(questionId => ({
                 questionId,
@@ -928,7 +928,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
         } catch (e) {
             error = e.toString();
         }
-        var ret = { error: error };
+        var ret = { score: percentageCorrect, error: error };
         res.status(200).json(ret);
     });
 
