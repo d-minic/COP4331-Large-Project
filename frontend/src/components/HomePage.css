@@ -2,10 +2,10 @@ body{
     margin: 0px;
 }
 h1{
+    text-align: left;
     font-family: monospace;
     font-size: 28px;
     color: black;
-    text-align: left;
     margin-left: 10px;
 }
 .navbar{
