@@ -1,5 +1,6 @@
 import React from 'react';
 import './LoggedInName.css';
+import { Link } from 'react-router-dom';
 
 function LoggedInName()
 {
@@ -18,6 +19,7 @@ return(
 <div id="loggedInDiv">
   <img src={process.env.PUBLIC_URL + '/smarttoothlogo.PNG'} alt="Logo" width="200" />  <br/>
 <span id="userName">Logged In As {firstName} {lastName}</span><br />
+       <Link to="/exam">Take Exam</Link><br /> 
 <button type="button" id="logoutButton" class="buttons"
 onClick={doLogout}> Log Out </button>
 </div>

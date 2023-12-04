@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import './EmailVerification.css';
+import './passwordRecovery.css'; // Import the CSS file for Password Recovery
 
-function EmailVerification() {
+function PasswordRecovery() {
   const loginRef = useRef(null);
+  const newPasswordRef = useRef(null);
   const codeRef = useRef(null);
 
   const [message, setMessage] = useState('');
@@ -17,16 +17,17 @@ function EmailVerification() {
     }
   }
 
-  const doVerifyEmail = async (event) => {
+  const doPasswordRecovery = async (event) => {
     event.preventDefault();
     const login = loginRef.current.value;
+    const newPassword = newPasswordRef.current.value;
     const verificationCode = codeRef.current.value;
 
-    const obj = { login, verificationCode };
+    const obj = { login, newPassword, verificationCode };
     const js = JSON.stringify(obj);
 
     try {
-      const response = await fetch(buildPath('api/verifyemail'), {
+      const response = await fetch(buildPath('api/resetpassword'), {
         method: 'POST',
         body: js,
         headers: {
@@ -39,7 +40,7 @@ function EmailVerification() {
       if (res.error) {
         setMessage(res.error);
       } else {
-        setMessage('Email has been verified. Redirecting to login...');
+        setMessage('Password reset successful. Redirecting to login...');
         setTimeout(() => {
           window.location.href = '/login';
         }, 2000);
@@ -50,25 +51,27 @@ function EmailVerification() {
   };
 
   return (
-    <div id="emailVerificationDiv">
-      <form onSubmit={doVerifyEmail}>
-        <span id="inner-title">VERIFY ACCOUNT</span>
+    <div id="passwordRecoveryDiv">
+      <form onSubmit={doPasswordRecovery}>
+        <span id="inner-title">PASSWORD RECOVERY</span>
         <br />
-     <label htmlFor="login">UserName:</label>
+     <label htmlFor="loginName">UserName:</label>
         <input type="text" id="login" placeholder="Username" ref={loginRef} />
-     <label htmlFor="verificatiionCode">Verification Code:</label>
+     <label htmlFor="newPassword">New Password:</label>
+        <input type="password" id="newPassword" placeholder="New Password" ref={newPasswordRef} />
+     <label htmlFor="verificationCode">Verification Code:</label>
         <input type="text" id="verificationCode" placeholder="Verification Code" ref={codeRef} />
         <input
           type="submit"
-          id="verifyEmailButton"
+          id="resetPasswordButton"
           className="buttons"
-          value="Verify Account"
-          onClick={doVerifyEmail}
+          value="Reset Password"
+          onClick={doPasswordRecovery}
         />
       </form>
-      <span id="verificationMessage">{message}</span>
+      <span id="resetPasswordMessage">{message}</span>
     </div>
   );
 }
 
-export default EmailVerification;
+export default PasswordRecovery;

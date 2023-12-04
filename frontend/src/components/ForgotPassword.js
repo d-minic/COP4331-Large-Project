@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import './EmailVerification.css';
+import './ForgotPassword.css'; // Import the CSS file for Forgot Password
 
-function EmailVerification() {
+function ForgotPassword() {
   const loginRef = useRef(null);
-  const codeRef = useRef(null);
+
 
   const [message, setMessage] = useState('');
   const app_name = 'smart-tooth-577ede9ea626';
@@ -17,16 +17,16 @@ function EmailVerification() {
     }
   }
 
-  const doVerifyEmail = async (event) => {
+  const doForgotPassword = async (event) => {
     event.preventDefault();
     const login = loginRef.current.value;
-    const verificationCode = codeRef.current.value;
+  
 
-    const obj = { login, verificationCode };
+    const obj = { login };
     const js = JSON.stringify(obj);
 
     try {
-      const response = await fetch(buildPath('api/verifyemail'), {
+      const response = await fetch(buildPath('api/sendemail'), {
         method: 'POST',
         body: js,
         headers: {
@@ -39,9 +39,9 @@ function EmailVerification() {
       if (res.error) {
         setMessage(res.error);
       } else {
-        setMessage('Email has been verified. Redirecting to login...');
+        setMessage('Password reset successful. Redirecting to login...');
         setTimeout(() => {
-          window.location.href = '/login';
+          window.location.href = '/PasswordRecovery';
         }, 2000);
       }
     } catch (e) {
@@ -50,25 +50,23 @@ function EmailVerification() {
   };
 
   return (
-    <div id="emailVerificationDiv">
-      <form onSubmit={doVerifyEmail}>
-        <span id="inner-title">VERIFY ACCOUNT</span>
+    <div id="forgotPasswordDiv">
+      <form onSubmit={doForgotPassword}>
+        <span id="inner-title">FORGOT PASSWORD</span>
         <br />
      <label htmlFor="login">UserName:</label>
         <input type="text" id="login" placeholder="Username" ref={loginRef} />
-     <label htmlFor="verificatiionCode">Verification Code:</label>
-        <input type="text" id="verificationCode" placeholder="Verification Code" ref={codeRef} />
         <input
           type="submit"
-          id="verifyEmailButton"
+          id="resetPasswordButton"
           className="buttons"
-          value="Verify Account"
-          onClick={doVerifyEmail}
+          value="Reset Password"
+          onClick={doForgotPassword}
         />
       </form>
-      <span id="verificationMessage">{message}</span>
+      <span id="resetPasswordMessage">{message}</span>
     </div>
   );
 }
 
-export default EmailVerification;
+export default ForgotPassword;
