@@ -1,6 +1,11 @@
 body{
     margin: 0px;
 }
+h1{
+    font-family: monospace;
+    font-size: 32px;
+    color: black;
+}
 .navbar{
     border-bottom: 3px solid;
 }
