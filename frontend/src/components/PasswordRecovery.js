@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import './passwordRecovery.css'; // Import the CSS file for Forgot Password
+import './passwordRecovery.css'; // Import the CSS file for Password Recovery
 
-function ForgotPassword() {
+function PasswordRecovery() {
   const loginRef = useRef(null);
-
+  const newPasswordRef = useRef(null);
+  const codeRef = useRef(null);
 
   const [message, setMessage] = useState('');
   const app_name = 'smart-tooth-577ede9ea626';
@@ -17,14 +17,13 @@ function ForgotPassword() {
     }
   }
 
-  const doForgotPassword = async (event) => {
+  const doPasswordRecovery = async (event) => {
     event.preventDefault();
     const login = loginRef.current.value;
-    const newPassword= passwordRef.current.value;
-    const verificationCode=codeRef.current.value;
-  
+    const newPassword = newPasswordRef.current.value;
+    const verificationCode = codeRef.current.value;
 
-    const obj = { login, newPassword, verificationCode};
+    const obj = { login, newPassword, verificationCode };
     const js = JSON.stringify(obj);
 
     try {
@@ -52,17 +51,19 @@ function ForgotPassword() {
   };
 
   return (
-    <div id="forgotPasswordDiv">
-      <form onSubmit={doForgotPassword}>
-        <span id="inner-title">FORGOT PASSWORD</span>
+    <div id="passwordRecoveryDiv">
+      <form onSubmit={doPasswordRecovery}>
+        <span id="inner-title">PASSWORD RECOVERY</span>
         <br />
         <input type="text" id="login" placeholder="Username" ref={loginRef} />
+        <input type="password" id="newPassword" placeholder="New Password" ref={newPasswordRef} />
+        <input type="text" id="verificationCode" placeholder="Verification Code" ref={codeRef} />
         <input
           type="submit"
           id="resetPasswordButton"
           className="buttons"
           value="Reset Password"
-          onClick={doForgotPassword}
+          onClick={doPasswordRecovery}
         />
       </form>
       <span id="resetPasswordMessage">{message}</span>
@@ -70,4 +71,4 @@ function ForgotPassword() {
   );
 }
 
-export default passwordRecovery;
+export default PasswordRecovery;
