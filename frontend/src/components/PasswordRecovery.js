@@ -55,8 +55,11 @@ function PasswordRecovery() {
       <form onSubmit={doPasswordRecovery}>
         <span id="inner-title">PASSWORD RECOVERY</span>
         <br />
+     <label htmlFor="loginName">UserName:</label>
         <input type="text" id="login" placeholder="Username" ref={loginRef} />
+     <label htmlFor="loginName">New Password:</label>
         <input type="password" id="newPassword" placeholder="New Password" ref={newPasswordRef} />
+     <label htmlFor="loginName">Verification Code:</label>
         <input type="text" id="verificationCode" placeholder="Verification Code" ref={codeRef} />
         <input
           type="submit"
