@@ -54,6 +54,7 @@ function ForgotPassword() {
       <form onSubmit={doForgotPassword}>
         <span id="inner-title">FORGOT PASSWORD</span>
         <br />
+     <label htmlFor="login">UserName:</label>
         <input type="text" id="login" placeholder="Username" ref={loginRef} />
         <input
           type="submit"
