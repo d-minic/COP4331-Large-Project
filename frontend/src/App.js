@@ -7,6 +7,8 @@ import CardPage from './pages/CardPage';
 import RegisterPage from './pages/RegisterPage';
 import EmailVerification from './pages/EmailVerification';
 import ForgotPasswordPage from './pages/ForgotPasswordPage'; 
+import PasswordRecoveryPage from './pages/PasswordRecoveryPage';
+
 function App() {
 return (
 <BrowserRouter>
@@ -17,6 +19,7 @@ return (
 <Route path="/cards" element={<CardPage />} />
 <Route path="/EmailVerification" element={<EmailVerification />} />
 <Route path="/ForgotPassword" element={<ForgotPasswordPage />} />
+<Route path="/PasswordRecovery" element={<PasswordRecoveryPage />} />
 </Routes>
 </BrowserRouter>
 );
