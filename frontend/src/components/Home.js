@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './HomePage.css'; 
+import Nav from "react-bootstrap/Nav";
 
 function Home() {
     return (
