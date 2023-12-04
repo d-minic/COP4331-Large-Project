@@ -9,14 +9,13 @@ function Home() {
         <nav class="navbar">
             <ul>
                 <img src={logo} height="80"></img>
-                
-                <li><a href="">Logout</a></li>
+                <li><a href="/">Logout</a></li>
                 <li><a href="">Profile</a></li>
                 <li><a href="">Friends</a></li>
-                <li><a href="">Leaderboard</a></li>
+                <li><a href="Leaderboard">Leaderboard</a></li>
                 <li><a href="">Browse</a></li>
                 <li><a href="">Create</a></li>
-                <li><a href="">Home</a></li>
+                <li><a href="home">Home</a></li>
                 
             </ul>
         </nav>
