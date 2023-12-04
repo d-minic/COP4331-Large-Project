@@ -1,5 +1,6 @@
 import React from 'react';
 import './LoggedInName.css';
+import { Link } from 'react-router-dom';
 
 function LoggedInName()
 {
