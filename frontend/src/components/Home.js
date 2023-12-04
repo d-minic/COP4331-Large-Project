@@ -8,7 +8,7 @@ function Home() {
     <div id="homeDiv">
         <nav class="navbar">
             <ul>
-                <img src="smarttoothlesspixel.PNG" height="80">
+                <img src="smarttoothlesspixel.PNG" height="80"></img>
                 
                 <li><a href="">Logout</a></li>
                 <li><a href="">Profile</a></li>
