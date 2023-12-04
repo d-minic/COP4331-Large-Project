@@ -54,7 +54,9 @@ function EmailVerification() {
       <form onSubmit={doVerifyEmail}>
         <span id="inner-title">VERIFY ACCOUNT</span>
         <br />
+     <label htmlFor="login">UserName:</label>
         <input type="text" id="login" placeholder="Username" ref={loginRef} />
+     <label htmlFor="verificatiionCode">Verification Code:</label>
         <input type="text" id="verificationCode" placeholder="Verification Code" ref={codeRef} />
         <input
           type="submit"
