@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './HomePage.css'; 
-import Nav from "bootstrap/Nav";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function Home() {
     return (
