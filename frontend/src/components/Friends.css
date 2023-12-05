@@ -1,0 +1,48 @@
+/* Friends.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Jockey+One&display=swap');
+
+body, #friends, h1, ul, li, .friendName, .friendScore {
+  font-family: 'Jockey One', sans-serif;
+  text-align: center !important;
+}
+
+#friends {
+  margin: auto;
+}
+
+h1 {
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 60%;
+  margin: 0 auto;
+}
+
+.friendName {
+  font-size: 18px;
+  font-weight: bold;
+  max-width: 50%; /* Adjusted max-width */
+}
+
+.friendScore {
+  font-size: 18px;
+  max-width: 30%; /* Adjusted max-width */
+}
