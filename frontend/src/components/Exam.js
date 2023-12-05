@@ -8,6 +8,7 @@ const Exam = () => {
   const [score, setScore] = useState(null); // Initialize score state
   const [selectedAnswers, setSelectedAnswers] = useState({}); 
   const [completionMessage, setCompletionMessage] = useState('');
+  const [sharkFact, setSharkFact] = useState('');
 
   const app_name = 'smart-tooth-577ede9ea626'
 
@@ -55,6 +56,28 @@ const Exam = () => {
     }
   };
 
+  const fetchSharkFact = async () => {
+    try {
+      var js = JSON.stringify({});
+      const response = await fetch(buildPath('api/getsharkfact'), {
+        method: 'POST',
+        body: js,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setSharkFact(result.results);
+        console.log(result);
+      } else {
+        console.error('Failed to fetch shark fact');
+      }
+    } catch (error) {
+      console.error('Error fetching shark fact:', error);
+    }
+  };
+
+
   const handleCompleteTest = async () => {
 
 
@@ -87,9 +110,10 @@ const Exam = () => {
       setIsTestCompleted(true);
       setScore(result.score);
       setCompletionMessage(`Test completed. Your score: ${Math.round(result.score)}%`);
-
+      await fetchSharkFact();
     } catch (error) {
       console.error('Error completing test:', error);
+      
     }
   };
 
@@ -210,6 +234,7 @@ const Exam = () => {
         </button>
         {completionMessage && <p>{completionMessage}</p>}
       {score !== null && !isTestCompleted && <p>Score: {Math.round(score)}%</p>}
+      {isTestCompleted && sharkFact && <p>Fun Fact: {sharkFact}</p>}
     </div>
   );
 };
