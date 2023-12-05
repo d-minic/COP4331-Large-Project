@@ -37,12 +37,12 @@ h1{
 }
 
 .navbar li{
-    float: right;
+    float: right !important;
     background-color: white !important;
 }
 
 .navbar img{
-    float: left;
+    float: left !important;
 }
 .wrapper{
     max-height: 250px;
