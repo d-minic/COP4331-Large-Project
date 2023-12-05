@@ -113,7 +113,7 @@ app.post('/api/login', async (req, res, next) => {
             if (passwordMatch) {
                 const { _id, FirstName, LastName, Email, Points, Friends, IsVerified } = user;
                 const token = require("./createJWT.js");
-                const ret = token.createToken(_id, FirstName, LastName, Email, Points, Friends, IsVerified);
+                const ret = token.createToken(_id, FirstName, LastName, Email, Points, Friends, IsVerified, error);
                 res.status(200).json(ret);
             } else {
                 error = "Login/Password incorrect";
@@ -126,7 +126,16 @@ app.post('/api/login', async (req, res, next) => {
     }
 
     if (error) {
-        res.status(200).json({ error });
+        const _id = '';
+        const FirstName = '';
+        const LastName = '';
+        const Email = '';
+        const Points = -1;
+        const Friends = [];
+        const IsVerified = null;
+        const token = require("./createJWT.js");
+        const ret = token.createToken(_id, FirstName, LastName, Email, Points, Friends, IsVerified, error);
+        res.status(200).json(ret);
     }
 });
 

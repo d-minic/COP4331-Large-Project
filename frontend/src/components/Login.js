@@ -45,7 +45,8 @@ function Login()
             var firstName = ud.firstName;
             var lastName = ud.lastName;
             var email = ud.email;
-            if( userId  === -1)
+            var error = ud.error;
+            if( error != '')
             {
                 setMessage('User/Password combination incorrect');
             }

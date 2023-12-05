@@ -2,17 +2,17 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 
-exports.createToken = function ( id, fn, ln, email, points, friends, isVerified)
+exports.createToken = function ( id, fn, ln, email, points, friends, isVerified, error)
 {
-    return _createToken( id, fn, ln, email, points, friends, isVerified);
+    return _createToken( id, fn, ln, email, points, friends, isVerified, error);
 }
 
-_createToken = function ( id, fn, ln, email, points, friends, isVerified)
+_createToken = function ( id, fn, ln, email, points, friends, isVerified, error)
 {
     try
     {
         const expiration = new Date();
-        const user = {userId:id, firstName:fn, lastName:ln, email:email, points:points, friends:friends, isVerified:isVerified};
+        const user = {userId:id, firstName:fn, lastName:ln, email:email, points:points, friends:friends, isVerified:isVerified, error:error};
         const accessToken = jwt.sign( user, process.env.ACCESS_TOKEN_SECRET);
         // In order to expire with a value other than the default, use the
         // following
@@ -64,5 +64,6 @@ exports.refresh = function( token )
     var points = ud.payload.points;
     var friends = ud.payload.friends;
     var isVerified = ud.payload.isVerified;
-    return _createToken( userId, firstName, lastName, email, points, friends, isVerified);
+    var error = ud.payload.error;
+    return _createToken( userId, firstName, lastName, email, points, friends, isVerified, error);
 }
