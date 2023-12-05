@@ -54,8 +54,12 @@ const Friends = () => {
   };
 
   useEffect(() => {
+    // Assuming you have a way to get the user ID
+    const loggedInUserId = ''; // Replace this with your logic to get the logged-in user ID
+    setUserId(loggedInUserId);
+
     fetchFriends();
-  }, [userId, searchQuery]);
+  }, [searchQuery]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
