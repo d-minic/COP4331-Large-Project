@@ -11,7 +11,7 @@ function Home() {
                 <img src={logo} height="80"></img>
                 <li><a href="/">Logout</a></li>
                 <li><a href="">Profile</a></li>
-                <li><a href="">Friends</a></li>
+                <li><a href="Friends">Friends</a></li>
                 <li><a href="Leaderboard">Leaderboard</a></li>
                 <li><a href="Browse">Browse</a></li>
                 <li><a href="">Create</a></li>
