@@ -879,6 +879,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
         // incoming: id, testId
         // outgoing: error
         const { id, testId} = req.body;
+        let percentageCorrect = null;
         var error = '';
         try {
             const db = client.db('SmartTooth');
@@ -898,7 +899,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
 
                         const correctCount = questions.filter(question => question.correct === true).length;
                         const totalQuestions = questions.length;
-                        const percentageCorrect = (correctCount / totalQuestions) * 100;
+                        percentageCorrect = (correctCount / totalQuestions) * 100;
 
                         activeTests[testIndex].LastScore = percentageCorrect;
 
