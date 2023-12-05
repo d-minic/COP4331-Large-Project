@@ -1,0 +1,77 @@
+/* ExamPage.module.css */
+.examTitle {
+  color: #333;
+  text-align: center;
+}
+/* 
+.questionContainer {
+  Add any additional styling for the question container 
+}
+*/
+.questionTitle {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.answerList {
+  list-style: none;
+  padding: 0;
+}
+
+.answerItem {
+  margin: 5px auto;
+  cursor: pointer;
+  background-color: #e0e0e0;
+  padding: 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  width: 60%;
+  float: none;
+}
+
+.answerItem:hover {
+  background-color: #d4d4d4;
+}
+
+.selected-answer {
+  background-color: #3498db;
+  color: #fff;
+  font-weight: bold;
+}
+
+.correct-answer {
+  background-color: green;
+  color: #fff;
+  font-weight: bold;
+}
+
+.incorrect-answer {
+  background-color: red;
+  color: #fff;
+  font-weight: bold;
+}
+
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.button {
+  flex: 1;
+  margin-right: 10px;
+  background-color: #4285f4;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #34579e;
+}
