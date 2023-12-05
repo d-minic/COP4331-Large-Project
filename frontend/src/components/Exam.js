@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './ExamPage.module.css'; // Import the CSS file
+const testId = "6564f0a624cfd1bdc400901e";
+const userId = "65623cb210dcacc0c1486814"
 
 const Exam = () => {
   const [questions, setQuestions] = useState([]);
@@ -9,6 +11,8 @@ const Exam = () => {
   const [selectedAnswers, setSelectedAnswers] = useState({}); 
   const [completionMessage, setCompletionMessage] = useState('');
   const [sharkFact, setSharkFact] = useState('');
+  const [points, setPoints] = useState(0);
+  const [testName, setTestName] = useState('');
 
   const app_name = 'smart-tooth-577ede9ea626'
 
@@ -24,15 +28,49 @@ const Exam = () => {
       }
   }
 
+  const fetchUserInfo = async () => {
+    try {
+      const obj = {
+        id: userId,
+      };
+      const js = JSON.stringify(obj);
+
+      const response = await fetch(buildPath('api/getuserinfo'), {
+        method: 'POST',
+        body: js,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);        
+        setPoints(result.results.Points);
+        // Other info here if we need it
+      } else {
+        console.error('Failed to fetch user information');
+      }
+    } catch (error) {
+      console.error('Error fetching user information:', error);
+    }
+  };
+
+
   const handleAnswerClick = async (questionId, selectedAnswer) => {
-  const correctAnswer = questionInfo[questionId]?.correctAnswer;
+  
+    if (isTestCompleted) {
+      return;
+    }
+  
+    const correctAnswer = questionInfo[questionId]?.correctAnswer;
 
   try
   {
     const obj = 
     {
-      id: "65623cb210dcacc0c1486814",
-      testId: "6564f0a624cfd1bdc400901e",
+      id: userId,
+      testId:  testId,
       questionId: questionId,
       correct: selectedAnswer === correctAnswer,
     };
@@ -77,6 +115,28 @@ const Exam = () => {
     }
   };
 
+  const addPoints = async (pointsToAdd) => {
+    try {
+      var js = JSON.stringify({id:userId,points: pointsToAdd});
+      const response = await fetch(buildPath('api/addpoints'), {
+        method: 'POST',
+        body: js,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setPoints((prevPoints) => prevPoints + pointsToAdd);
+        console.log(result);
+      } else {
+        console.error('Failed to fetch shark fact');
+      }
+    } catch (error) {
+      console.error('Error fetching shark fact:', error);
+    }
+  };
+
+
 
   const handleCompleteTest = async () => {
 
@@ -92,14 +152,14 @@ const Exam = () => {
     // Call the endpoint to complete the test
     try {
 
-      const obj = 
+      var obj = 
       {
-        id: "65623cb210dcacc0c1486814",
-        testId: "6564f0a624cfd1bdc400901e"
+        id: userId,
+        testId:  testId
       };
       var js = JSON.stringify(obj);
   
-      const response = await fetch(buildPath('api/completetest'), {
+      var response = await fetch(buildPath('api/completetest'), {
         method: 'POST',
         body: js,
         headers: { 'Content-Type': 'application/json' },
@@ -111,6 +171,9 @@ const Exam = () => {
       setScore(result.score);
       setCompletionMessage(`Test completed. Your score: ${Math.round(result.score)}%`);
       await fetchSharkFact();
+      await addPoints(Math.round(result.score*0.1));
+
+
     } catch (error) {
       console.error('Error completing test:', error);
       
@@ -120,15 +183,18 @@ const Exam = () => {
   useEffect(() => {
     // Fetch questions from the 'getquestions' endpoint when the component mounts
     const fetchQuestions = async () => {
-    var obj = {id:"6564f0a624cfd1bdc400901e"};
+    var obj = {id: testId};
     var js = JSON.stringify(obj);
       try 
       {
+        //TODO get points
         const response = await fetch(buildPath('api/getquestions'),
         {method:'POST',body:js,headers:{'Content-Type':
         'application/json'}});
         const data = await response.json();
         setQuestions(data.results);
+        console.log(data);
+        setTestName(data.name);
         const info = {};
         data.results.forEach((question) => {
           info[question._id] = {
@@ -144,7 +210,12 @@ const Exam = () => {
       }
     };
 
+    const fetchInitialUserInfo = async () => {
+      await fetchUserInfo();
+    };
+
     fetchQuestions();
+    fetchInitialUserInfo();
   }, []);
 
   const handleClearTest = async() => {
@@ -167,8 +238,8 @@ const Exam = () => {
 
     try {
       const obj = {
-        id: "65623cb210dcacc0c1486814",
-        testId: "6564f0a624cfd1bdc400901e"
+        id: userId,
+        testId:  testId
       };
       const js = JSON.stringify(obj);
   
@@ -189,7 +260,7 @@ const Exam = () => {
 
   return (
     <div>
-      <h1 className={styles.examTitle}>Test Name</h1>
+      <h1 className={styles.examTitle}>{testName}</h1>
       {questions.map((question) => (
         <div key={question._id} className={styles.questionContainer}>
           <h3 className={styles.questionTitle}>{question.Question}</h3>
@@ -235,6 +306,7 @@ const Exam = () => {
         {completionMessage && <p>{completionMessage}</p>}
       {score !== null && !isTestCompleted && <p>Score: {Math.round(score)}%</p>}
       {isTestCompleted && sharkFact && <p>Fun Fact: {sharkFact}</p>}
+      <p>Current Points: {points}</p>
     </div>
   );
 };

@@ -625,10 +625,12 @@ app.post('/api/resetpassword', async (req, res, next) => {
         var error = '';
         const { id } = req.body;
         var results = [];
+        var name = '';
         try
         {
             const db = client.db('SmartTooth');
             const test = await db.collection('Tests').findOne({ _id: new ObjectId(id) });
+            name = test.Name;
 
             if(test)
             {
@@ -649,7 +651,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
         {
             error = e.toString();
         }
-        var ret = { results:results, error:error};
+        var ret = { results:results, name:name, error:error};
         res.status(200).json(ret);
     });
 
