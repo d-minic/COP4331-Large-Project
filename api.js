@@ -139,6 +139,46 @@ app.post('/api/login', async (req, res, next) => {
     }
 });
 
+app.post('/api/applogin', async (req, res, next) => {
+    // incoming: login, password
+    // outgoing: id, firstName, lastName, error
+    const { login, password } = req.body;
+    let error = '';
+
+    try {
+        const db = client.db('SmartTooth');
+        const user = await db.collection('Users').findOne({ Login: login });
+
+        if (user) {
+            const passwordMatch = await bcrypt.compare(password, user.Password);
+
+            if (passwordMatch) {
+                const { _id, FirstName, LastName, Email, Points, Friends, IsVerified } = user;
+                const ret = { _id, FirstName, LastName, Email, Points, Friends, IsVerified, error };
+                res.status(200).json(ret);
+            } else {
+                error = "Login/Password incorrect";
+            }
+        } else {
+            error = "Login/Password incorrect";
+        }
+    } catch (e) {
+        error = e.message;
+    }
+
+    if (error) {
+        const _id = '';
+        const FirstName = '';
+        const LastName = '';
+        const Email = '';
+        const Points = -1;
+        const Friends = [];
+        const IsVerified = null;
+        const ret = { _id, FirstName, LastName, Email, Points, Friends, IsVerified, error };
+        res.status(200).json(ret);
+    }
+});
+
 
     app.post('/api/addquestion', async (req, res, next) =>
     {
@@ -559,6 +599,59 @@ app.post('/api/resetpassword', async (req, res, next) => {
         var ret = {results:results, error:error};
         res.status(200).json(ret);
     });
+
+
+
+    app.post('/api/gettests', async (req, res, next) =>
+    {
+        // incoming: id
+        // outgoing: results[], error
+        var error = '';
+        const {id} = req.body;
+        var results = [];
+        let userActiveTestIds = '';
+        let userActiveTests = '';
+        try
+        {
+            const db = client.db('SmartTooth');
+
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
+
+            if(user)
+            {
+                userActiveTests = user.ActiveTests || [];
+                userActiveTestIds = userActiveTests.map(testEntry => testEntry.TestId);
+            }
+
+            const publicTests = await db.collection('Tests').find({
+                "Public": true,
+                "_id": { $nin: userActiveTestIds } 
+            }).toArray();
+
+            /*
+            const userActiveTestDetails = await Promise.all(
+                userActiveTestIds.map(async (testId) => {
+                    const test = await db.collection('Tests').findOne({ _id: testId });
+                    return test;
+                })
+            );
+            */
+
+            //console.log(userActiveTestIds);
+            //console.log(publicTests);
+               
+            results = publicTests;
+            //results = userActiveTestDetails.concat(publicTests);
+
+        }catch(e)
+        {
+            error = e.toString();
+        }
+        var ret = {results:results, error:error};
+        res.status(200).json(ret);
+    });
+
+
 
 
 
