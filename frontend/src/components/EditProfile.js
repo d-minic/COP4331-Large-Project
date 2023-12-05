@@ -16,9 +16,9 @@ function buildPath(route)
 const EditProfile = () => {
   const [userData, setUserData] = useState({
     id: '65623cb210dcacc0c1486814', // Leave blank after test
-    firstName: '',
-    lastName: '',
-    email: '',
+    FirstName: '',
+    LastName: '',
+    Email: '',
   });
 
   const [error, setError] = useState('');
@@ -35,10 +35,13 @@ const EditProfile = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify(    
+        {id: '65623cb210dcacc0c1486814', 
+        firstName: userData.FirstName,
+        lastName: userData.LastName,
+        email: userData.Email,}),
       });
 
-      console.log(userData);
 
       if (!response.ok) {
         throw new Error('Failed to save profile');
@@ -80,6 +83,7 @@ const EditProfile = () => {
         } else {
           // Autofill with info from getuserinfo 
           setUserData(data.results || {});
+          console.log(data.results);
           setError('');
         }
       } catch (error) {
@@ -89,38 +93,38 @@ const EditProfile = () => {
     };
 
     fetchUserInfo();
-  }, [userData.id]); // fetch when the user ID changes
+  }, []); // fetch when the user ID changes
 
   return (
     <div>
       <h1>Edit Profile</h1>
       <div>
-        <label htmlFor="firstName">First Name:</label>
+        <label htmlFor="FirstName">First Name:</label>
         <input
           type="text"
-          id="firstName"
-          name="firstName"
-          value={userData.firstName}
+          id="FirstName"
+          name="FirstName"
+          value={userData.FirstName}
           onChange={handleInputChange}
         />
       </div>
       <div>
-        <label htmlFor="lastName">Last Name:</label>
+        <label htmlFor="LastName">Last Name:</label>
         <input
           type="text"
-          id="lastName"
-          name="lastName"
-          value={userData.lastName}
+          id="LastName"
+          name="LastName"
+          value={userData.LastName}
           onChange={handleInputChange}
         />
       </div>
       <div>
-        <label htmlFor="email">Email:</label>
+        <label htmlFor="Email">Email:</label>
         <input
           type="text"
-          id="email"
-          name="email"
-          value={userData.email}
+          id="Email"
+          name="Email"
+          value={userData.Email}
           onChange={handleInputChange}
         />
       </div>
