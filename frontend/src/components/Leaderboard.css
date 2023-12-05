@@ -4,6 +4,7 @@
 
 body, #leaderboard, h1, ul, li, .username, .score {
   font-family: 'Jockey One', sans-serif;
+    text-align: center !important;
 }
 
 #leaderboard {
