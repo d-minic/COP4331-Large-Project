@@ -1,61 +1,43 @@
-@import url('https://fonts.googleapis.com/css2?family=Jockey+One&display=swap');
-
-body, #leaderboard {
-  font-family: 'Jockey One', sans-serif;
-}
+/* Leaderboard.css */
 
 #leaderboard {
-  text-align: center;
-  padding: 20px;
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  margin: 20px;
+  font-family: 'Jockey One', sans-serif;
+  text-align: center; /* Center the title */
 }
 
-.user-score {
-  font-size: 18px;
-  font-weight: bold;
+h1 {
   color: #333;
-  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px; /* Add some space below the title */
 }
 
-#leaderboardList {
-  list-style: none;
+ul {
+  list-style-type: none;
   padding: 0;
 }
 
-.user-entry {
+li {
+  margin-bottom: 20px; /* Increase the space between users */
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
+  align-items: center; /* Center items vertically */
 }
 
-.user-name {
-  flex: 1;
-  text-align: left;
+.username {
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.user-score {
-  flex: 1;
-  text-align: right;
+.score {
+  font-size: 18px;
 }
 
-#backToHome {
-  background-color: #c3e6f2;
-  color: #000000;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-  margin-top: 20px;
+.points-label {
+  font-size: 16px;
+  color: #666; /* Use a different color for the label */
 }
-
-#backToHome:hover {
-  background-color: #4285f4;
-  color: #ffffff;
-}
-
