@@ -5,19 +5,19 @@
   text-align: center;
 }
 
-h1 {
+#leaderboard h1 {
   color: #333;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
 }
 
-ul {
+#leaderboard ul {
   list-style-type: none;
   padding: 0;
 }
 
-li {
+#leaderboard li {
   margin-bottom: 20px;
   padding: 10px;
   background-color: #f0f0f0;
@@ -30,26 +30,26 @@ li {
   margin: 0 auto; /* Center the box horizontally */
 }
 
-.username {
+#leaderboard .username {
   font-size: 18px;
   font-weight: bold;
 }
 
-.score {
+#leaderboard .score {
   font-size: 18px;
 }
 
-.points-label {
+#leaderboard .points-label {
   font-size: 16px;
   color: #666;
 }
 
-.points-container {
+#leaderboard .points-container {
   display: flex;
   align-items: center;
 }
 
-.points-container:before {
+#leaderboard .points-container:before {
   content: "Points: ";
   margin-right: 5px;
   font-weight: bold;
