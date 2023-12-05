@@ -338,7 +338,7 @@ app.post('/api/login', async (req, res, next) => {
         {
             for(const friendId of user.Friends)
             {
-                const friend = await db.collection('Users').findOne({ _id: new ObjectId(friendId)});
+                const friend = await db.collection('Users').findOne({ _id: friendId});
                 if(friend)
                 {
                     results.push(friend);
