@@ -13,7 +13,7 @@ function Home() {
                 <li><a href="">Profile</a></li>
                 <li><a href="">Friends</a></li>
                 <li><a href="Leaderboard">Leaderboard</a></li>
-                <li><a href="">Browse</a></li>
+                <li><a href="Browse">Browse</a></li>
                 <li><a href="">Create</a></li>
                 <li><a href="home">Home</a></li>
                 
