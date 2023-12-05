@@ -6,6 +6,7 @@
 }
 
 h1 {
+  text-align: center; /* Center the title */
   color: #333;
   font-size: 24px;
   font-weight: bold;
