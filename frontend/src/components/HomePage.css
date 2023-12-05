@@ -20,7 +20,7 @@ h1{
     overflow: hidden !important;
 }
 
-a{
+.navbar a{
     font-family: monospace !important;
     background-color: white !important;
     color: black !important;
@@ -32,16 +32,16 @@ a{
     
 }
 
-a:hover{
+.navbar a:hover{
     background-color: lightgrey !important;
 }
 
-li{
+.navbar li{
     float: right !important;
     background-color: white !important;
 }
 
-img{
+.navbar img{
     float: left !important;
 }
 .wrapper{
