@@ -27,6 +27,8 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center; /* Center items vertically */
+  width: 80%;
+  
 }
 
 .username {
