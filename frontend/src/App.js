@@ -11,6 +11,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import PasswordRecoveryPage from './pages/PasswordRecoveryPage';
 import ExamPage from './pages/ExamPage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import BrowsePage from './pages/BrowsePage';
 
 
 
@@ -29,6 +30,7 @@ return (
 <Route path="/PasswordRecovery" element={<PasswordRecoveryPage />} />
 <Route path="/Exam" element={<ExamPage />} />
 <Route path="/Leaderboard" element={<LeaderboardPage />} />
+<Route path="/Browse" element={<BrowsePage />} />
 </Routes>
 </BrowserRouter>
 );
