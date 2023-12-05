@@ -1,56 +1,45 @@
 /* Leaderboard.css */
 
-#leaderboard {
+@import url('https://fonts.googleapis.com/css2?family=Jockey+One&display=swap');
+
+body, #leaderboard, h1, ul, li, .username, .score {
   font-family: 'Jockey One', sans-serif;
+}
+
+#leaderboard {
   text-align: center;
 }
 
-#leaderboard h1 {
+h1 {
   color: #333;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
 }
 
-#leaderboard ul {
+ul {
   list-style-type: none;
   padding: 0;
 }
 
-#leaderboard li {
+li {
   margin-bottom: 20px;
   padding: 10px;
-  background-color: #f0f0f0;
+  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 60%; /* Adjust the width as needed */
-  margin: 0 auto; /* Center the box horizontally */
+  width: 60%;
+  margin: 0 auto;
 }
 
-#leaderboard .username {
+.username {
   font-size: 18px;
   font-weight: bold;
 }
 
-#leaderboard .score {
+.score {
   font-size: 18px;
-}
-
-#leaderboard .points-label {
-  font-size: 16px;
-  color: #666;
-}
-
-#leaderboard .points-container {
-  display: flex;
-  align-items: center;
-}
-
-#leaderboard .points-container:before {
-  content: "Points: ";
-  margin-right: 5px;
-  font-weight: bold;
 }
