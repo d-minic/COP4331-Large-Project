@@ -22,7 +22,7 @@ const Friends = () => {
       try {
         const response = await fetch(buildPath('/api/getfriends'), {
           method: 'POST',
-          body: JSON.stringify({ id: userId }),
+          body: JSON.stringify({ id: "652766a0b68e0abb7e3a2851" }),
           headers: { 'Content-Type': 'application/json' },
         });
 
