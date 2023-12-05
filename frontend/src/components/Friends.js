@@ -1,11 +1,11 @@
-// Friends.js
+
 
 import React, { useState, useEffect } from 'react';
 import './Friends.css'; // Import the CSS file
 
 const Friends = () => {
   const [friendsData, setFriendsData] = useState([]);
-  const [userId, setUserId] = useState(''); // Assuming you have a way to get the user ID
+  const [userId, setUserId] = useState(''); 
 
   const app_name = 'smart-tooth-577ede9ea626';
 
