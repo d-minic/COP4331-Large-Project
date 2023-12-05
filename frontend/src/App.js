@@ -12,6 +12,7 @@ import PasswordRecoveryPage from './pages/PasswordRecoveryPage';
 import ExamPage from './pages/ExamPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import BrowsePage from './pages/BrowsePage';
+import FriendsPage from './pages/FriendsPage';
 
 
 
@@ -31,6 +32,7 @@ return (
 <Route path="/Exam" element={<ExamPage />} />
 <Route path="/Leaderboard" element={<LeaderboardPage />} />
 <Route path="/Browse" element={<BrowsePage />} />
+<Route path="/Friends" element={<FriendsPage />} />
 </Routes>
 </BrowserRouter>
 );
