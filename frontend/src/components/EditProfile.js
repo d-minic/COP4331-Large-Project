@@ -1,24 +1,11 @@
 import React, { useState, useEffect } from 'react';
-const app_name = 'smart-tooth-577ede9ea626'
-
-function buildPath(route)
-{
-    if (process.env.NODE_ENV === 'production')
-    {
-        return 'https://' + app_name + '.herokuapp.com/' + route;
-    }
-    else
-    {
-      return 'http://localhost:5000/' + route;
-    }
-}
 
 const EditProfile = () => {
   const [userData, setUserData] = useState({
-    id: '65623cb210dcacc0c1486814', // Leave blank after test
-    FirstName: '',
-    LastName: '',
-    Email: '',
+    id: '', // Leave blank after test
+    firstName: '',
+    lastName: '',
+    email: '',
   });
 
   const [error, setError] = useState('');
@@ -29,19 +16,13 @@ const EditProfile = () => {
 
   const handleSaveProfile = async () => {
     try {
-
-      const response = await fetch(buildPath('api/edituser'), {
+      const response = await fetch('/api/edituser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(    
-        {id: '65623cb210dcacc0c1486814', 
-        firstName: userData.FirstName,
-        lastName: userData.LastName,
-        email: userData.Email,}),
+        body: JSON.stringify(userData),
       });
-
 
       if (!response.ok) {
         throw new Error('Failed to save profile');
@@ -64,12 +45,12 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await fetch(buildPath('api/getuserinfo'), {
+        const response = await fetch('/api/getuserinfo', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ id: "65623cb210dcacc0c1486814" }),
+          body: JSON.stringify({ id: userData.id }),
         });
 
         if (!response.ok) {
@@ -83,7 +64,6 @@ const EditProfile = () => {
         } else {
           // Autofill with info from getuserinfo 
           setUserData(data.results || {});
-          console.log(data.results);
           setError('');
         }
       } catch (error) {
@@ -93,38 +73,38 @@ const EditProfile = () => {
     };
 
     fetchUserInfo();
-  }, []); // fetch when the user ID changes
+  }, [userData.id]); // fetch when the user ID changes
 
   return (
     <div>
       <h1>Edit Profile</h1>
       <div>
-        <label htmlFor="FirstName">First Name:</label>
+        <label htmlFor="firstName">First Name:</label>
         <input
           type="text"
-          id="FirstName"
-          name="FirstName"
-          value={userData.FirstName}
+          id="firstName"
+          name="firstName"
+          value={userData.firstName}
           onChange={handleInputChange}
         />
       </div>
       <div>
-        <label htmlFor="LastName">Last Name:</label>
+        <label htmlFor="lastName">Last Name:</label>
         <input
           type="text"
-          id="LastName"
-          name="LastName"
-          value={userData.LastName}
+          id="lastName"
+          name="lastName"
+          value={userData.lastName}
           onChange={handleInputChange}
         />
       </div>
       <div>
-        <label htmlFor="Email">Email:</label>
+        <label htmlFor="email">Email:</label>
         <input
           type="text"
-          id="Email"
-          name="Email"
-          value={userData.Email}
+          id="email"
+          name="email"
+          value={userData.email}
           onChange={handleInputChange}
         />
       </div>
