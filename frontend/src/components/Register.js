@@ -29,6 +29,14 @@ function Register() {
             password: registerPassword.value
         };
         var js = JSON.stringify(obj);
+
+        // Password complexity
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+        if (!passwordRegex.test(registerPassword.value)) {
+        setMessage('Password must be at least 8 characters and contain at least one number and one special character.');
+        return;
+         }
+
         try {
             const response = await fetch(buildPath('api/register'), {
                 method: 'POST',
