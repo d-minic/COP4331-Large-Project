@@ -1,4 +1,17 @@
 import React, { useState, useEffect } from 'react';
+const app_name = 'smart-tooth-577ede9ea626'
+
+function buildPath(route)
+{
+    if (process.env.NODE_ENV === 'production')
+    {
+        return 'https://' + app_name + '.herokuapp.com/' + route;
+    }
+    else
+    {
+      return 'http://localhost:5000/' + route;
+    }
+}
 
 const EditProfile = () => {
   const [userData, setUserData] = useState({
@@ -16,13 +29,16 @@ const EditProfile = () => {
 
   const handleSaveProfile = async () => {
     try {
-      const response = await fetch('/api/edituser', {
+
+      const response = await fetch(buildPath('api/edituser'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
       });
+
+      console.log(userData);
 
       if (!response.ok) {
         throw new Error('Failed to save profile');
@@ -45,12 +61,12 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await fetch('/api/getuserinfo', {
+        const response = await fetch(buildPath('api/getuserinfo'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ id: userData.id }),
+          body: JSON.stringify({ id: "65623cb210dcacc0c1486814" }),
         });
 
         if (!response.ok) {

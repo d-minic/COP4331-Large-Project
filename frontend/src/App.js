@@ -13,7 +13,7 @@ import ExamPage from './pages/ExamPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import BrowsePage from './pages/BrowsePage';
 import FriendsPage from './pages/FriendsPage';
-
+import EditProfilePage from './pages/EditProfilePage';
 
 
 
@@ -33,6 +33,7 @@ return (
 <Route path="/Leaderboard" element={<LeaderboardPage />} />
 <Route path="/Browse" element={<BrowsePage />} />
 <Route path="/Friends" element={<FriendsPage />} />
+<Route path="/EditProfile" element={<EditProfilePage />} />
 </Routes>
 </BrowserRouter>
 );
