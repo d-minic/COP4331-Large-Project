@@ -91,10 +91,9 @@ const Friends = () => {
     <div id="friends">
       <div className="header">
         <h1>Your Friends</h1>
-        <Link to= "/AddFriend" className="addFriendButton"><button className="addFriendButton" onClick={() => addFriend()}>
-  Add Friend
-</button>
-  </Link> 
+     <button className="addFriendButton" onClick={addFriend}>
+          Add Friend
+        </button> 
       </div>
       <div>
         <label htmlFor="search">Search Friends:</label>
