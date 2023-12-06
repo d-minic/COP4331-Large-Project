@@ -80,7 +80,7 @@ const AddFriends = () => {
         {friendsData.map((friend) => (
           <li key={friend._id}>
             <span className="friendName">{friend.Login}</span>
-            <span className="friendScore">{friend.Points}</span>
+           
             <button onClick={() => addFriend(friend._id)}>
               Add Friend
             </button>
