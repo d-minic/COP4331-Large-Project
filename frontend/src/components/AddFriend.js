@@ -75,6 +75,9 @@ const AddFriends = () => {
           value={searchQuery}
           onChange={handleSearchChange}
         />
+                  <button className="goBackButton" onClick={() => navigate('/Friends')}>
+        Go Back to Friends
+      </button>
       </div>
       <ul>
         {friendsData.map((friend) => (
