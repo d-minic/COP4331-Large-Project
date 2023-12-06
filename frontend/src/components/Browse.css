@@ -59,3 +59,31 @@ h1{
     background-color: #ddd;
     margin-right: 2px;
 }
+.grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    
+    max-width: 1500px;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    align-items: center;
+    gap: 20px;
+    background-color: white;
+}
+.card{
+    color: black;
+    background-color: lightblue;
+    display: block;
+    text-align: center;
+    margin-bottom: 4px;
+    padding: 20px;
+    width: 250px;
+    height: 150px;
+    border-radius: 4px;
+}
+.name{
+    text-align:center;
+}
+.cardLink{
+    text-decoration: none;
+}
