@@ -35,8 +35,7 @@ const Leaderboard = () => {
   }, []);
 
   return (
-    <div id="leaderboard">
-      <nav className="navbar">
+    <nav className="navbar">
       <ul className="navbarul">
               <img className="navbarimg" src={logo} alt="logo" height="80"></img>
               <li className="navbarli"><a className="navbara" href="/">Logout</a></li>
@@ -46,8 +45,9 @@ const Leaderboard = () => {
               <li className="navbarli"><a className="navbara" href="Browse">Browse</a></li>
               <li className="navbarli"><a className="navbara" href="AddTest">Create</a></li>
               <li className="navbarli"><a className="navbara" href="Home">Home</a></li>
-          </ul>
-      </nav>
+        </ul>
+    </nav>
+    <div id="leaderboard">
       <h1>Overall Leaderboard</h1>
       <ul>
         {leaderboardData.map((user) => (
