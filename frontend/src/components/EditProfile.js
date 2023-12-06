@@ -36,6 +36,10 @@ const EditProfile = () => {
       if (data.error) {
         setError(data.error);
       } else {
+        // Update local storage with the edited user information
+        const updatedUserData = { ...storedUserData, ...userData };
+        localStorage.setItem('user_data', JSON.stringify(updatedUserData));
+
         // Profile saved successfully
         setError('');
       }
@@ -46,37 +50,9 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const response = await fetch('/api/getuserinfo', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ id: userData.id }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch user info');
-        }
-
-        const data = await response.json();
-
-        if (data.error) {
-          setError(data.error);
-        } else {
-          // Autofill with info from getuserinfo
-          setUserData(data.results || {});
-          setError('');
-        }
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-        setError('Failed to fetch user info');
-      }
-    };
-
-    fetchUserInfo();
-  }, [userData.id]); // fetch when the user ID changes
+    // Autofill with info from local storage on component mount
+    setUserData(storedUserData);
+  }, [storedUserData]);
 
   return (
     <div>
