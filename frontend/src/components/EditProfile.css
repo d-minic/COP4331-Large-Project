@@ -4,7 +4,7 @@
 
 body, h1, div, label, input, button {
   font-family: 'Jockey One', sans-serif;
-  text-align: center !important;
+  text-align: center ;
 }
 
 h1 {
