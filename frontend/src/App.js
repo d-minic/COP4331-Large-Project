@@ -14,7 +14,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import BrowsePage from './pages/BrowsePage';
 import FriendsPage from './pages/FriendsPage';
 import EditProfilePage from './pages/EditProfilePage';
-
+import AddFriendPage from './pages/AddFriendPage';
 
 
 function App() {
@@ -34,6 +34,7 @@ return (
 <Route path="/Browse" element={<BrowsePage />} />
 <Route path="/Friends" element={<FriendsPage />} />
 <Route path="/EditProfile" element={<EditProfilePage />} />
+<Route path="/AddFriend" element={<AddFriendPage />} />
 </Routes>
 </BrowserRouter>
 );
