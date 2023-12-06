@@ -10,7 +10,7 @@ body {
 #leaderboard {
   margin: auto;
   background-color: #f4f4f4; /* Light grey background color */
-  padding: 100px; /* Add padding to create space between the content and the border */
+  padding: 120px; /* Add padding to create space between the content and the border */
   border-radius: 8px; /* Add border-radius for rounded corners */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add box-shadow for a subtle shadow effect */
 }
