@@ -63,33 +63,40 @@ function Browse() {
 export default Browse;
 */
 
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Browse.css';
 import './navbar.css';
 import logo from './smarttoothlesspixel.PNG';
-import { useNavigate } from 'react-router-dom';
 
 function Browse() {
     const [searchTerm, setSearchTerm] = useState('');
     const [tests, setTests] = useState([]);
     const navigate = useNavigate();
+    const app_name = 'smart-tooth-577ede9ea626';
 
-    // Function to handle search
-    const handleSearch = async () => {
-        const userId = 'your-user-id'; // Replace this with the actual user ID
+    useEffect(() => {
+        fetchTests();
+    }, []);
+
+    const fetchTests = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/searchtests', {
-                method: 'POST',
-                body: JSON.stringify({ search: searchTerm, id: userId }),
-                headers: { 'Content-Type': 'application/json' }
-            });
-    
-            if (response.ok) {
-                const data = await response.json();
-                setTests(data.results || []);
-            } else {
-                console.error('Failed to fetch tests');
+            const storedUserData = localStorage.getItem('user_data');
+            if (storedUserData) {
+                const { id } = JSON.parse(storedUserData);
+
+                const response = await fetch(`https://${app_name}.herokuapp.com/api/searchtests`, {
+                    method: 'POST',
+                    body: JSON.stringify({ search: searchTerm, id: id }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setTests(data.results || []);
+                } else {
+                    console.error('Failed to fetch tests');
+                }
             }
         } catch (error) {
             console.error('Error fetching tests:', error);
@@ -105,17 +112,7 @@ function Browse() {
     return (
         <div id="browseDiv">
             <nav className="navbar">
-            <ul class = "navbarul">
-                <img class = "navbarimg" src={logo} height="80"></img>
-                <li class = "navbarli"><a class = "navbara" href="/">Logout</a></li>
-                <li class = "navbarli"><a class = "navbara" href="EditProfile">Profile</a></li>
-                <li class = "navbarli"><a class = "navbara" href="Friends">Friends</a></li>
-                <li class = "navbarli"><a class = "navbara" href="Leaderboard">Leaderboard</a></li>
-                <li class = "navbarli"><a class = "navbara" href="Browse">Browse</a></li>
-                <li class = "navbarli"><a class = "navbara" href="">Create</a></li>
-                <li class = "navbarli"><a class = "navbara" href="home">Home</a></li>
-                
-            </ul>
+                {/* Navigation Links... */}
             </nav>
 
             <div className="search-bar">
@@ -125,7 +122,7 @@ function Browse() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <button onClick={handleSearch}>Search</button>
+                <button onClick={fetchTests}>Search</button>
             </div>
 
             <div className="grid" id="grid">
@@ -141,3 +138,4 @@ function Browse() {
 }
 
 export default Browse;
+
