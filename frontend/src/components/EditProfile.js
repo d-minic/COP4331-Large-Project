@@ -75,7 +75,7 @@ const EditProfile = () => {
       </div>
       <div>
         <label htmlFor="lastName">Last Name:</label>
-        <input1
+        <input
           type="text"
           id="lastName"
           name="lastName"
@@ -85,7 +85,7 @@ const EditProfile = () => {
       </div>
       <div>
         <label htmlFor="email">Email:</label>
-        <input2
+        <input
           type="text"
           id="email"
           name="email"
