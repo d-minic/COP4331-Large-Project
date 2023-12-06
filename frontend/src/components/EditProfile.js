@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { ObjectId } from 'mongodb';
 
 const EditProfile = () => {
   // Retrieve the stored user information from local storage
@@ -20,15 +19,12 @@ const EditProfile = () => {
 
   const handleSaveProfile = async () => {
     try {
-      // Convert 'id' to ObjectId format if it's not empty
-      const userId = userData.id ? new ObjectId(userData.id) : '';
-
       const response = await fetch('/api/edituser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...userData, id: userId }),
+        body: JSON.stringify(userData),
       });
 
       if (!response.ok) {
