@@ -71,6 +71,9 @@ const AddFriends = () => {
     <div id="friends">
       <h1>Add New Friends</h1>
       <div>
+     <button className="goBackButton" onClick={() => navigate('/Friends')}>
+          Go Back to Friends
+        </button>
         <label htmlFor="search">Search Friends:</label>
         <input
           type="text"
@@ -78,9 +81,7 @@ const AddFriends = () => {
           value={searchQuery}
           onChange={handleSearchChange}
         />
-        <button className="goBackButton" onClick={() => navigate('/Friends')}>
-          Go Back to Friends
-        </button>
+        
       </div>
       <ul>
         {friendsData.map((friend) => (
