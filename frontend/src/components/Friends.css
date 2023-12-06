@@ -60,7 +60,8 @@ li {
 }
 
 .friendButton:hover {
-  background-color: #2a5f8c;
+  background-color: #4285f4;
+  color: #ffffff;
 }
 
 .addFriendButton {
