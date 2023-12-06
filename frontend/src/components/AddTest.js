@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AddTest.css';
 import './navbar.css';
 import logo from './smarttoothlesspixel.PNG'; 
+import { Link , useNavigate} from 'react-router-dom';
 
 
 const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
 const login = storedUserData.login;
 const userId = storedUserData.id;
+
 console.log(login);
 
 const app_name = 'smart-tooth-577ede9ea626'
@@ -25,6 +27,7 @@ function buildPath(route)
 
 
 const AddTest = () => {
+    const navigate = useNavigate();
     const [testData, setTestData] = useState({
       name: '',
       isPublic: false,
@@ -42,43 +45,57 @@ const AddTest = () => {
     const handleInputChange = (e, questionIndex, answerIndex) => {
         const { name, value } = e.target;
       
-        if (name === 'isPublic') {
-          setTestData((prevTestData) => ({
-            ...prevTestData,
-            [name]: !prevTestData[name], // Toggle the boolean value for checkboxes
-          }));
-        } else if (name === 'CorrectAnswer') {
-            setTestData((prevTestData) => ({
+        setTestData((prevTestData) => {
+          if (name === 'isPublic') {
+            return {
+              ...prevTestData,
+              [name]: !prevTestData[name],
+            };
+          } else if (name === 'CorrectAnswer') {
+            return {
               ...prevTestData,
               questions: prevTestData.questions.map((question, qIndex) =>
                 qIndex === questionIndex ? { ...question, CorrectAnswer: value } : question
               ),
-            }));
-        } else if (name === 'Answers') {
-          const updatedAnswers = [...testData.questions[questionIndex].Answers];
-          updatedAnswers[answerIndex] = value;
+            };
+          } else if (name === 'Answers') {
+            const updatedAnswers = [...prevTestData.questions[questionIndex].Answers];
+            updatedAnswers[answerIndex] = value;
+
+            // Check if the CorrectAnswer is still a valid option
+            const updatedCorrectAnswer = prevTestData.questions[questionIndex].CorrectAnswer;
+            if (!updatedAnswers.includes(updatedCorrectAnswer)) {
+                // If CorrectAnswer is not in the updated list, set it to blank
+                return {
+                    ...prevTestData,
+                    questions: prevTestData.questions.map((question, qIndex) =>
+                        qIndex === questionIndex
+                            ? { ...question, Answers: updatedAnswers, CorrectAnswer: '' }
+                            : question
+                    ),
+                };
+            }
       
-          setTestData((prevTestData) => ({
-            ...prevTestData,
-            questions: prevTestData.questions.map((question, qIndex) =>
-              qIndex === questionIndex
-                ? { ...question, Answers: updatedAnswers }
-                : question
-            ),
-          }));
-        } else if (name === 'Question') {
-          setTestData((prevTestData) => ({
-            ...prevTestData,
-            questions: prevTestData.questions.map((question, qIndex) =>
-              qIndex === questionIndex ? { ...question, [name]: value } : question
-            ),
-          }));
-        } else {
-          setTestData((prevTestData) => ({
-            ...prevTestData,
-            [name]: value,
-          }));
-        }
+            return {
+              ...prevTestData,
+              questions: prevTestData.questions.map((question, qIndex) =>
+                qIndex === questionIndex ? { ...question, Answers: updatedAnswers } : question
+              ),
+            };
+          } else if (name === 'Question') {
+            return {
+              ...prevTestData,
+              questions: prevTestData.questions.map((question, qIndex) =>
+                qIndex === questionIndex ? { ...question, [name]: value } : question
+              ),
+            };
+          } else {
+            return {
+              ...prevTestData,
+              [name]: value,
+            };
+          }
+        });
       };
       
   
@@ -134,6 +151,7 @@ const AddTest = () => {
       var js = JSON.stringify(testData);
       console.log(js);
         
+      
       const addtestresponse = await fetch(buildPath('api/addtest'), {
         method: 'POST',
         body: js,
@@ -161,6 +179,11 @@ const AddTest = () => {
       console.log('User added test:', results);
 
       console.log('Sending request:', js); 
+
+    localStorage.setItem('testId', JSON.stringify({testId}));
+
+      
+    navigate('/exam');
      
     };
   
@@ -201,62 +224,65 @@ const AddTest = () => {
             </label>
         </div>
         <h2>Questions:</h2>
-        {testData.questions.map((question, questionIndex) => (
-          <div key={questionIndex}>
-            <label>
-              Question:
-              <input
-                type="text"
-                name="Question"
-                value={question.Question}
-                onChange={(e) => handleInputChange(e, questionIndex)}
-              />
-            </label>
-            <label>
-            Correct Answer:
-            <select
+    {testData.questions.map((question, questionIndex) => (
+      <div key={questionIndex}>
+        <label>
+          Question:
+          <input
+            type="text"
+            name="Question"
+            value={question.Question}
+            onChange={(e) => handleInputChange(e, questionIndex)}
+          />
+        </label>
+        <br />
+        <label>
+          Answers:
+          <ul>
+            {question.Answers.map((answer, answerIndex) => (
+              <li key={answerIndex}>
+                <input
+                  type="text"
+                  name="Answers"
+                  value={answer}
+                  onChange={(e) => handleInputChange(e, questionIndex, answerIndex)}
+                />
+                <button onClick={() => handleRemoveAnswer(questionIndex, answerIndex)}>
+                  Remove Answer
+                </button>
+              </li>
+            ))}
+            <button onClick={() => handleAddAnswer(questionIndex)}>Add Answer</button>
+          </ul>
+        </label>
+        <label>
+          Correct Answer:
+          <select
               name="CorrectAnswer"
               value={question.CorrectAnswer}
               onChange={(e) => handleInputChange(e, questionIndex)}
             >
+              {/* Blank option */}
+              <option value="">Select Correct Answer</option>
+              {/* Other answer options */}
               {question.Answers.map((answer, answerIndex) => (
                 <option key={answerIndex} value={answer}>
                   {answer}
                 </option>
               ))}
             </select>
-          </label>
-            <br />
-            <label>
-              Answers:
-              <ul>
-                {question.Answers.map((answer, answerIndex) => (
-                  <li key={answerIndex}>
-                    <input
-                      type="text"
-                      name="Answers"
-                      value={answer}
-                      onChange={(e) => handleInputChange(e, questionIndex, answerIndex)}
-                    />
-                    <button onClick={() => handleRemoveAnswer(questionIndex, answerIndex)}>
-                      Remove Answer
-                    </button>
-                  </li>
-                ))}
-                <button onClick={() => handleAddAnswer(questionIndex)}>Add Answer</button>
-              </ul>
-            </label>
-            <button onClick={() => handleRemoveQuestion(questionIndex)}>
-              Remove Question
-            </button>
-            <hr />
-          </div>
-        ))}
-        <button onClick={handleAddQuestion}>Add Question</button>
-        <br />
-        <button onClick={handleSubmit}>Submit</button>
+        </label>
+        <button onClick={() => handleRemoveQuestion(questionIndex)}>
+          Remove Question
+        </button>
+        <hr />
       </div>
-    );
-  };
+    ))}
+    <button onClick={handleAddQuestion}>Add Question</button>
+    <br />
+    <button onClick={handleSubmit}>Submit</button>
+  </div>
+); 
+};
   
   export default AddTest;

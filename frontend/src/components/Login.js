@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 //import decode from "jwt-decode";
 import { jwtDecode as decode } from "jwt-decode";
 import './Login.css'; // Import the CSS file
@@ -11,6 +11,7 @@ function Login()
     var loginName;
     var loginPassword;
     const [message,setMessage] = useState('');
+    const navigate = useNavigate();
     const app_name = 'smart-tooth-577ede9ea626'
     function buildPath(route)
     {
@@ -46,11 +47,14 @@ function Login()
             var lastName = ud.lastName;
             var email = ud.email;
             var error = ud.error;
+            var isVerified = ud.isVerified;
             if( error != '')
             {
                 setMessage('User/Password combination incorrect');
-            }
-            else
+            }else if (!isVerified) {
+                // Redirect to "/emailverification" if the user is not verified
+                navigate('/emailverification');
+            }else
             {
                 var user =
                     {firstName:firstName,lastName:lastName,id:userId,email:email,login:loginName.value}
