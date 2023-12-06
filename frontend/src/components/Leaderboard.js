@@ -35,28 +35,30 @@ const Leaderboard = () => {
   }, []);
 
   return (
-    <nav className="navbar">
-      <ul className="navbarul">
-              <img className="navbarimg" src={logo} alt="logo" height="80"></img>
-              <li className="navbarli"><a className="navbara" href="/">Logout</a></li>
-              <li className="navbarli"><a className="navbara" href="EditProfile">Profile</a></li>
-              <li className="navbarli"><a className="navbara" href="Friends">Friends</a></li>
-              <li className="navbarli"><a className="navbara" href="Leaderboard">Leaderboard</a></li>
-              <li className="navbarli"><a className="navbara" href="Browse">Browse</a></li>
-              <li className="navbarli"><a className="navbara" href="AddTest">Create</a></li>
-              <li className="navbarli"><a className="navbara" href="Home">Home</a></li>
+    <div id = "leaderboardDiv">
+      <nav className="navbar">
+        <ul className="navbarul">
+                <img className="navbarimg" src={logo} alt="logo" height="80"></img>
+                <li className="navbarli"><a className="navbara" href="/">Logout</a></li>
+                <li className="navbarli"><a className="navbara" href="EditProfile">Profile</a></li>
+                <li className="navbarli"><a className="navbara" href="Friends">Friends</a></li>
+                <li className="navbarli"><a className="navbara" href="Leaderboard">Leaderboard</a></li>
+                <li className="navbarli"><a className="navbara" href="Browse">Browse</a></li>
+                <li className="navbarli"><a className="navbara" href="AddTest">Create</a></li>
+                <li className="navbarli"><a className="navbara" href="Home">Home</a></li>
+          </ul>
+      </nav>
+      <div id="leaderboard">
+        <h1>Overall Leaderboard</h1>
+        <ul>
+          {leaderboardData.map((user) => (
+            <li key={user._id}>
+              <span className="username">{user.Login}</span>
+              <span className="score">{user.Points}</span>
+            </li>
+          ))}
         </ul>
-    </nav>
-    <div id="leaderboard">
-      <h1>Overall Leaderboard</h1>
-      <ul>
-        {leaderboardData.map((user) => (
-          <li key={user._id}>
-            <span className="username">{user.Login}</span>
-            <span className="score">{user.Points}</span>
-          </li>
-        ))}
-      </ul>
+      </div>
     </div>
   );
 };
