@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-
 const EditProfile = () => {
   // Retrieve the stored user information from local storage
   const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
+
 
   const [userData, setUserData] = useState({
     id: storedUserData.id || '', 
@@ -10,7 +10,50 @@ const EditProfile = () => {
     lastName: storedUserData.lastName || '',
     email: storedUserData.email || '',
   });
+  const app_name = 'smart-tooth-577ede9ea626'
 
+
+  const convertObjectIdToString = async (objectId) => {
+    try {
+      const response = await fetch(buildPath('api/convert'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: objectId }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to convert ObjectId to string');
+      }
+  
+      const data = await response.json();
+  
+      if (data.error) {
+        throw new Error(data.error);
+      }
+  
+      return data.id;
+    } catch (error) {
+      console.error('Error converting ObjectId to string:', error);
+      throw new Error('Failed to convert ObjectId to string');
+    }
+  };
+
+
+
+
+  function buildPath(route)
+  {
+      if (process.env.NODE_ENV === 'production')
+      {
+          return 'https://' + app_name + '.herokuapp.com/' + route;
+      }
+      else
+      {
+        return 'http://localhost:5000/' + route;
+      }
+  }
   const [error, setError] = useState('');
 
   const handleInputChange = (e) => {
@@ -19,12 +62,15 @@ const EditProfile = () => {
 
   const handleSaveProfile = async () => {
     try {
-      const response = await fetch('/api/edituser', {
+      const idString = await convertObjectIdToString(userData.id);
+      console.log(idString);
+      const response = await fetch(buildPath('api/edituser'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
+
+        body: JSON.stringify({id:idString, firstName:userData.firstName, lastName:userData.lastName,email:userData.email}),
       });
 
       if (!response.ok) {
@@ -57,6 +103,7 @@ const EditProfile = () => {
       lastName: storedUserData.lastName || '',
       email: storedUserData.email || '',
     });
+    console.log(userData);
   }, [storedUserData.id, storedUserData.firstName, storedUserData.lastName, storedUserData.email]);
 
   return (

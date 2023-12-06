@@ -12,7 +12,7 @@ _createToken = function ( id, fn, ln, email, points, friends, isVerified, error)
     try
     {
         const expiration = new Date();
-        const user = {userId:id, firstName:fn, lastName:ln, email:email, points:points, friends:friends, isVerified:isVerified, error:error};
+        const user = {id:id, firstName:fn, lastName:ln, email:email, points:points, friends:friends, isVerified:isVerified, error:error};
         const accessToken = jwt.sign( user, process.env.ACCESS_TOKEN_SECRET);
         // In order to expire with a value other than the default, use the
         // following
@@ -57,7 +57,7 @@ exports.isExpired = function( token )
 exports.refresh = function( token )
 {
     var ud = jwt.decode(token,{complete:true});
-    var userId = ud.payload.userId;
+    var id = ud.payload.id;
     var firstName = ud.payload.firstName;
     var lastName = ud.payload.lastName;
     var email = ud.payload.email;
@@ -65,5 +65,5 @@ exports.refresh = function( token )
     var friends = ud.payload.friends;
     var isVerified = ud.payload.isVerified;
     var error = ud.payload.error;
-    return _createToken( userId, firstName, lastName, email, points, friends, isVerified, error);
+    return _createToken( id, firstName, lastName, email, points, friends, isVerified, error);
 }

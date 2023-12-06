@@ -111,9 +111,11 @@ app.post('/api/login', async (req, res, next) => {
             const passwordMatch = await bcrypt.compare(password, user.Password);
 
             if (passwordMatch) {
-                const { _id, FirstName, LastName, Email, Points, Friends, IsVerified } = user;
+                const id = user._id.toString();
+                console.log(id);             
+                const {FirstName, LastName, Email, Points, Friends, IsVerified } = user;
                 const token = require("./createJWT.js");
-                const ret = token.createToken(_id, FirstName, LastName, Email, Points, Friends, IsVerified, error);
+                const ret = token.createToken(id, FirstName, LastName, Email, Points, Friends, IsVerified, error);
                 res.status(200).json(ret);
             } else {
                 error = "Login/Password incorrect";
@@ -407,6 +409,26 @@ app.post('/api/applogin', async (req, res, next) => {
     });
 
 
+    app.post('/api/convert', async (req, res, next) =>
+    {
+    // incoming: id
+    // outgoing: results[], error
+    var error = '';
+    const {id} = req.body;
+    var results = '';
+    try
+    {
+        results = id.toString();
+
+
+    }
+    catch(e)
+    {
+        error = e.toString();
+    }
+    var ret = {id:results, error:error};
+    res.status(200).json(ret);
+    });
 
     app.post('/api/getleaders', async (req, res, next) =>
     {
