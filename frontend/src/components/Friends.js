@@ -31,9 +31,9 @@ const Friends = () => {
     }
   };
 
-  const addFriend = async (friendId) => {
+  const removeFriend = async (friendId) => {
     try {
-      const response = await fetch(buildPath('/api/addfriend'), {
+      const response = await fetch(buildPath('/api/removefriend'), {
         method: 'POST',
         body: JSON.stringify({ id1: userId, id2: friendId }),
         headers: { 'Content-Type': 'application/json' },
@@ -81,8 +81,8 @@ const Friends = () => {
           <li key={friend._id}>
             <span className="friendName">{friend.Login}</span>
             <span className="friendScore">{friend.Points}</span>
-            <button onClick={() => addFriend(friend._id)}>
-              Add Friend
+            <button onClick={() => removeFriend(friend._id)}>
+              Remove Friend
             </button>
           </li>
         ))}
