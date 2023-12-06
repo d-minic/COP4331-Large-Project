@@ -40,7 +40,9 @@ h1{
     float: right;
     background-color: white;
     display: block;
-    width: 10%;
+    width: 20%;
+    border-radius: 0px;
+    box-shadow: none;
 }
 
 .navbarimg{
