@@ -102,7 +102,7 @@ const Friends = () => {
       <div className="header">
         <h1>Your Friends</h1>
         <button className="addFriendButton" onClick={addFriend}>
-          Add Friend
+          Find New Friends
         </button>
       </div>
       <div>

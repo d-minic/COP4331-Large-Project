@@ -49,7 +49,7 @@ li {
 
 /* Button Style */
 .friendButton {
- background-color: #C3E6F2; 
+ background-color: #5292bd; 
   
   color: #ffffff;
   padding: 10px;
@@ -61,12 +61,12 @@ li {
 }
 
 .friendButton:hover {
-  background-color: #4285f4;
+  background-color: #49738f;
   color: #ffffff;
 }
 
 .addFriendButton {
-   background-color: #C3E6F2; 
+   background-color: #5292bd; 
   color: white;
   padding: 10px 20px;
   border: none;
@@ -75,7 +75,7 @@ li {
 }
 
 .goBackButton{
-   background-color: #C3E6F2; 
+   background-color: #5292bd; 
   color: white;
   padding: 10px 20px;
   border: none;
@@ -84,11 +84,11 @@ li {
 }
 
 .goBackButton:hover {
- background-color: #4285f4;
+ background-color: #49738f;
   color: #ffffff;
 }
 .addFriendButton:hover {
- background-color: #4285f4;
+ background-color: #49738f;
   color: #ffffff;
 }
 #search {
