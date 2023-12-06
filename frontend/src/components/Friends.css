@@ -2,7 +2,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Jockey+One&display=swap');
 
-body, #friends, h1, ul, li, .friendName, .friendScore {
+body, #friends, h1, ul, li, .friendName, .friendScore, #search {
   font-family: 'Jockey One', sans-serif;
   text-align: center !important;
 }
@@ -16,6 +16,11 @@ h1 {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
+}
+
+#search {
+  width: 50%; /* Adjust the width as needed */
+  margin-bottom: 10px;
 }
 
 ul {
