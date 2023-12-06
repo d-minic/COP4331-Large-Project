@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Friends.css'; // Import the CSS file
+
 const userId = "656d0128aaa2ae92a2d981b7";
 
 const Friends = () => {
@@ -61,6 +62,15 @@ const Friends = () => {
     }
   };
 
+  const addFriend = async (friendId) => {
+    try {
+      // Implement the logic to add a friend here
+      console.log('Add friend logic goes here');
+    } catch (error) {
+      console.error('Error adding friend:', error);
+    }
+  };
+
   useEffect(() => {
     // Assuming you have a way to get the user ID
     const loggedInUserId = ''; // Replace this with your logic to get the logged-in user ID
@@ -76,7 +86,7 @@ const Friends = () => {
     <div id="friends">
       <div className="header">
         <h1>Your Friends</h1>
-        <button className="addFriendButton" onClick={() => addFriend(friend._id  }}>
+        <button className="addFriendButton" onClick={() => addFriend(friend._id)}>
           Add Friend
         </button>
       </div>
