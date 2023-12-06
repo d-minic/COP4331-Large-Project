@@ -4,12 +4,11 @@ const EditProfile = () => {
   // Retrieve the stored user information from local storage
   const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
 
-  // Initialize the state with the user ID from local storage
   const [userData, setUserData] = useState({
-    id: storedUserData.id ? storedUserData.id.toString() : '',
-    firstName: '',
-    lastName: '',
-    email: '',
+    id: storedUserData.id || '', 
+    firstName: storedUserData.firstName || '',
+    lastName: storedUserData.lastName || '',
+    email: storedUserData.email || '',
   });
 
   const [error, setError] = useState('');
@@ -34,12 +33,15 @@ const EditProfile = () => {
 
       const data = await response.json();
 
-      setError((prevError) => (data.error ? data.error : ''));
-
-      if (!data.error) {
+      if (data.error) {
+        setError(data.error);
+      } else {
         // Update local storage with the edited user information
         const updatedUserData = { ...storedUserData, ...userData };
         localStorage.setItem('user_data', JSON.stringify(updatedUserData));
+
+        // Profile saved successfully
+        setError('');
       }
     } catch (error) {
       console.error('Error saving profile:', error);
@@ -48,42 +50,14 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        if (!userData.id) {
-          // If there's no user ID, do nothing
-          return;
-        }
-
-        const response = await fetch('/api/getuserinfo', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ id: userData.id }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch user info');
-        }
-
-        const data = await response.json();
-
-        if (data.error) {
-          setError(data.error);
-        } else {
-          // Autofill form fields with user data
-          setUserData(data.results || {});
-          setError('');
-        }
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-        setError('Failed to fetch user info');
-      }
-    };
-
-    fetchUserInfo();
-  }, [userData.id]);
+    // Autofill with info from local storage 
+    setUserData({
+      id: storedUserData.id || '', 
+      firstName: storedUserData.firstName || '',
+      lastName: storedUserData.lastName || '',
+      email: storedUserData.email || '',
+    });
+  }, [storedUserData.id, storedUserData.firstName, storedUserData.lastName, storedUserData.email]);
 
   return (
     <div>
