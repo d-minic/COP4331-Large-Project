@@ -105,7 +105,7 @@ const EditProfile = () => {
       lastName: storedUserData.lastName || '',
       email: storedUserData.email || '',
     });
-    console.log(userData);
+    
   }, [storedUserData.id, storedUserData.firstName, storedUserData.lastName, storedUserData.email]);
 
   return (

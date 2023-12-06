@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './HomePage.css'; 
 import logo from './smarttoothlesspixel.PNG';
-const userId = "65623cb210dcacc0c1486814"
+const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
+const userId = storedUserData.id;
+console.log(userId);
 const app_name = 'smart-tooth-577ede9ea626'
 
 function buildPath(route)
@@ -65,7 +67,34 @@ function Home() {
     
         fetchData();
       }, []); // Empty dependency array ensures that this effect runs once after the initial render
+      
+    const handleTestClick = async (testId, isPublic) => {
+        
+        localStorage.setItem('testId', JSON.stringify({testId}));
+        if (isPublic) {
+            try {
+                const obj = {
+                    userId: userId,
+                    testId: testId,
+                    owner: false,
+                };
     
+                const js = JSON.stringify(obj);
+    
+                const addUserTestResponse = await fetch(buildPath('api/useraddtest'), {
+                    method: 'POST',
+                    body: js,
+                    headers: { 'Content-Type': 'application/json' },
+                });
+    
+                const addUserTestData = await addUserTestResponse.json();
+                console.log('User added test:', addUserTestData);
+    
+            } catch (error) {
+                console.error('Error adding test to user:', error);
+            }
+        }
+    };
 
     return (
     <div id="homeDiv">
@@ -84,29 +113,33 @@ function Home() {
         </nav>
     
         <main>
-  <h1>Recent:</h1>
-  <div className="wrapper">
-    {recentTests.map((test) => (
-      <div key={test._id} className="item">
-        <div className="testInfo">
-          <div className="testName">{test.Name}</div>
-        </div>
-      </div>
-    ))}
-  </div>
+            <h1>Recent:</h1>
+            <div className="wrapper">
+                {recentTests.map((test) => (
+                    <div key={test._id} className="item">
+                        <Link to="/exam" onClick={() => handleTestClick(test._id, false)}>
+                            <div className="testInfo">
+                                <div className="testName">{test.Name}</div>
+                            </div>
+                        </Link>
+                    </div>
+                ))}
+            </div>
 
-  <h1>Popular:</h1>
-  <div className="wrapper">
-    {popularTests.map((test) => (
-      <div key={test._id} className="item">
-        <div className="testInfo">
-          <div className="testName">{test.Name}</div>
+            <h1>Popular:</h1>
+            <div className="wrapper">
+                {popularTests.map((test) => (
+                    <div key={test._id} className="item">
+                        <Link to="/exam" onClick={() => handleTestClick(test._id, true)}>
+                            <div className="testInfo">
+                                <div className="testName">{test.Name}</div>
+                            </div>
+                        </Link>
+                    </div>
+                ))}
+            </div>
+            </main>
         </div>
-      </div>
-    ))}
-  </div>
-</main>
-    </div>
     );
 }
 

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from './ExamPage.module.css'; // Import the CSS file
-const testId = "6564f0a624cfd1bdc400901e";
-const userId = "65623cb210dcacc0c1486814"
 
 const Exam = () => {
+
   const [questions, setQuestions] = useState([]);
   const [questionInfo, setQuestionInfo] = useState({});
   const [isTestCompleted, setIsTestCompleted] = useState(false);
@@ -13,6 +12,12 @@ const Exam = () => {
   const [sharkFact, setSharkFact] = useState('');
   const [points, setPoints] = useState(0);
   const [testName, setTestName] = useState('');
+
+  const storedTestId = JSON.parse(localStorage.getItem('testId')) || {};
+  const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
+  const userId = storedUserData.id;
+  const testId = storedTestId.testId;
+  console.log(testId);
 
   const app_name = 'smart-tooth-577ede9ea626'
 
@@ -44,8 +49,7 @@ const Exam = () => {
 
 
       if (response.ok) {
-        const result = await response.json();
-        console.log(result);        
+        const result = await response.json();       
         setPoints(result.results.Points);
         // Other info here if we need it
       } else {
@@ -63,8 +67,7 @@ const Exam = () => {
       return;
     }
   
-    const correctAnswer = questionInfo[questionId]?.correctAnswer;
-
+    const correctAnswer = questionInfo[questionId]?.correctAnswer; 
   try
   {
     const obj = 
@@ -106,7 +109,6 @@ const Exam = () => {
       if (response.ok) {
         const result = await response.json();
         setSharkFact(result.results);
-        console.log(result);
       } else {
         console.error('Failed to fetch shark fact');
       }
@@ -127,7 +129,6 @@ const Exam = () => {
       if (response.ok) {
         const result = await response.json();
         setPoints((prevPoints) => prevPoints + pointsToAdd);
-        console.log(result);
       } else {
         console.error('Failed to fetch shark fact');
       }
@@ -151,11 +152,11 @@ const Exam = () => {
 
     // Call the endpoint to complete the test
     try {
-
+      
       var obj = 
       {
         id: userId,
-        testId:  testId
+        testId: testId
       };
       var js = JSON.stringify(obj);
   
@@ -183,11 +184,11 @@ const Exam = () => {
   useEffect(() => {
     // Fetch questions from the 'getquestions' endpoint when the component mounts
     const fetchQuestions = async () => {
+
     var obj = {id: testId};
     var js = JSON.stringify(obj);
       try 
       {
-        //TODO get points
         const response = await fetch(buildPath('api/getquestions'),
         {method:'POST',body:js,headers:{'Content-Type':
         'application/json'}});
@@ -235,7 +236,6 @@ const Exam = () => {
     setScore(null);
 
     setCompletionMessage('');
-
     try {
       const obj = {
         id: userId,
