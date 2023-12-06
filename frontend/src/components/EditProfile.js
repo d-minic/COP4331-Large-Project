@@ -5,7 +5,7 @@ const EditProfile = () => {
   const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
 
   const [userData, setUserData] = useState({
-    id: storedUserData.id.toString() || '', 
+    id: storedUserData.id ? storedUserData.id.toString() : '', 
     firstName: storedUserData.firstName || '',
     lastName: storedUserData.lastName || '',
     email: storedUserData.email || '',
@@ -52,12 +52,12 @@ const EditProfile = () => {
   useEffect(() => {
     // Autofill with info from local storage 
     setUserData({
-      id: storedUserData.id.toString() || '', 
+      id: storedUserData.id ? storedUserData.id.toString() : '', 
       firstName: storedUserData.firstName || '',
       lastName: storedUserData.lastName || '',
       email: storedUserData.email || '',
     });
-  }, [storedUserData.id.toString(), storedUserData.firstName, storedUserData.lastName, storedUserData.email]);
+  }, [storedUserData.id, storedUserData.firstName, storedUserData.lastName, storedUserData.email]);
 
   return (
     <div>
