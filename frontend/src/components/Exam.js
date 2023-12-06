@@ -16,6 +16,7 @@ const Exam = () => {
   const [sharkFact, setSharkFact] = useState('');
   const [points, setPoints] = useState(0);
   const [testName, setTestName] = useState('');
+  const [isTestPublic, setIsTestPublic] = useState(true); // Initialize public/private state
 
   const storedTestId = JSON.parse(localStorage.getItem('testId')) || {};
   const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
@@ -152,7 +153,7 @@ const Exam = () => {
       const obj = {
         id: userId,
         testId: testId,
-        owner:true
+        owner:false
       };
       const js = JSON.stringify(obj);
       console.log(js);
@@ -231,6 +232,7 @@ const Exam = () => {
         setQuestions(data.results);
         console.log(data);
         setTestName(data.name);
+        setIsTestPublic(data.isPublic);
         const info = {};
         data.results.forEach((question) => {
           info[question._id] = {
@@ -293,6 +295,31 @@ const Exam = () => {
 
   };
 
+  const handleTogglePublicStatus = async () => {
+    try {
+      const obj = {
+        testId: testId,
+        isPublic: !isTestPublic,
+      };
+      const js = JSON.stringify(obj);
+
+      const response = await fetch(buildPath('api/updatepublic'), {
+        method: 'POST',
+        body: js,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const result = await response.json();
+      if (result.error) {
+        console.error('Failed to update public status:', result.error);
+      } else {
+        setIsTestPublic(!isTestPublic); // Toggle the state locally
+      }
+    } catch (error) {
+      console.error('Error updating public status:', error);
+    }
+  };
+
   return (
     
     <div>
@@ -351,6 +378,9 @@ const Exam = () => {
       </button>
       <button onClick={handleClearTest} className={styles.button}>
         Clear Test
+      </button>
+      <button onClick={handleTogglePublicStatus} className={styles.button}>
+        {isTestPublic ? 'Make Private' : 'Make Public'}
       </button>
       <button onClick={handleDeleteTest} className={styles.button}>
         Delete Test

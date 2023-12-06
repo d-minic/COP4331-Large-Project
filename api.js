@@ -866,11 +866,13 @@ app.post('/api/resetpassword', async (req, res, next) => {
         const { id } = req.body;
         var results = [];
         var name = '';
+        var isPublic = '';
         try
         {
             const db = client.db('SmartTooth');
             const test = await db.collection('Tests').findOne({ _id: new ObjectId(id) });
             name = test.Name;
+            isPublic = test.Public;
 
             if(test)
             {
@@ -891,7 +893,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
         {
             error = e.toString();
         }
-        var ret = { results:results, name:name, error:error};
+        var ret = { results:results, isPublic:isPublic,name:name, error:error};
         res.status(200).json(ret);
     });
 
@@ -1023,6 +1025,29 @@ app.post('/api/resetpassword', async (req, res, next) => {
         var ret = { error: error };
         res.status(200).json(ret);
     });
+
+
+    app.post('/api/updatepublic', async (req, res, next) => {
+        // incoming: testId, isPublic
+        // outgoing: error
+        const { testId, isPublic } = req.body;
+        var error = '';
+        
+        try {
+            const db = client.db('SmartTooth');
+            await db.collection('Tests').updateOne(
+                { _id: new ObjectId(testId) },
+                { $set: { Public: isPublic } }
+            );
+    
+        } catch (e) {
+            error = e.toString();
+        }
+    
+        var ret = { error: error };
+        res.status(200).json(ret);
+    });
+    
 
 
     app.post('/api/editquestion', async (req, res, next) => {
