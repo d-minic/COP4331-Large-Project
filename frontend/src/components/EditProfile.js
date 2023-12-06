@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
 const EditProfile = () => {
-    const storedUserId = localStorage.getItem('userId');
-    const [userData, setUserData] = useState({
-      id: storedUserId || '', // Use the stored user ID if available
-      firstName: '',
-      lastName: '',
-      email: '',
-    });
+  // Retrieve the stored user information from local storage
+  const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
+
+  const [userData, setUserData] = useState({
+    id: storedUserData.id || '',
+    firstName: storedUserData.firstName || '',
+    lastName: storedUserData.lastName || '',
+    email: storedUserData.email || '',
+  });
 
   const [error, setError] = useState('');
 
@@ -63,7 +65,7 @@ const EditProfile = () => {
         if (data.error) {
           setError(data.error);
         } else {
-          // Autofill with info from getuserinfo 
+          // Autofill with info from getuserinfo
           setUserData(data.results || {});
           setError('');
         }
