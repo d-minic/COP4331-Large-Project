@@ -5,8 +5,7 @@ import Register from '../components/Register';
 
 const RegisterPage = () => {
     return (
-        <View>
-            <PageTitle title="Register" />
+        <View style={{ display: 'flex', alignContent:'center', justifyContent:'center', flex: 1, backgroundColor: '#fff'}}>
             <Register />
         </View>
     );

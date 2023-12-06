@@ -129,7 +129,7 @@ app.post('/api/login', async (req, res, next) => {
     }
 });
 
-
+//when a user has created a test amd adds a question
     app.post('/api/addquestion', async (req, res, next) =>
     {
         // incoming:  question, answers, numberAnswers, correctAnswer, subject
@@ -150,6 +150,7 @@ app.post('/api/login', async (req, res, next) => {
         res.status(200).json(ret);
     });
 
+    //when a user creates a test
     app.post('/api/addtest', async (req, res, next) =>
     {
         // incoming: name, creator, length, array of questions, public
@@ -194,7 +195,7 @@ app.post('/api/login', async (req, res, next) => {
         res.status(200).json(ret);
     });
 
-
+//
     app.post('/api/addpoints', async (req, res, next) =>
     {
         // incoming: id, points
@@ -610,7 +611,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
         res.status(200).json(ret);
     });
 
-
+//get questions from the test
     app.post('/api/getquestions', async (req, res, next) =>
     {
         // incoming: id
@@ -682,7 +683,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
         }
     });
 
-
+//
     app.post('/api/getsharkfact', async (req, res, next) =>
     {
         // incoming: 
