@@ -46,7 +46,7 @@ const AddFriends = () => {
       } else {
         console.log('Friend added successfully!');
         // You may want to fetch friends again to update the list after adding a friend
-        fetchFriends();
+        fetchAddFriends();
       }
     } catch (error) {
       console.error('Error adding friend:', error);
@@ -57,7 +57,7 @@ const AddFriends = () => {
     // Assuming you have a way to get the user ID
     const loggedInUserId = ''; // Replace this with your logic to get the logged-in user ID
 
-    fetchFriends();
+    fetchAddFriends();
   }, [searchQuery]);
 
   const handleSearchChange = (event) => {
