@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import './Browse.css'; 
 import logo from './smarttoothlesspixel.PNG'; 
 
-/*
 function test(titleString, authorString)
 {
     const grid = document.getElementById("grid");
@@ -26,7 +25,7 @@ function test(titleString, authorString)
     cardTempA.append(cardTemp); 
 
     grid.appendChild(cardTempA);
-}*/
+}
 function Browse() {
     return (
     <div id="browseDiv">
@@ -44,7 +43,7 @@ function Browse() {
             </ul>
         </nav>
 
-        /*<button onclick = "test('Chemistry 1', 'Joe')">New Card</button>*/
+        <button onclick = "test('Chemistry 1', 'Joe')">New Card</button>
         
         <div class = "grid" id="grid">
             <a href="" class = "cardLink">
