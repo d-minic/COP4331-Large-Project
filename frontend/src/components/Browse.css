@@ -18,7 +18,8 @@ h1{
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     grid-template-rows: repeat(auto-fit, minmax(200px, 1fr));
     justify-content: center;
-    max-width: 1500px;
+    align-items: center;
+    max-width: 5000px;
     margin-left: 2rem;
     margin-right: 2rem;
     align-items: center;
