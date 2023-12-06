@@ -77,13 +77,14 @@ function Browse() {
 
     // Function to handle search
     const handleSearch = async () => {
+        const userId = 'your-user-id'; // Replace this with the actual user ID
         try {
             const response = await fetch('http://localhost:5000/api/searchtests', {
                 method: 'POST',
-                body: JSON.stringify({ search: searchTerm }),
+                body: JSON.stringify({ search: searchTerm, id: userId }),
                 headers: { 'Content-Type': 'application/json' }
             });
-
+    
             if (response.ok) {
                 const data = await response.json();
                 setTests(data.results || []);
