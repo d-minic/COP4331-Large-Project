@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import './Friends.css'; // Import the CSS file
 
 const userId = "656d0128aaa2ae92a2d981b7";
 
-const Friends = () => {
-  
 const Friends = () => {
   const history = useHistory(); // Access the navigation history
   const [friendsData, setFriendsData] = useState([]);
@@ -66,7 +63,7 @@ const Friends = () => {
     }
   };
 
-  const addFriend = async (friendId) => {
+  const addFriend = async () => {
     try {
       // Implement the logic to add a friend here
       console.log('Add friend logic goes here');
@@ -91,9 +88,9 @@ const Friends = () => {
     <div id="friends">
       <div className="header">
         <h1>Your Friends</h1>
-     <button className="addFriendButton" onClick={addFriend}>
+        <button className="addFriendButton" onClick={addFriend}>
           Add Friend
-        </button> 
+        </button>
       </div>
       <div>
         <label htmlFor="search">Search Friends:</label>
