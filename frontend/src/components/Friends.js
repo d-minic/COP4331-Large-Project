@@ -34,6 +34,13 @@ const Friends = () => {
 
   const removeFriend = async (friendId) => {
     try {
+      // Ask for confirmation
+      const confirmRemove = window.confirm('Are you sure you want to remove this friend?');
+
+      if (!confirmRemove) {
+        return; // User clicked "Cancel"
+      }
+
       const response = await fetch(buildPath('/api/removefriend'), {
         method: 'POST',
         body: JSON.stringify({ id1: userId, id2: friendId }),
@@ -43,14 +50,14 @@ const Friends = () => {
       const result = await response.json();
 
       if (result.error) {
-        console.error('Error adding friend:', result.error);
+        console.error('Error removing friend:', result.error);
       } else {
-        console.log('Friend added successfully!');
-        // You may want to fetch friends again to update the list after adding a friend
+        console.log('Friend removed successfully!');
+        // You may want to fetch friends again to update the list after removing a friend
         fetchFriends();
       }
     } catch (error) {
-      console.error('Error adding friend:', error);
+      console.error('Error removing friend:', error);
     }
   };
 
