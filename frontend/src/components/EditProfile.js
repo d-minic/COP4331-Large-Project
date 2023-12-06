@@ -51,8 +51,13 @@ const EditProfile = () => {
 
   useEffect(() => {
     // Autofill with info from local storage on component mount
-    setUserData(storedUserData);
-  }, [storedUserData]);
+    setUserData({
+      id: storedUserData.id || '',
+      firstName: storedUserData.firstName || '',
+      lastName: storedUserData.lastName || '',
+      email: storedUserData.email || '',
+    });
+  }, [storedUserData.id, storedUserData.firstName, storedUserData.lastName, storedUserData.email]);
 
   return (
     <div>
