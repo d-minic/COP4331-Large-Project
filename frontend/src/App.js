@@ -15,6 +15,7 @@ import BrowsePage from './pages/BrowsePage';
 import FriendsPage from './pages/FriendsPage';
 import EditProfilePage from './pages/EditProfilePage';
 import AddFriendPage from './pages/AddFriendPage';
+import AddTestPage from './pages/AddTestPage';
 
 
 function App() {
@@ -35,6 +36,7 @@ return (
 <Route path="/Friends" element={<FriendsPage />} />
 <Route path="/EditProfile" element={<EditProfilePage />} />
 <Route path="/AddFriend" element={<AddFriendPage />} />
+<Route path="/AddTest" element={<AddTestPage />} />
 </Routes>
 </BrowserRouter>
 );

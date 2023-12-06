@@ -774,9 +774,9 @@ app.post('/api/resetpassword', async (req, res, next) => {
             if (user && user.Friends) {
                 // Find all users who are not in the user's friend list
                 const nonFriends = await db.collection('Users').find({
-                    _id: { $nin: user.Friends.map((friendId) => new ObjectId(friendId)) },
+                    _id: { $nin: [...user.Friends.map((friendId) => new ObjectId(friendId)), new ObjectId(id)] },
                 }).toArray();
-    
+                
                 results = nonFriends.filter((nonFriend) => {
                     // Check if the 'Login' property exists before making it lowercase
                     const login = nonFriend.Login;

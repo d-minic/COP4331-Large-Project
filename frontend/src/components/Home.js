@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './HomePage.css'; 
 import logo from './smarttoothlesspixel.PNG';
+
 const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
 const userId = storedUserData.id;
-console.log(userId);
+
 const app_name = 'smart-tooth-577ede9ea626'
 
 function buildPath(route)
