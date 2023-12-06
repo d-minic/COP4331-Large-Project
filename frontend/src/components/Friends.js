@@ -69,7 +69,7 @@ const Friends = () => {
     <div id="friends">
       <div className="header">
         <h1>Your Friends</h1>
-        <Link to="/addfriend" className="addFriendButton">
+        <Link to="/AddFriend" className="addFriendButton">
           Add Friend
         </Link>
       </div>
