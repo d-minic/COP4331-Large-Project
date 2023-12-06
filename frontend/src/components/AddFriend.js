@@ -80,8 +80,8 @@ const AddFriends = () => {
         {friendsData.map((friend) => (
           <li key={friend._id}>
             <span className="friendName">{friend.Login}</span>
-           
-            <button onClick={() => addFriend(friend._id)}>
+     
+            <button className="friendButton" onClick={() => addFriend(friend._id)}>
               Add Friend
             </button>
           </li>
