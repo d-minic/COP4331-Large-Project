@@ -1,0 +1,40 @@
+.navbar{
+    border-bottom: 3px solid;
+}
+
+.navbarul{
+    list-style-type: none;
+    background-color: white;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+}
+
+.navbara{
+    font-family: monospace;
+    background-color: white;
+    color: black;
+    font-size: 20px;
+    text-decoration: none;
+    padding: 20px;
+    display: block;
+    text-align: center;
+    
+}
+
+.navbara:hover{
+    background-color: lightgrey;
+}
+
+.navbarli{
+    float: right;
+    background-color: white;
+    display: block;
+    width: 8%;
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+.navbarimg{
+    float: left;
+}
