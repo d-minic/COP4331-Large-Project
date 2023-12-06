@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import './Friends.css'; // Import the CSS file
 
 const userId = "656d0128aaa2ae92a2d981b7";
 
 const Friends = () => {
+  
+const Friends = () => {
+  const history = useHistory(); // Access the navigation history
   const [friendsData, setFriendsData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -69,6 +73,7 @@ const Friends = () => {
     } catch (error) {
       console.error('Error adding friend:', error);
     }
+    history.push('/AddFriend');
   };
 
   useEffect(() => {
@@ -86,10 +91,10 @@ const Friends = () => {
     <div id="friends">
       <div className="header">
         <h1>Your Friends</h1>
-        <button className="addFriendButton" onClick={() => addFriend()}>
+        <Link to= "/AddFriend" className="addFriendButton"><button className="addFriendButton" onClick={() => addFriend()}>
   Add Friend
 </button>
-
+  </Link> 
       </div>
       <div>
         <label htmlFor="search">Search Friends:</label>
