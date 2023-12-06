@@ -56,6 +56,9 @@ function Login()
                     {firstName:firstName,lastName:lastName,id:userId,email:email}
                     localStorage.setItem('user_data',
                     JSON.stringify(user));
+                    //stores user data
+                    localStorage.setItem('user_data', JSON.stringify(user));
+
                 setMessage('');
                 window.location.href = '/home';
             }
