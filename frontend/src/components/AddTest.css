@@ -5,6 +5,9 @@ div {
     margin: 20px;
     font-family: Arial, sans-serif;
   }
+#addtestmain {
+    background-color: lightgrey;
+}
   
   /* Style form labels */
   label {
