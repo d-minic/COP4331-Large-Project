@@ -160,7 +160,7 @@ function Browse() {
                 {tests.map((test) => (
                     <div key={test._id} className="card" onClick={() => navigateToExam(test._id)}>
                         <p className="name">{test.Name}</p>
-                        <p className="author">{test.Creator}</p>
+                        {test.Creator !== 'default' && <p className="author">{test.Creator}</p>}
                     </div>
                 ))}
             </div>
