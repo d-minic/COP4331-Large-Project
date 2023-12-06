@@ -44,7 +44,7 @@ function Browse() {
             </ul>
         </nav>
 
-        <button onclick = "test('Chemistry 1', 'Joe')">New Card</button>
+        /*<button onclick = "test('Chemistry 1', 'Joe')">New Card</button>*/
         
         <div class = "grid" id="grid">
             <a href="", class = "cardLink">
