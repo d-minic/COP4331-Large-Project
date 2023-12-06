@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
 const EditProfile = () => {
-  // Retrieve the stored user information from local storage
-  const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
+    const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
 
-  const [userData, setUserData] = useState({
-    id: storedUserData.id ? storedUserData.id.toString() : '', 
-    firstName: storedUserData.firstName || '',
-    lastName: storedUserData.lastName || '',
-    email: storedUserData.email || '',
-  });
+    const [userData, setUserData] = useState({
+      id: storedUserData.id ? storedUserData.id.toString() : '',
+      firstName: '',
+      lastName: '',
+      email: '',
+    });
+    
 
   const [error, setError] = useState('');
 
@@ -36,11 +36,7 @@ const EditProfile = () => {
       if (data.error) {
         setError(data.error);
       } else {
-        // Update local storage with the edited user information
-        const updatedUserData = { ...storedUserData, ...userData };
-        localStorage.setItem('user_data', JSON.stringify(updatedUserData));
-
-        // Profile saved successfully
+        // Profile saved successfully, handle any additional logic here
         setError('');
       }
     } catch (error) {
@@ -50,14 +46,37 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-    // Autofill with info from local storage 
-    setUserData({
-      id: storedUserData.id ? storedUserData.id.toString() : '', 
-      firstName: storedUserData.firstName || '',
-      lastName: storedUserData.lastName || '',
-      email: storedUserData.email || '',
-    });
-  }, [storedUserData.id, storedUserData.firstName, storedUserData.lastName, storedUserData.email]);
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch('/api/getuserinfo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id: userData.id }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user info');
+        }
+
+        const data = await response.json();
+
+        if (data.error) {
+          setError(data.error);
+        } else {
+          // Autofill form fields with user data
+          setUserData(data.results || {});
+          setError('');
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+        setError('Failed to fetch user info');
+      }
+    };
+
+    fetchUserInfo();
+  }, [userData.id]); // Trigger the fetch when the user ID changes
 
   return (
     <div>
