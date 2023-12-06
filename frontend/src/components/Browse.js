@@ -68,11 +68,12 @@ import { useHistory } from 'react-router-dom';
 import './Browse.css';
 import './navbar.css';
 import logo from './smarttoothlesspixel.PNG';
+import { useNavigate } from 'react-router-dom';
 
 function Browse() {
     const [searchTerm, setSearchTerm] = useState('');
     const [tests, setTests] = useState([]);
-    const history = useHistory();
+    const navigate = useNavigate();
 
     // Function to handle search
     const handleSearch = async () => {
@@ -97,13 +98,23 @@ function Browse() {
     // Function to navigate to the exam
     const navigateToExam = (testId) => {
         localStorage.setItem('testId', JSON.stringify({ testId }));
-        history.push('/exam');
+        navigate('/exam');
     };
 
     return (
         <div id="browseDiv">
             <nav className="navbar">
-                {/* Navigation Links... */}
+            <ul class = "navbarul">
+                <img class = "navbarimg" src={logo} height="80"></img>
+                <li class = "navbarli"><a class = "navbara" href="/">Logout</a></li>
+                <li class = "navbarli"><a class = "navbara" href="EditProfile">Profile</a></li>
+                <li class = "navbarli"><a class = "navbara" href="Friends">Friends</a></li>
+                <li class = "navbarli"><a class = "navbara" href="Leaderboard">Leaderboard</a></li>
+                <li class = "navbarli"><a class = "navbara" href="Browse">Browse</a></li>
+                <li class = "navbarli"><a class = "navbara" href="">Create</a></li>
+                <li class = "navbarli"><a class = "navbara" href="home">Home</a></li>
+                
+            </ul>
             </nav>
 
             <div className="search-bar">
