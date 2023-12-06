@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './Friends.css'; // Import the CSS file
 const userId = "656d0128aaa2ae92a2d981b7";
 
