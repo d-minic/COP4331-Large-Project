@@ -52,7 +52,7 @@ li {
   max-width: 30%; /* Adjusted max-width */
 }
 
-.friendbutton button{
+.button{
   background-color: #c3e6f2;
   color: #000000;
   padding: 10px 20px;
@@ -63,7 +63,7 @@ li {
   font-size: 18px;
 }
 
-.friendbutton button:hover {
+.button:hover {
   background-color: #4285f4;
   color: #ffffff;
 }
