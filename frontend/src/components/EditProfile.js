@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import styles from './EditProfile.css'; // Import the CSS file
 
 const EditProfile = () => {
-  const [userData, setUserData] = useState({
-    id: '', // Leave blank after test
-    firstName: '',
-    lastName: '',
-    email: '',
-  });
+    const storedUserId = localStorage.getItem('userId');
+    const [userData, setUserData] = useState({
+      id: storedUserId || '', // Use the stored user ID if available
+      firstName: '',
+      lastName: '',
+      email: '',
+    });
 
   const [error, setError] = useState('');
 
