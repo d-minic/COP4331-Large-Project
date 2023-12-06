@@ -8,7 +8,7 @@ function Register() {
     var lastName;
     var registerEmail;
     var registerPassword;
-    const [message, setMessage] = useState(<Link to="/">Alreaady have an account? Go back to Login.</Link>);
+    const [message, setMessage] = useState(<Link to="/">Already have an account? Go back to Login.</Link>);
     const app_name = 'smart-tooth-577ede9ea626';
 
     function buildPath(route) {
@@ -33,7 +33,13 @@ function Register() {
         // Password complexity
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
         if (!passwordRegex.test(registerPassword.value)) {
-        setMessage('Password must be at least 8 characters and contain at least one number and one special character.');
+            setMessage(
+                <>
+                    Password must be at least 8 characters and contain at least one number and one special character.
+                    <br />
+                    <Link to="/">Already have an account? Go back to Login.</Link>
+                </>
+            );
         return;
          }
 
@@ -83,12 +89,12 @@ function Register() {
                <span id="inner-title">REGISTER</span>
         <br />
                 <label htmlFor="firstName">First Name:</label>
-                <input type="text" id="firstName" placeholder="FirstName" ref={(c) => firstName = c} />
+                <input type="text" id="firstName" placeholder="First Name" ref={(c) => firstName = c} />
                   <label htmlFor="lastName">Last Name:</label>
-                <input type="text" id="lastName" placeholder="LastName" ref={(c) => lastName = c} />
+                <input type="text" id="lastName" placeholder="Last Name" ref={(c) => lastName = c} />
                   <label htmlFor="registerEmail">Email:</label>
                 <input type="text" id="registerEmail" placeholder="Email" ref={(c) => registerEmail = c} />
-                  <label htmlFor="registerName">UserName:</label>
+                  <label htmlFor="registerName">Username:</label>
                 <input type="text" id="registerName" placeholder="Username" ref={(c) => registerName = c} />
                    <label htmlFor="registerPassword">Password:</label>  
                 <input type="password" id="registerPassword" placeholder="Password" ref={(c) => registerPassword = c} />  
