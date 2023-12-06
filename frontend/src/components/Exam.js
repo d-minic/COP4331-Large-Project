@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './ExamPage.module.css'; // Import the CSS file
 import './navbar.css';
 import logo from './smarttoothlesspixel.PNG'; 
 
 const Exam = () => {
+
 
   const [questions, setQuestions] = useState([]);
   const [questionInfo, setQuestionInfo] = useState({});
@@ -22,6 +23,7 @@ const Exam = () => {
   const testId = storedTestId.testId;
   console.log(testId);
 
+  const navigate = useNavigate();
   const app_name = 'smart-tooth-577ede9ea626'
 
   function buildPath(route)
@@ -141,6 +143,11 @@ const Exam = () => {
   };
 
   const handleDeleteTest = async () => {
+    const userConfirmed = window.confirm('Are you sure you want to delete this test?');
+
+  if (!userConfirmed) {
+    return; // Do nothing if the user cancels the deletion
+  }
     try {
       const obj = {
         id: userId,
@@ -158,6 +165,7 @@ const Exam = () => {
   
       const result = await response.json();
       console.log('Delete Test:', result);
+      navigate('/home');
   
       // Add any additional logic you need after deleting the test
   
