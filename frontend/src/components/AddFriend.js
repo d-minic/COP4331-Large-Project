@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
 import './Friends.css'; // Import the CSS file
+
 const userId = "656d0128aaa2ae92a2d981b7";
 
 const AddFriends = () => {
+  const navigate = useNavigate();  // Initialize useNavigate
   const [friendsData, setFriendsData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -75,15 +78,14 @@ const AddFriends = () => {
           value={searchQuery}
           onChange={handleSearchChange}
         />
-                  <button className="goBackButton" onClick={() => navigate('/Friends')}>
-        Go Back to Friends
-      </button>
+        <button className="goBackButton" onClick={() => navigate('/Friends')}>
+          Go Back to Friends
+        </button>
       </div>
       <ul>
         {friendsData.map((friend) => (
           <li key={friend._id}>
             <span className="friendName">{friend.Login}</span>
-     
             <button className="friendButton" onClick={() => addFriend(friend._id)}>
               Add Friend
             </button>
