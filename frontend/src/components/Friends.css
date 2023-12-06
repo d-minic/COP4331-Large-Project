@@ -2,7 +2,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Jockey+One&display=swap');
 
-body, #friends, h1, ul, li, .friendName, .friendScore, #search {
+body, #friends, h1, ul, li, .friendName, .friendScore {
   font-family: 'Jockey One', sans-serif;
   text-align: center !important;
 }
@@ -16,11 +16,6 @@ h1 {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
-}
-
-#search {
-  width: 50%; /* Adjust the width as needed */
-  margin-bottom: 10px;
 }
 
 ul {
@@ -44,18 +39,19 @@ li {
 .friendName {
   font-size: 18px;
   font-weight: bold;
-  max-width: 50%; /* Adjusted max-width */
+  max-width: 50%;
 }
 
 .friendScore {
   font-size: 18px;
-  max-width: 30%; /* Adjusted max-width */
+  max-width: 30%;
 }
 
-.button{
-  background-color: #c3e6f2;
-  color: #000000;
-  padding: 10px 20px;
+/* Button Style */
+.friendButton {
+  background-color: #4285f4;
+  color: #ffffff;
+  padding: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -63,7 +59,6 @@ li {
   font-size: 18px;
 }
 
-.button:hover {
-  background-color: #4285f4;
-  color: #ffffff;
+.friendButton:hover {
+  background-color: #2a5f8c;
 }
