@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
 const EditProfile = () => {
-    const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
+  // Retrieve the stored user information from local storage
+  const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
 
-    const [userData, setUserData] = useState({
-      id: storedUserData.id ? storedUserData.id.toString() : '',
-      firstName: '',
-      lastName: '',
-      email: '',
-    });
-    
+  // Initialize the state with the user ID from local storage
+  const [userData, setUserData] = useState({
+    id: storedUserData.id ? storedUserData.id.toString() : '',
+    firstName: '',
+    lastName: '',
+    email: '',
+  });
 
   const [error, setError] = useState('');
 
@@ -33,11 +34,12 @@ const EditProfile = () => {
 
       const data = await response.json();
 
-      if (data.error) {
-        setError(data.error);
-      } else {
-        // Profile saved successfully, handle any additional logic here
-        setError('');
+      setError((prevError) => (data.error ? data.error : ''));
+
+      if (!data.error) {
+        // Update local storage with the edited user information
+        const updatedUserData = { ...storedUserData, ...userData };
+        localStorage.setItem('user_data', JSON.stringify(updatedUserData));
       }
     } catch (error) {
       console.error('Error saving profile:', error);
@@ -48,6 +50,11 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
+        if (!userData.id) {
+          // If there's no user ID, do nothing
+          return;
+        }
+
         const response = await fetch('/api/getuserinfo', {
           method: 'POST',
           headers: {
@@ -76,7 +83,7 @@ const EditProfile = () => {
     };
 
     fetchUserInfo();
-  }, [userData.id]); // Trigger the fetch when the user ID changes
+  }, [userData.id]);
 
   return (
     <div>
