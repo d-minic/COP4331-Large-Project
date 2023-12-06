@@ -112,6 +112,7 @@ const Friends = () => {
           </li>
         ))}
       </ul>
+        
     </div>
   );
 };
