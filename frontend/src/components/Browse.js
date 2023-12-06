@@ -1,3 +1,4 @@
+/*
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Browse.css'; 
@@ -56,6 +57,74 @@ function Browse() {
         </div>
     
     </div>
+    );
+}
+
+export default Browse;
+*/
+
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import './Browse.css';
+import './navbar.css';
+import logo from './smarttoothlesspixel.PNG';
+
+function Browse() {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [tests, setTests] = useState([]);
+    const history = useHistory();
+
+    // Function to handle search
+    const handleSearch = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/searchtests', {
+                method: 'POST',
+                body: JSON.stringify({ search: searchTerm }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setTests(data.results || []);
+            } else {
+                console.error('Failed to fetch tests');
+            }
+        } catch (error) {
+            console.error('Error fetching tests:', error);
+        }
+    };
+
+    // Function to navigate to the exam
+    const navigateToExam = (testId) => {
+        localStorage.setItem('testId', JSON.stringify({ testId }));
+        history.push('/exam');
+    };
+
+    return (
+        <div id="browseDiv">
+            <nav className="navbar">
+                {/* Navigation Links... */}
+            </nav>
+
+            <div className="search-bar">
+                <input
+                    type="text"
+                    placeholder="Search for tests..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button onClick={handleSearch}>Search</button>
+            </div>
+
+            <div className="grid" id="grid">
+                {tests.map((test) => (
+                    <div key={test._id} className="card" onClick={() => navigateToExam(test._id)}>
+                        <p className="name">{test.Name}</p>
+                        <p className="author">{test.Creator}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
     );
 }
 
