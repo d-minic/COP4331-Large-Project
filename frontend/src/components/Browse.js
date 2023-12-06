@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Browse.css'; 
+import './navbar.css';
 import logo from './smarttoothlesspixel.PNG'; 
 
 function test(titleString, authorString)
