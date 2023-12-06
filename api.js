@@ -1019,7 +1019,6 @@ app.post('/api/resetpassword', async (req, res, next) => {
         var ret = { error: error };
         res.status(200).json(ret);
         });
-
-
-
+        module.exports = app; // unit testing add-on
+        
 }
