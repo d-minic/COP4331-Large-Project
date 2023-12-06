@@ -18,7 +18,7 @@ const AddFriends = () => {
 
   const fetchAddFriends = async () => {
     try {
-      const response = await fetch(buildPath('/api/searchfriends'), {
+      const response = await fetch(buildPath('/api/searchusers'), {
         method: 'POST',
         body: JSON.stringify({ id: userId, search: searchQuery }),
         headers: { 'Content-Type': 'application/json' },
@@ -27,7 +27,7 @@ const AddFriends = () => {
       const data = await response.json();
       setFriendsData(data.results);
     } catch (error) {
-      console.error('Error fetching getfriends:', error);
+      console.error('Error fetching searchusers:', error);
     }
   };
 
