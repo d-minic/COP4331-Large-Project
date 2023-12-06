@@ -47,7 +47,7 @@ function Browse() {
         /*<button onclick = "test('Chemistry 1', 'Joe')">New Card</button>*/
         
         <div class = "grid" id="grid">
-            <a href="", class = "cardLink">
+            <a href="" class = "cardLink">
                 <div class="card">
                     <p class = "name">Biology 1</p>
                     <p class = "name">Steve</p>
