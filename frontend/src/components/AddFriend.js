@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';  // Import useNavigate
 import './Friends.css'; // Import the CSS file
+import logo from './smarttoothlesspixel.PNG'; 
 import './navbar.css';
 
 const userId = "656d0128aaa2ae92a2d981b7";
