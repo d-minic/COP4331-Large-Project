@@ -30,9 +30,10 @@
     float: right;
     background-color: white;
     display: block;
-    width: 8%;
+    width: 10%;
     border-radius: 0px;
     box-shadow: none;
+    text-align: center;
 }
 
 .navbarimg{
