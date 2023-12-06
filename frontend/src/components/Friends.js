@@ -67,7 +67,12 @@ const Friends = () => {
 
   return (
     <div id="friends">
-      <h1>Your Friends</h1>
+      <div className="header">
+        <h1>Your Friends</h1>
+        <Link to="/addfriend" className="addFriendButton">
+          Add Friend
+        </Link>
+      </div>
       <div>
         <label htmlFor="search">Search Friends:</label>
         <input
@@ -83,9 +88,8 @@ const Friends = () => {
             <span className="friendName">{friend.Login}</span>
             <span className="friendScore">{friend.Points}</span>
             <button className="friendButton" onClick={() => removeFriend(friend._id)}>
-  Remove Friend
-</button>
-
+              Remove Friend
+            </button>
           </li>
         ))}
       </ul>
