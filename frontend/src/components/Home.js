@@ -1,9 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './HomePage.css'; 
-import logo from './smarttoothlesspixel.PNG'; 
+import logo from './smarttoothlesspixel.PNG';
+const userId = "65623cb210dcacc0c1486814"
+const app_name = 'smart-tooth-577ede9ea626'
+
+function buildPath(route)
+{
+    if (process.env.NODE_ENV === 'production')
+    {
+        return 'https://' + app_name + '.herokuapp.com/' + route;
+    }
+    else
+    {
+      return 'http://localhost:5000/' + route;
+    }
+}
 
 function Home() {
+
+    const [recentTests, setRecentTests] = useState([]);
+    const [popularTests, setPopularTests] = useState([]);
+
+    useEffect(() => {
+        // Fetch data from the 'gettests' endpoint
+        const fetchData = async () => {
+          try {
+            const obj = {
+                id: userId,
+              };
+
+            const js = JSON.stringify(obj);
+    
+            const response = await fetch(buildPath('api/getusertests'), {
+                method: 'POST',
+                body: js,
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            const data = await response.json();
+            console.log(data);
+            // Check if there's an error in the response
+            if (data.error) {
+              console.error('Error fetching tests:', data.error);
+              return;
+            }
+    
+            // Assuming 'results' is an array in the response
+            const tests = data.results;
+            // Create copies of the array before sorting
+            const sortedRecentTests = [...tests].sort((a, b) => b.DateCreated - a.DateCreated);
+            const sortedPopularTests = [...tests].sort((a, b) => b.NumberAccesses - a.NumberAccesses);
+    
+            setRecentTests(sortedRecentTests);
+            setPopularTests(sortedPopularTests);
+          } catch (error) {
+            console.error('Error fetching tests:', error);
+          }
+        };
+    
+        fetchData();
+      }, []); // Empty dependency array ensures that this effect runs once after the initial render
+    
+
     return (
     <div id="homeDiv">
         <nav class="navbar">
@@ -22,24 +81,23 @@ function Home() {
     
         <main>
             <h1>Recent:</h1>
-            <div class="wrapper">
-                <div class="item">Biology 1</div>
-                <div class="item">Biology 2</div>
-                <div class="item">Chemistry 1</div>
-                <div class="item">Chemistry 2</div>
-                <div class="item">Physics 1</div>
-                <div class="item">Physics 2</div>
+            <div className="wrapper">
+            {recentTests.map((test) => (
+                <div key={test._id} className="item">
+                {test.Name} ({test.Length})
+                </div>
+            ))}
             </div>
+
             <h1>Popular:</h1>
-            <div class="wrapper">
-                <div class="item">Biology 1</div>
-                <div class="item">Biology 2</div>
-                <div class="item">Chemistry 1</div>
-                <div class="item">Chemistry 2</div>
-                <div class="item">Physics 1</div>
-                <div class="item">Physics 2</div>
+        <div className="wrapper">
+          {popularTests.map((test) => (
+            <div key={test._id} className="item">
+              {test.Name} ({test.Length})
             </div>
-        </main>
+          ))}
+        </div>
+      </main>
     </div>
     );
 }

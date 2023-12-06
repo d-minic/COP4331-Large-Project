@@ -553,9 +553,92 @@ app.post('/api/resetpassword', async (req, res, next) => {
 
 
 
+    app.post('/api/gettests', async (req, res, next) =>
+    {
+        // incoming: id
+        // outgoing: results[], error
+        var error = '';
+        const {id} = req.body;
+        var results = [];
+        let userActiveTestIds = '';
+        let userActiveTests = '';
+        try
+        {
+            const db = client.db('SmartTooth');
+
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
+
+            if(user)
+            {
+                userActiveTests = user.ActiveTests || [];
+                userActiveTestIds = userActiveTests.map(testEntry => testEntry.TestId);
+            }
+
+            const publicTests = await db.collection('Tests').find({
+                "Public": true,
+                "_id": { $nin: userActiveTestIds } 
+            }).toArray();
+
+            /*
+            const userActiveTestDetails = await Promise.all(
+                userActiveTestIds.map(async (testId) => {
+                    const test = await db.collection('Tests').findOne({ _id: testId });
+                    return test;
+                })
+            );
+            */
+
+            //console.log(userActiveTestIds);
+            //console.log(publicTests);
+               
+            results = publicTests;
+            //results = userActiveTestDetails.concat(publicTests);
+
+        }catch(e)
+        {
+            error = e.toString();
+        }
+        var ret = {results:results, error:error};
+        res.status(200).json(ret);
+    });
+
+
+
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
+
+            if(user)
+            {
+                userActiveTests = user.ActiveTests || [];
+                userActiveTestIds = userActiveTests.map(testEntry => testEntry.TestId);
+            }
+
+
+            
+            const userActiveTestDetails = await Promise.all(
+                userActiveTestIds.map(async (testId) => {
+                    const test = await db.collection('Tests').findOne({ _id: testId });
+                    return test;
+                })
+            );
+            
+               
+            results = userActiveTestDetails;
+
+
+        }catch(e)
+        {
+            error = e.toString();
+        }
+        var ret = {results:results, error:error};
+        res.status(200).json(ret);
+    });
+
+
+
+
     app.post('/api/searchfriends', async (req, res, next) =>
     {
-        // incoming: search
+        // incoming: id, search
         // outgoing: results[], error
         var error = '';
         const {id, search} = req.body;
@@ -573,8 +656,6 @@ app.post('/api/resetpassword', async (req, res, next) => {
                     {
                         // Check if the search term matches 
                         const matchesSearch =
-                        friend.FirstName.toLowerCase().startsWith(search.toLowerCase()) ||
-                        friend.LastName.toLowerCase().startsWith(search.toLowerCase()) ||
                         friend.Login.toLowerCase().startsWith(search.toLowerCase());
 
                         // If search is empty or there's a match, add the friend to the results
@@ -594,6 +675,80 @@ app.post('/api/resetpassword', async (req, res, next) => {
         var ret = {results:results, error:error};
         res.status(200).json(ret);
     });
+
+
+    app.post('/api/searchusers', async (req, res, next) => {
+        // incoming: id, search
+        // outgoing: results[], error
+        var error = '';
+        const { id, search } = req.body;
+        var results = [];
+    
+        try {
+            const db = client.db('SmartTooth');
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
+    
+            if (user && user.Friends) {
+                // Find all users who are not in the user's friend list
+                const nonFriends = await db.collection('Users').find({
+                    _id: { $nin: user.Friends.map((friendId) => new ObjectId(friendId)) },
+                }).toArray();
+    
+                results = nonFriends.filter((nonFriend) => {
+                    // Check if the 'Login' property exists before making it lowercase
+                    const login = nonFriend.Login;
+                    return login && login.toLowerCase().startsWith(search.toLowerCase());
+                });
+            }
+    
+        } catch (e) {
+            error = e.toString();
+        }
+    
+        var ret = { results: results, error: error };
+        res.status(200).json(ret);
+    });
+
+    app.post('/api/getfriends', async (req, res, next) =>
+    {
+        // incoming: id, search
+        // outgoing: results[], error
+        var error = '';
+        const {id, search} = req.body;
+        var results = [];
+        try
+        {
+            const db = client.db('SmartTooth');
+            const user = await db.collection('Users').findOne({ _id: new ObjectId(id)});
+            if(user && user.Friends)
+            {
+                for(const friendId of user.Friends)
+                {
+                    const friend = await db.collection('Users').findOne({ _id: friendId});
+                    if(friend)
+                    {
+                        // Check if the search term matches 
+                        const matchesSearch =
+                        friend.Login.toLowerCase().startsWith(search.toLowerCase());
+
+                        // If search is empty or there's a match, add the friend to the results
+                        if (search == '' || matchesSearch) 
+                        {
+                            results.push(friend);
+                        }
+                    }
+                }
+            }
+
+        }
+        catch(e)
+        {
+            error = e.toString();
+        }
+        var ret = {results:results, error:error};
+        res.status(200).json(ret);
+    });
+
 
 
 
