@@ -32,26 +32,30 @@ function Home() {
 
             const js = JSON.stringify(obj);
     
-            const response = await fetch(buildPath('api/getusertests'), {
+            const userTestsResponse = await fetch(buildPath('api/getusertests'), {
                 method: 'POST',
                 body: js,
                 headers: { 'Content-Type': 'application/json' },
             });
 
-            const data = await response.json();
-            console.log(data);
-            // Check if there's an error in the response
-            if (data.error) {
-              console.error('Error fetching tests:', data.error);
-              return;
-            }
+
+            const userTestsData = await userTestsResponse.json();
+            const userTests = userTestsData.results || [];
+
+            const popularTestsResponse = await fetch(buildPath('api/gettests'), {
+                method: 'POST',
+                body: js,
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const popularTestsData = await popularTestsResponse.json();
+            const allTests = popularTestsData.results || [];
+
     
-            // Assuming 'results' is an array in the response
-            const tests = data.results;
-            // Create copies of the array before sorting
-            const sortedRecentTests = [...tests].sort((a, b) => b.DateCreated - a.DateCreated);
-            const sortedPopularTests = [...tests].sort((a, b) => b.NumberAccesses - a.NumberAccesses);
-    
+
+            // Assuming 'DateCreated' is a property indicating test creation date
+            const sortedRecentTests = [...userTests].sort((a, b) => b.DateCreated - a.DateCreated);
+            const sortedPopularTests = [...allTests].sort((a, b) => b.NumberAccesses - a.NumberAccesses);
+
             setRecentTests(sortedRecentTests);
             setPopularTests(sortedPopularTests);
           } catch (error) {
@@ -80,24 +84,28 @@ function Home() {
         </nav>
     
         <main>
-            <h1>Recent:</h1>
-            <div className="wrapper">
-            {recentTests.map((test) => (
-                <div key={test._id} className="item">
-                {test.Name} ({test.Length})
-                </div>
-            ))}
-            </div>
-
-            <h1>Popular:</h1>
-        <div className="wrapper">
-          {popularTests.map((test) => (
-            <div key={test._id} className="item">
-              {test.Name} ({test.Length})
-            </div>
-          ))}
+  <h1>Recent:</h1>
+  <div className="wrapper">
+    {recentTests.map((test) => (
+      <div key={test._id} className="item">
+        <div className="testInfo">
+          <div className="testName">{test.Name}</div>
         </div>
-      </main>
+      </div>
+    ))}
+  </div>
+
+  <h1>Popular:</h1>
+  <div className="wrapper">
+    {popularTests.map((test) => (
+      <div key={test._id} className="item">
+        <div className="testInfo">
+          <div className="testName">{test.Name}</div>
+        </div>
+      </div>
+    ))}
+  </div>
+</main>
     </div>
     );
 }
