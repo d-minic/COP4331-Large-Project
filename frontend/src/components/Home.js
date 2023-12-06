@@ -114,18 +114,26 @@ function Home() {
         </nav>
     
         <main>
-            <h1>Recent:</h1>
-            <div className="wrapper">
-                {recentTests.map((test) => (
-                    <div key={test._id} className="item">
-                        <Link to="/exam" onClick={() => handleTestClick(test._id, false)}>
-                            <div className="testInfo">
-                                <div className="testName">{test.Name}</div>
-                            </div>
-                        </Link>
+        {recentTests.length > 0 ? (
+                    <>
+                        <h1>Recent:</h1>
+                        <div className="wrapper">
+                            {recentTests.map((test) => (
+                                <div key={test._id} className="item">
+                                    <Link to="/exam" onClick={() => handleTestClick(test._id, false)}>
+                                        <div className="testInfo">
+                                            <div className="testName">{test.Name}</div>
+                                        </div>
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                ) : (
+                    <div className="emptyMessage">
+                        <h1>You haven't tried any tests. Create or select one to start learning.</h1>
                     </div>
-                ))}
-            </div>
+                )}
 
             <h1>Popular:</h1>
             <div className="wrapper">
