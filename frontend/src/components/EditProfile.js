@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './EditProfile.css'; // Import the CSS file
 
 const EditProfile = () => {
   // Retrieve the stored user information from local storage
