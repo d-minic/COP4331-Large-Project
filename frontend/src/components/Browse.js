@@ -104,7 +104,29 @@ function Browse() {
     };
 
     // Function to navigate to the exam
-    const navigateToExam = (testId) => {
+    const navigateToExam = async (testId) => {
+        try {
+            const storedUserData = localStorage.getItem('user_data');
+            if (storedUserData) {
+                const { id } = JSON.parse(storedUserData);
+
+                const addUserTestResponse = await fetch(`https://${app_name}.herokuapp.com/api/useraddtest`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        userId: id,
+                        testId: testId,
+                        owner: false
+                    }),
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                const addUserTestData = await addUserTestResponse.json();
+                console.log('User added test:', addUserTestData);
+            }
+        } catch (error) {
+            console.error('Error adding test to user:', error);
+        }
+
         localStorage.setItem('testId', JSON.stringify({ testId }));
         navigate('/exam');
     };
@@ -113,7 +135,7 @@ function Browse() {
         <div id="browseDiv">
             <nav className="navbar">
             <ul className="navbarul">
-                    <img className="navbarimg" src={logo} alt="Logo" height="80"></img>
+                    <img className="navbarimg" src={logo} alt="logo" height="80"></img>
                     <li className="navbarli"><a className="navbara" href="/">Logout</a></li>
                     <li className="navbarli"><a className="navbara" href="EditProfile">Profile</a></li>
                     <li className="navbarli"><a className="navbara" href="Friends">Friends</a></li>
