@@ -86,9 +86,10 @@ const Friends = () => {
     <div id="friends">
       <div className="header">
         <h1>Your Friends</h1>
-        <button className="addFriendButton" onClick={() => addFriend(friend._id)}>
-          Add Friend
-        </button>
+        <button className="addFriendButton" onClick={() => addFriend()}>
+  Add Friend
+</button>
+
       </div>
       <div>
         <label htmlFor="search">Search Friends:</label>
