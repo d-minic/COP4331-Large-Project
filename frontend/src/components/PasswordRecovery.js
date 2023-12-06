@@ -23,6 +23,17 @@ function PasswordRecovery() {
     const newPassword = newPasswordRef.current.value;
     const verificationCode = codeRef.current.value;
 
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+    const isPasswordValid = passwordRegex.test(newPassword);
+
+    if (!isPasswordValid) {
+      setMessage(
+        'New password must be at least 8 characters and contain at least one number and one special character.'
+      );
+      return;
+    }
+
     const obj = { login, newPassword, verificationCode };
     const js = JSON.stringify(obj);
 

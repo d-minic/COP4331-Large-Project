@@ -39,7 +39,7 @@ function ForgotPassword() {
       if (res.error) {
         setMessage(res.error);
       } else {
-        setMessage('Password reset successful. Redirecting to login...');
+        setMessage('Email sent successfully. Redirecting...');
         setTimeout(() => {
           window.location.href = '/PasswordRecovery';
         }, 2000);
