@@ -39,6 +39,7 @@ h1{
 .navbarli{
     float: right;
     background-color: white;
+    display: block;
 }
 
 .navbarimg{
