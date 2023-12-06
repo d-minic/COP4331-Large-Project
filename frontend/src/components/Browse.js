@@ -77,6 +77,7 @@ function Browse() {
 
     useEffect(() => {
         fetchTests();
+        fetchUserTests();
     }, []);
 
     const fetchTests = async () => {
@@ -102,6 +103,31 @@ function Browse() {
             console.error('Error fetching tests:', error);
         }
     };
+
+    const fetchUserTests = async () => {
+        try {
+            const storedUserData = localStorage.getItem('user_data');
+            if (storedUserData) {
+                const { id } = JSON.parse(storedUserData);
+    
+                const response = await fetch(`https://${app_name}.herokuapp.com/api/getusertests`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id: id }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+    
+                if (response.ok) {
+                    const data = await response.json();
+                    setTests(data.results || []);
+                } else {
+                    console.error('Failed to fetch user tests');
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching user tests:', error);
+        }
+    };
+    
 
     // Function to navigate to the exam
     const navigateToExam = async (testId) => {
