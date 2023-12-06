@@ -66,15 +66,15 @@ function Home() {
     return (
     <div id="homeDiv">
         <nav class="navbar">
-            <ul>
-                <img src={logo} height="80"></img>
-                <li><a href="/">Logout</a></li>
-                <li><a href="EditProfile">Profile</a></li>
-                <li><a href="Friends">Friends</a></li>
-                <li><a href="Leaderboard">Leaderboard</a></li>
-                <li><a href="Browse">Browse</a></li>
-                <li><a href="">Create</a></li>
-                <li><a href="home">Home</a></li>
+            <ul class = "navbarul">
+                <img class = "navbarimg" src={logo} height="80"></img>
+                <li class = "navbarli"><a class = "navbara" href="/">Logout</a></li>
+                <li class = "navbarli"><a class = "navbara" href="EditProfile">Profile</a></li>
+                <li class = "navbarli"><a class = "navbara" href="Friends">Friends</a></li>
+                <li class = "navbarli"><a class = "navbara" href="Leaderboard">Leaderboard</a></li>
+                <li class = "navbarli"><a class = "navbara" href="Browse">Browse</a></li>
+                <li class = "navbarli"><a class = "navbara" href="">Create</a></li>
+                <li class = "navbarli"><a class = "navbara" href="home">Home</a></li>
                 
             </ul>
         </nav>
