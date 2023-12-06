@@ -188,7 +188,7 @@ const AddTest = () => {
     };
   
     return (
-        <div >
+<div >
              <nav class="navbar">
       <ul class = "navbarul">
           <img class = "navbarimg" src={logo} height="80"></img>
@@ -198,9 +198,9 @@ const AddTest = () => {
           <li class = "navbarli"><a class = "navbara" href="Leaderboard">Leaderboard</a></li>
           <li class = "navbarli"><a class = "navbara" href="Browse">Browse</a></li>
           <li class = "navbarli"><a class = "navbara" href="AddTest">Create</a></li>
-          <li class = "navbarli"><a class = "navbara" href="home">Home</a></li>
-    <div id="addtestmain"> 
-      </ul>
+          <li class = "navbarli"><a class = "navbara" href="home">Home</a></li> 
+      
+        </ul>
         </nav>
         <div className="input-container">
             <label>
@@ -282,7 +282,7 @@ const AddTest = () => {
     <br />
     <button onClick={handleSubmit}>Submit</button>
   </div>
-</div>
+
 ); 
 };
   
