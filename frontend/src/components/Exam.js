@@ -296,7 +296,7 @@ const Exam = () => {
           <li class = "navbarli"><a class = "navbara" href="Friends">Friends</a></li>
           <li class = "navbarli"><a class = "navbara" href="Leaderboard">Leaderboard</a></li>
           <li class = "navbarli"><a class = "navbara" href="Browse">Browse</a></li>
-          <li class = "navbarli"><a class = "navbara" href="">Create</a></li>
+          <li class = "navbarli"><a class = "navbara" href="AddTest">Create</a></li>
           <li class = "navbarli"><a class = "navbara" href="home">Home</a></li>
           
       </ul>

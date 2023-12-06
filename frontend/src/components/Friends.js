@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Friends.css'; // Import the CSS file
-
+import './navbar.css';
+import logo from './smarttoothlesspixel.PNG'; 
 const userId = "656d0128aaa2ae92a2d981b7";
 
 const Friends = () => {
@@ -86,6 +87,18 @@ const Friends = () => {
 
   return (
     <div id="friends">
+            <nav className="navbar">
+            <ul className="navbarul">
+                    <img className="navbarimg" src={logo} alt="logo" height="80"></img>
+                    <li className="navbarli"><a className="navbara" href="/">Logout</a></li>
+                    <li className="navbarli"><a className="navbara" href="EditProfile">Profile</a></li>
+                    <li className="navbarli"><a className="navbara" href="Friends">Friends</a></li>
+                    <li className="navbarli"><a className="navbara" href="Leaderboard">Leaderboard</a></li>
+                    <li className="navbarli"><a className="navbara" href="Browse">Browse</a></li>
+                    <li className="navbarli"><a className="navbara" href="AddTest">Create</a></li>
+                    <li className="navbarli"><a className="navbara" href="Home">Home</a></li>
+                </ul>
+            </nav>
       <div className="header">
         <h1>Your Friends</h1>
         <button className="addFriendButton" onClick={addFriend}>

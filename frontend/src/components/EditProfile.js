@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './EditProfile.css'; // Import the CSS file
+import './navbar.css';
+import logo from './smarttoothlesspixel.PNG'; 
 
 const EditProfile = () => {
   // Retrieve the stored user information from local storage
@@ -110,6 +112,18 @@ const EditProfile = () => {
 
   return (
     <div>
+      <nav className="navbar">
+<ul className="navbarul">
+        <img className="navbarimg" src={logo} alt="logo" height="80"></img>
+        <li className="navbarli"><a className="navbara" href="/">Logout</a></li>
+        <li className="navbarli"><a className="navbara" href="EditProfile">Profile</a></li>
+        <li className="navbarli"><a className="navbara" href="Friends">Friends</a></li>
+        <li className="navbarli"><a className="navbara" href="Leaderboard">Leaderboard</a></li>
+        <li className="navbarli"><a className="navbara" href="Browse">Browse</a></li>
+        <li className="navbarli"><a className="navbara" href="AddTest">Create</a></li>
+        <li className="navbarli"><a className="navbara" href="Home">Home</a></li>
+    </ul>
+</nav>
       <h1>Edit Profile</h1>
       <div>
         <label htmlFor="firstName">First Name:</label>

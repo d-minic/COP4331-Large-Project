@@ -141,7 +141,7 @@ function Browse() {
                     <li className="navbarli"><a className="navbara" href="Friends">Friends</a></li>
                     <li className="navbarli"><a className="navbara" href="Leaderboard">Leaderboard</a></li>
                     <li className="navbarli"><a className="navbara" href="Browse">Browse</a></li>
-                    <li className="navbarli"><a className="navbara" href="Create">Create</a></li>
+                    <li className="navbarli"><a className="navbara" href="AddTest">Create</a></li>
                     <li className="navbarli"><a className="navbara" href="Home">Home</a></li>
                 </ul>
             </nav>
