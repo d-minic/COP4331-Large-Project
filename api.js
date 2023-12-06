@@ -11,20 +11,16 @@ exports.setApp = function ( app, client )
 {
     app.post('/api/sendemail', async (req, res, next) =>
     {
-        // incoming: login
+        // incoming: email, verificationCode
         // outgoing: error
-        const {login} = req.body;
+        const { email, verificationCode} = req.body;
         var results = '';
         var error = '';
         try
         {
-            const db = client.db('SmartTooth');
-            const user = await db.collection('Users').findOne({Login:login});
-            const userEmail = user.Email;
-            const verificationCode = user.VerificationCode;
 
             const msg = {
-                to: userEmail, 
+                to: email, 
                 from: 'smarttoothlearning@gmail.com', 
                 subject: 'Verification Email',
                 text: `Here is your verification code: ${verificationCode}`,
@@ -111,9 +107,9 @@ app.post('/api/login', async (req, res, next) => {
             const passwordMatch = await bcrypt.compare(password, user.Password);
 
             if (passwordMatch) {
-                const { _id, FirstName, LastName, Email, Points, Friends, IsVerified } = user;
+                const { _id, FirstName, LastName, Email } = user;
                 const token = require("./createJWT.js");
-                const ret = token.createToken(_id, FirstName, LastName, Email, Points, Friends, IsVerified, error);
+                const ret = token.createToken(_id, FirstName, LastName, Email);
                 res.status(200).json(ret);
             } else {
                 error = "Login/Password incorrect";
@@ -126,66 +122,16 @@ app.post('/api/login', async (req, res, next) => {
     }
 
     if (error) {
-        const _id = '';
-        const FirstName = '';
-        const LastName = '';
-        const Email = '';
-        const Points = -1;
-        const Friends = [];
-        const IsVerified = null;
-        const token = require("./createJWT.js");
-        const ret = token.createToken(_id, FirstName, LastName, Email, Points, Friends, IsVerified, error);
-        res.status(200).json(ret);
-    }
-});
-
-app.post('/api/applogin', async (req, res, next) => {
-    // incoming: login, password
-    // outgoing: id, firstName, lastName, error
-    const { login, password } = req.body;
-    let error = '';
-
-    try {
-        const db = client.db('SmartTooth');
-        const user = await db.collection('Users').findOne({ Login: login });
-
-        if (user) {
-            const passwordMatch = await bcrypt.compare(password, user.Password);
-
-            if (passwordMatch) {
-                const { _id, FirstName, LastName, Email, Points, Friends, IsVerified } = user;
-                const ret = { _id, FirstName, LastName, Email, Points, Friends, IsVerified, error };
-                res.status(200).json(ret);
-            } else {
-                error = "Login/Password incorrect";
-            }
-        } else {
-            error = "Login/Password incorrect";
-        }
-    } catch (e) {
-        error = e.message;
-    }
-
-    if (error) {
-        const _id = '';
-        const FirstName = '';
-        const LastName = '';
-        const Email = '';
-        const Points = -1;
-        const Friends = [];
-        const IsVerified = null;
-        const ret = { _id, FirstName, LastName, Email, Points, Friends, IsVerified, error };
-        res.status(200).json(ret);
+        res.status(200).json({ error });
     }
 });
 
 
     app.post('/api/addquestion', async (req, res, next) =>
     {
-        // incoming:  question, answers, correctAnswer, subject
+        // incoming:  question, answers, numberAnswers, correctAnswer, subject
         // outgoing: error
-        const { question, answers, correctAnswer, subject} = req.body;
-        const numberAnswers = answers.length;
+        const { question, answers, numberAnswers, correctAnswer, subject} = req.body;
         const newQuestion = {Question:question,Answers:answers,NumberAnswers:numberAnswers,CorrectAnswer:correctAnswer,Subject:subject,Solved:false};
         var error = '';
         try
@@ -203,23 +149,23 @@ app.post('/api/applogin', async (req, res, next) => {
 
     app.post('/api/addtest', async (req, res, next) =>
     {
-        // incoming: name, creator, array of questions, isPublic
+        // incoming: name, creator, length, array of questions, public
         // outgoing: error
         var error = '';
         try{
 
-            const { name, creator, questions, isPublic} = req.body;
+            const { name, creator, length, questions, public} = req.body;
             const questionIds = [];
 
             const creatorLogin = creator || 'Anonymous';
 
             for (const questionData of questions)
             {
-                const { Question, Answers, CorrectAnswer, Subject } = questionData;
+                const { Question, Answers, NumberAnswers, CorrectAnswer, Subject } = questionData;
                 const newQuestion = {
                     Question,
                     Answers,
-                    NumberAnswers: Answers.length,
+                    NumberAnswers,
                     CorrectAnswer,
                     Subject
                 };
@@ -231,9 +177,7 @@ app.post('/api/applogin', async (req, res, next) => {
 
             }
 
-            const length = questions.length;
-
-            const newTest = {Name:name,Creator:creatorLogin,Length:length,Questions:questionIds,Public:isPublic,NumberAccesses:0};
+            const newTest = {Name:name,Creator:creatorLogin,Length:length,Questions:questionIds,Public:public,NumberAccesses:0};
             
             const db = client.db('SmartTooth');
             const result = db.collection('Tests').insertOne(newTest);
@@ -387,7 +331,7 @@ app.post('/api/applogin', async (req, res, next) => {
         {
             for(const friendId of user.Friends)
             {
-                const friend = await db.collection('Users').findOne({ _id: friendId});
+                const friend = await db.collection('Users').findOne({ _id: new ObjectId(friendId)});
                 if(friend)
                 {
                     results.push(friend);
@@ -486,7 +430,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
         const user = await db.collection('Users').findOne({ Login: login });
         const id = user._id;
 
-        if (user.VerificationCode == verificationCode) {
+        if (user.VerificationCode === verificationCode) {
             // Hash the new password before storing it
             const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -541,13 +485,21 @@ app.post('/api/resetpassword', async (req, res, next) => {
         var error = '';
         try {
             const db = client.db('SmartTooth');
-            await db.collection('Users').updateOne({  _id: new ObjectId(id)  }, { $set: { FirstName: firstName, LastName: lastName, Email: email } });
+    
+            // Convert the id to ObjectId if it's a valid string
+            const userId = ObjectId.isValid(id) ? new ObjectId(id) : id;
+    
+            await db.collection('Users').updateOne(
+                { _id: userId },
+                { $set: { FirstName: firstName, LastName: lastName, Email: email } }
+            );
         } catch (e) {
             error = e.toString();
         }
         var ret = { error: error };
         res.status(200).json(ret);
     });
+    
 
 
     app.post('/api/searchtests', async (req, res, next) =>
@@ -577,20 +529,17 @@ app.post('/api/resetpassword', async (req, res, next) => {
                 "_id": { $nin: userActiveTestIds } 
             }).toArray();
 
-            /*
             const userActiveTestDetails = await Promise.all(
                 userActiveTestIds.map(async (testId) => {
-                    const test = await db.collection('Tests').findOne({ _id: testId });
+                    const test = await db.collection('Tests').findOne({ _id: new ObjectId(testId) });
                     return test;
                 })
             );
-            */
 
-            //console.log(userActiveTestIds);
-            //console.log(publicTests);
-               
-            results = publicTests;
-            //results = userActiveTestDetails.concat(publicTests);
+            console.log(userActiveTestIds);
+            console.log(publicTests);
+                
+            results = userActiveTestDetails.concat(publicTests);
 
         }catch(e)
         {
@@ -599,107 +548,12 @@ app.post('/api/resetpassword', async (req, res, next) => {
         var ret = {results:results, error:error};
         res.status(200).json(ret);
     });
-
-
-
-    app.post('/api/gettests', async (req, res, next) =>
-    {
-        // incoming: id
-        // outgoing: results[], error
-        var error = '';
-        const {id} = req.body;
-        var results = [];
-        let userActiveTestIds = '';
-        let userActiveTests = '';
-        try
-        {
-            const db = client.db('SmartTooth');
-
-            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
-
-            if(user)
-            {
-                userActiveTests = user.ActiveTests || [];
-                userActiveTestIds = userActiveTests.map(testEntry => testEntry.TestId);
-            }
-
-            const publicTests = await db.collection('Tests').find({
-                "Public": true,
-                "_id": { $nin: userActiveTestIds } 
-            }).toArray();
-
-            /*
-            const userActiveTestDetails = await Promise.all(
-                userActiveTestIds.map(async (testId) => {
-                    const test = await db.collection('Tests').findOne({ _id: testId });
-                    return test;
-                })
-            );
-            */
-
-            //console.log(userActiveTestIds);
-            //console.log(publicTests);
-               
-            results = publicTests;
-            //results = userActiveTestDetails.concat(publicTests);
-
-        }catch(e)
-        {
-            error = e.toString();
-        }
-        var ret = {results:results, error:error};
-        res.status(200).json(ret);
-    });
-
-
-    app.post('/api/getusertests', async (req, res, next) =>
-    {
-        // incoming: id
-        // outgoing: results[], error
-        var error = '';
-        const {id} = req.body;
-        var results = [];
-        let userActiveTestIds = '';
-        let userActiveTests = '';
-        try
-        {
-            const db = client.db('SmartTooth');
-
-            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
-
-            if(user)
-            {
-                userActiveTests = user.ActiveTests || [];
-                userActiveTestIds = userActiveTests.map(testEntry => testEntry.TestId);
-            }
-
-
-            
-            const userActiveTestDetails = await Promise.all(
-                userActiveTestIds.map(async (testId) => {
-                    const test = await db.collection('Tests').findOne({ _id: testId });
-                    return test;
-                })
-            );
-            
-               
-            results = userActiveTestDetails;
-
-
-        }catch(e)
-        {
-            error = e.toString();
-        }
-        var ret = {results:results, error:error};
-        res.status(200).json(ret);
-    });
-
 
 
 
     app.post('/api/searchfriends', async (req, res, next) =>
     {
-        // incoming: id, search
+        // incoming: search
         // outgoing: results[], error
         var error = '';
         const {id, search} = req.body;
@@ -717,6 +571,8 @@ app.post('/api/resetpassword', async (req, res, next) => {
                     {
                         // Check if the search term matches 
                         const matchesSearch =
+                        friend.FirstName.toLowerCase().startsWith(search.toLowerCase()) ||
+                        friend.LastName.toLowerCase().startsWith(search.toLowerCase()) ||
                         friend.Login.toLowerCase().startsWith(search.toLowerCase());
 
                         // If search is empty or there's a match, add the friend to the results
@@ -736,80 +592,6 @@ app.post('/api/resetpassword', async (req, res, next) => {
         var ret = {results:results, error:error};
         res.status(200).json(ret);
     });
-
-
-    app.post('/api/searchusers', async (req, res, next) => {
-        // incoming: id, search
-        // outgoing: results[], error
-        var error = '';
-        const { id, search } = req.body;
-        var results = [];
-    
-        try {
-            const db = client.db('SmartTooth');
-            const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
-    
-            if (user && user.Friends) {
-                // Find all users who are not in the user's friend list
-                const nonFriends = await db.collection('Users').find({
-                    _id: { $nin: user.Friends.map((friendId) => new ObjectId(friendId)) },
-                }).toArray();
-    
-                results = nonFriends.filter((nonFriend) => {
-                    // Check if the 'Login' property exists before making it lowercase
-                    const login = nonFriend.Login;
-                    return login && login.toLowerCase().startsWith(search.toLowerCase());
-                });
-            }
-    
-        } catch (e) {
-            error = e.toString();
-        }
-    
-        var ret = { results: results, error: error };
-        res.status(200).json(ret);
-    });
-
-    app.post('/api/getfriends', async (req, res, next) =>
-    {
-        // incoming: id, search
-        // outgoing: results[], error
-        var error = '';
-        const {id, search} = req.body;
-        var results = [];
-        try
-        {
-            const db = client.db('SmartTooth');
-            const user = await db.collection('Users').findOne({ _id: new ObjectId(id)});
-            if(user && user.Friends)
-            {
-                for(const friendId of user.Friends)
-                {
-                    const friend = await db.collection('Users').findOne({ _id: friendId});
-                    if(friend)
-                    {
-                        // Check if the search term matches 
-                        const matchesSearch =
-                        friend.Login.toLowerCase().startsWith(search.toLowerCase());
-
-                        // If search is empty or there's a match, add the friend to the results
-                        if (search == '' || matchesSearch) 
-                        {
-                            results.push(friend);
-                        }
-                    }
-                }
-            }
-
-        }
-        catch(e)
-        {
-            error = e.toString();
-        }
-        var ret = {results:results, error:error};
-        res.status(200).json(ret);
-    });
-
 
 
 
@@ -841,12 +623,10 @@ app.post('/api/resetpassword', async (req, res, next) => {
         var error = '';
         const { id } = req.body;
         var results = [];
-        var name = '';
         try
         {
             const db = client.db('SmartTooth');
             const test = await db.collection('Tests').findOne({ _id: new ObjectId(id) });
-            name = test.Name;
 
             if(test)
             {
@@ -867,23 +647,23 @@ app.post('/api/resetpassword', async (req, res, next) => {
         {
             error = e.toString();
         }
-        var ret = { results:results, name:name, error:error};
+        var ret = { results:results, error:error};
         res.status(200).json(ret);
     });
 
 
 
     app.post('/api/verifyemail', async (req, res) => {
-        const { login, verificationCode } = req.body;
+        const { id, verificationCode } = req.body;
     
         try {
         const db = client.db('SmartTooth');
-        const user = await db.collection('Users').findOne({  Login: login  });
+        const user = await db.collection('Users').findOne({  _id: new ObjectId(id)  });
     
         if (user) {
             if (user.VerificationCode == verificationCode) {
             // Mark the user's email as verified in the database.
-            await db.collection('Users').updateOne({  Login: login }, { $set: { IsVerified: true } });
+            await db.collection('Users').updateOne({  _id: new ObjectId(id) }, { $set: { IsVerified: true } });
     
             let code;
             do {
@@ -892,7 +672,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
     
 
             // update to new code for later use
-            await db.collection('Users').updateOne({ Login: login  }, { $set: { VerificationCode: code } });
+            await db.collection('Users').updateOne({  _id: new ObjectId(id)  }, { $set: { VerificationCode: code } });
     
             res.status(200).json({ message: 'Email verified successfully.' });
             } else {
@@ -933,7 +713,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
 
 
     app.post('/api/deletetest', async (req, res, next) => {
-        // incoming: id, owner, owner
+        // incoming: id, owner, deleteAll
         // outgoing: error
     
         const { id, testId, owner} = req.body;
@@ -969,16 +749,15 @@ app.post('/api/resetpassword', async (req, res, next) => {
 
 
     app.post('/api/edittest', async (req, res, next) => {
-        // incoming: id, testId, name, creator, isPublic, questions
+        // incoming: id, testId, name, creator, length, public, questions
         // outgoing: error
-        const { id, testId, name, creator, isPublic, questions } = req.body;
+        const { id, testId, name, creator, length, public, questions } = req.body;
         var error = '';
         try {
             const db = client.db('SmartTooth');
             let questionIds = questions;
-            const length = questions.length;
             const questionObjectIds = questionIds.map(questionId => new ObjectId(questionId));
-            await db.collection('Tests').updateOne({  _id: new ObjectId(testId)  }, { $set: { Name: name, Creator: creator, Length: length, Public:isPublic, Questions: questionObjectIds} });
+            await db.collection('Tests').updateOne({  _id: new ObjectId(testId)  }, { $set: { Name: name, Creator: creator, Length: length, Public:public, Questions: questionObjectIds} });
             
             const questionsArray = questionObjectIds.map(questionId => ({
                 questionId,
@@ -1002,12 +781,11 @@ app.post('/api/resetpassword', async (req, res, next) => {
 
 
     app.post('/api/editquestion', async (req, res, next) => {
-        // incoming: id, question, answers, correctAnswer, subject
+        // incoming: id, question, answers, numberAnswers, correctAnswer, subject
         // outgoing: error
-        const { id, question, answers, correctAnswer, subject } = req.body;
+        const { id, question, answers, numberAnswers, correctAnswer, subject } = req.body;
         var error = '';
         try {
-            const numberAnswers = answers.length;
             const db = client.db('SmartTooth');
             await db.collection('Question').updateOne({  _id: new ObjectId(id)  }, { $set: { Question: question, Answers: answers, NumberAnswers: numberAnswers, CorrectAnswer: correctAnswer,  Subject: subject} });
         } catch (e) {
@@ -1097,7 +875,6 @@ app.post('/api/resetpassword', async (req, res, next) => {
         // incoming: id, testId
         // outgoing: error
         const { id, testId} = req.body;
-        let percentageCorrect = null;
         var error = '';
         try {
             const db = client.db('SmartTooth');
@@ -1117,7 +894,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
 
                         const correctCount = questions.filter(question => question.correct === true).length;
                         const totalQuestions = questions.length;
-                        percentageCorrect = (correctCount / totalQuestions) * 100;
+                        const percentageCorrect = (correctCount / totalQuestions) * 100;
 
                         activeTests[testIndex].LastScore = percentageCorrect;
 
@@ -1147,7 +924,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
         } catch (e) {
             error = e.toString();
         }
-        var ret = { score: percentageCorrect, error: error };
+        var ret = { error: error };
         res.status(200).json(ret);
     });
 
@@ -1238,6 +1015,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
         var ret = { error: error };
         res.status(200).json(ret);
         });
-        module.exports = app; // unit testing add-on
-        
+
+
+
 }
