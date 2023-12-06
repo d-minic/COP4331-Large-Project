@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styles from './EditProfile.css'; // Import the CSS file
 
 const EditProfile = () => {
   const [userData, setUserData] = useState({
