@@ -199,7 +199,7 @@ const AddTest = () => {
           <li class = "navbarli"><a class = "navbara" href="Browse">Browse</a></li>
           <li class = "navbarli"><a class = "navbara" href="AddTest">Create</a></li>
           <li class = "navbarli"><a class = "navbara" href="home">Home</a></li> 
-      <div id="addtestmain">
+      
         </ul>
         </nav>
         <div className="input-container">
