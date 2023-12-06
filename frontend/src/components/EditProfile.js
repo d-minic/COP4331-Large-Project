@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { ObjectId } from 'mongodb';
 
 const EditProfile = () => {
   // Retrieve the stored user information from local storage
   const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
 
   const [userData, setUserData] = useState({
-    id: storedUserData.id || '',
+    id: storedUserData.id || '', 
     firstName: storedUserData.firstName || '',
     lastName: storedUserData.lastName || '',
     email: storedUserData.email || '',
@@ -19,12 +20,15 @@ const EditProfile = () => {
 
   const handleSaveProfile = async () => {
     try {
+      // Convert 'id' to ObjectId format if it's not empty
+      const userId = userData.id ? new ObjectId(userData.id) : '';
+
       const response = await fetch('/api/edituser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify({ ...userData, id: userId }),
       });
 
       if (!response.ok) {
@@ -50,9 +54,9 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-    // Autofill with info from local storage on component mount
+    // Autofill with info from local storage 
     setUserData({
-      id: storedUserData.id || '',
+      id: storedUserData.id || '', 
       firstName: storedUserData.firstName || '',
       lastName: storedUserData.lastName || '',
       email: storedUserData.email || '',
