@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './Browse.css'; 
 import logo from './smarttoothlesspixel.PNG'; 
 
-function test(string titleString, string authorString)
+function test(titleString, authorString)
 {
     const grid = document.getElementById("grid");
 
