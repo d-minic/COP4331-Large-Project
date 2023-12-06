@@ -112,9 +112,7 @@ const Friends = () => {
           </li>
         ))}
       </ul>
-              <button className="goBackButton" onClick={() => navigate('/Friends')}>
-        Go Back to Friends
-      </button>
+        
     </div>
   );
 };
