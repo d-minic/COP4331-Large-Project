@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Friends.css'; // Import the CSS file
 
 const userId = "656d0128aaa2ae92a2d981b7";
 
 const Friends = () => {
-  const history = useHistory(); // Access the navigation history
+    const navigate = useNavigate(); // Access the navigation function
   const [friendsData, setFriendsData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -70,7 +70,7 @@ const Friends = () => {
     } catch (error) {
       console.error('Error adding friend:', error);
     }
-    history.push('/AddFriend');
+     navigate('/AddFriend'); 
   };
 
   useEffect(() => {
