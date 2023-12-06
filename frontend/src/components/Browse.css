@@ -11,7 +11,7 @@ h1{
 
 .grid{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: auto repeat(auto-fit, minmax(300px, 1fr));
     
     max-width: 1500px;
     margin-left: 2rem;
