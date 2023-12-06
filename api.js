@@ -208,6 +208,7 @@ app.post('/api/applogin', async (req, res, next) => {
         // incoming: name, creator, array of questions, isPublic
         // outgoing: error
         var error = '';
+        var testId = null;
         try{
 
             const { name, creator, questions, isPublic} = req.body;
@@ -238,14 +239,14 @@ app.post('/api/applogin', async (req, res, next) => {
             const newTest = {Name:name,Creator:creatorLogin,Length:length,Questions:questionIds,Public:isPublic,NumberAccesses:0};
             
             const db = client.db('SmartTooth');
-            const result = db.collection('Tests').insertOne(newTest);
-
+            const resultTest = await db.collection('Tests').insertOne(newTest);
+            testId = resultTest.insertedId.toString();
 
         }catch(e)
         {
             error = e.toString();
         }
-        var ret = { error: error };
+        var ret = { error: error, testId:testId };
         res.status(200).json(ret);
     });
 
@@ -325,8 +326,9 @@ app.post('/api/applogin', async (req, res, next) => {
         try
         {
             const user = await db.collection('Users').findOne({ _id: new ObjectId(id) });
-    
+            console.log(user);
             if (user) {
+                console.log(user.ActiveTests);
                 const activeTests = user.ActiveTests || [];
                 const test = await db.collection('Tests').findOne({ _id: new ObjectId(testId) });
                 if(test)
@@ -776,7 +778,7 @@ app.post('/api/resetpassword', async (req, res, next) => {
                 const nonFriends = await db.collection('Users').find({
                     _id: { $nin: [...user.Friends.map((friendId) => new ObjectId(friendId)), new ObjectId(id)] },
                 }).toArray();
-                
+
                 results = nonFriends.filter((nonFriend) => {
                     // Check if the 'Login' property exists before making it lowercase
                     const login = nonFriend.Login;

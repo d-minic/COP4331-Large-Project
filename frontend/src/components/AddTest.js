@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import './AddTest.css';
+import './navbar.css';
+import logo from './smarttoothlesspixel.PNG'; 
 
 
 const storedUserData = JSON.parse(localStorage.getItem('user_data')) || {};
 const login = storedUserData.login;
+const userId = storedUserData.id;
 console.log(login);
 
 const app_name = 'smart-tooth-577ede9ea626'
@@ -128,27 +131,54 @@ const AddTest = () => {
   
     const handleSubmit = async () => {
       // Send the request with testData
-      const js = JSON.stringify(testData);
+      var js = JSON.stringify(testData);
       console.log(js);
-    
-
-      
-      /*
-      const response = await fetch(buildPath('api/addtest'), {
+        
+      const addtestresponse = await fetch(buildPath('api/addtest'), {
         method: 'POST',
         body: js,
         headers: { 'Content-Type': 'application/json' },
       });
-      const results = await response.json();
+
+      var results = await addtestresponse.json();
+      console.log(results);
+      const testId = results.testId;
+      console.log(testId);
       console.log('User added test:', results);
 
       console.log('Sending request:', testData);
-      */
-      // Add your fetch logic here to send the request to the server
+
+      const body = {userId:userId, testId:testId, owner:true};
+      js = JSON.stringify(body);
+      console.log(js);
+
+      const useraddtestresponse = await fetch(buildPath('api/useraddtest'), {
+        method: 'POST',
+        body: js,
+        headers: { 'Content-Type': 'application/json' },
+      });
+      var results = await useraddtestresponse.json();
+      console.log('User added test:', results);
+
+      console.log('Sending request:', js); 
+     
     };
   
     return (
-        <div className="createtestcontainer">
+        <div >
+             <nav class="navbar">
+      <ul class = "navbarul">
+          <img class = "navbarimg" src={logo} height="80"></img>
+          <li class = "navbarli"><a class = "navbara" href="/">Logout</a></li>
+          <li class = "navbarli"><a class = "navbara" href="EditProfile">Profile</a></li>
+          <li class = "navbarli"><a class = "navbara" href="Friends">Friends</a></li>
+          <li class = "navbarli"><a class = "navbara" href="Leaderboard">Leaderboard</a></li>
+          <li class = "navbarli"><a class = "navbara" href="Browse">Browse</a></li>
+          <li class = "navbarli"><a class = "navbara" href="">Create</a></li>
+          <li class = "navbarli"><a class = "navbara" href="home">Home</a></li>
+          
+      </ul>
+        </nav>
         <div className="input-container">
             <label>
                 Test Name:

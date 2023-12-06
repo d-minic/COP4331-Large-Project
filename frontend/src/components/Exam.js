@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './ExamPage.module.css'; // Import the CSS file
+import './navbar.css';
+import logo from './smarttoothlesspixel.PNG'; 
 
 const Exam = () => {
 
@@ -137,7 +140,31 @@ const Exam = () => {
     }
   };
 
-
+  const handleDeleteTest = async () => {
+    try {
+      const obj = {
+        id: userId,
+        testId: testId,
+        owner:true
+      };
+      const js = JSON.stringify(obj);
+      console.log(js);
+  
+      const response = await fetch(buildPath('api/deletetest'), {
+        method: 'POST',
+        body: js,
+        headers: { 'Content-Type': 'application/json' },
+      });
+  
+      const result = await response.json();
+      console.log('Delete Test:', result);
+  
+      // Add any additional logic you need after deleting the test
+  
+    } catch (error) {
+      console.error('Error deleting test:', error);
+    }
+  };
 
   const handleCompleteTest = async () => {
 
@@ -259,7 +286,21 @@ const Exam = () => {
   };
 
   return (
+    
     <div>
+        <nav class="navbar">
+      <ul class = "navbarul">
+          <img class = "navbarimg" src={logo} height="80"></img>
+          <li class = "navbarli"><a class = "navbara" href="/">Logout</a></li>
+          <li class = "navbarli"><a class = "navbara" href="EditProfile">Profile</a></li>
+          <li class = "navbarli"><a class = "navbara" href="Friends">Friends</a></li>
+          <li class = "navbarli"><a class = "navbara" href="Leaderboard">Leaderboard</a></li>
+          <li class = "navbarli"><a class = "navbara" href="Browse">Browse</a></li>
+          <li class = "navbarli"><a class = "navbara" href="">Create</a></li>
+          <li class = "navbarli"><a class = "navbara" href="home">Home</a></li>
+          
+      </ul>
+        </nav>
       <h1 className={styles.examTitle}>{testName}</h1>
       {questions.map((question) => (
         <div key={question._id} className={styles.questionContainer}>
@@ -301,14 +342,18 @@ const Exam = () => {
         {isTestCompleted ? 'Test Completed' : 'Complete Test'}
       </button>
       <button onClick={handleClearTest} className={styles.button}>
-          Clear Test
-        </button>
-        {completionMessage && <p>{completionMessage}</p>}
+        Clear Test
+      </button>
+      <button onClick={handleDeleteTest} className={styles.button}>
+        Delete Test
+      </button>
+      {completionMessage && <p>{completionMessage}</p>}
       {score !== null && !isTestCompleted && <p>Score: {Math.round(score)}%</p>}
       {isTestCompleted && sharkFact && <p>Fun Fact: {sharkFact}</p>}
       <p>Current Points: {points}</p>
     </div>
   );
+  
 };
 
 export default Exam;

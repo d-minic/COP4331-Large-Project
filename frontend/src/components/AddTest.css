@@ -85,7 +85,6 @@ div {
   }
 
   .createtestcontainer {
-    max-width: 800px; /* Adjust the max-width as needed */
     margin: auto;
     display: flex;
     flex-direction: column;
